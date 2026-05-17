@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('inventaris', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
+            $table->foreignId('id_category')->constrained('categories')->onDelete('cascade');
+            $table->string('nama', 255);
+            $table->boolean('status');
+            $table->string('image', 255);
             $table->timestamps();
         });
     }

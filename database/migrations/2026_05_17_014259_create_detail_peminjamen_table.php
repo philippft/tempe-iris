@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('detail_peminjamen', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_inventaris')->constrained('inventaris')->onDelete('cascade');
+            $table->foreignId('id_surat')->constrained('surat')->onDelete('cascade');
+            $table->integer('qty_inventaris');
             $table->timestamps();
         });
     }
