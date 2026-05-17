@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('username', 100);
             $table->string('password', 255);
-            $table->string('role');
+            $table->enum('role', ['mahasiswa', 'admin_LM', 'admin_dekanat', 'petinggi_dekanat']);
             $table->string('organization_name', 255);
             $table->string('NIM_NIP', 255)->unique();
             $table->rememberToken();
