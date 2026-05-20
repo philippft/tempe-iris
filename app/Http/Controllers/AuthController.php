@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+
+class AuthController extends Controller
+{
+    public function loginView () 
+    {
+        if (Auth::check()) {
+            return $this->redirectBasedOnRole(Auth::user()->role);
+        }
+
+        return view('login');
+    }
+
+    public function authenticate(Request $request) 
+    {
+        $credentials = $request->validate([
+            'nim_nip' => ['required'],
+            'password' => ['required']
+        ]);
+
+        // dd($credentials);
+
+        if(Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            if(Auth::user()->role) {
+                return $this->redirectBasedOnRole(Auth::user()->role);
+            }
+
+            // if(Auth::user()->role == 'mahasiswa') {
+            //     return redirect()->intended('/user/dashboard');
+            // } elseif (Auth::user()->role == 'admin_LM') {
+            //     return redirect()->intended('/admin/dashboard');
+            // }
+        };
+
+        return back()->withErrors([
+            'nim' => 'NIM atau Password salah!',
+        ])->onlyInput('nim');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
+    }
+
+    // nanti coba buatin helper 1 buat authnya
+    private function redirectBasedOnRole(string $role): RedirectResponse
+    {
+        return match ($role) {
+            'mahasiswa'         => redirect()->route('mahasiswa.dashboard'),
+            'admin LM'          => redirect()->route('admin_lmdashboard'),
+            'admin dekanat'     => redirect()->route('admin_dekanat.dashboard'),
+            'petinggi dekanat'  => redirect()->route('petinggi_dekanat.dashboard'),
+            default             => redirect()->route('login'),
+        };
+    }
+}
