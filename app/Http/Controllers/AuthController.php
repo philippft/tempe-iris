@@ -31,12 +31,6 @@ class AuthController extends Controller
             if(Auth::user()->role) {
                 return $this->redirectBasedOnRole(Auth::user()->role);
             }
-
-            // if(Auth::user()->role == 'mahasiswa') {
-            //     return redirect()->intended('/user/dashboard');
-            // } elseif (Auth::user()->role == 'admin_LM') {
-            //     return redirect()->intended('/admin/dashboard');
-            // }
         };
 
         return back()->withErrors([
