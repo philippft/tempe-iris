@@ -7,80 +7,67 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-# Panduan Instalasi Project
+📌 README - Tempe Iris (Laravel Project)
+🚀 Cara Menjalankan Project
 
-Ikuti langkah-langkah di bawah ini untuk menjalankan project di komputer lokal Anda.
+Ikuti langkah-langkah berikut untuk menjalankan project Laravel ini di local:
 
-## Prasyarat
-Sebelum memulai, pastikan perangkat Anda sudah menginstal:
-*   **PHP 8.4**
-*   **Composer**
-*   **Node.js & NPM**
-*   **Laragon**
+1. 🧩 Persiapan Awal
 
----
+Pastikan sudah menginstall:
 
-## Langkah-Langkah Instalasi
-
-Silakan buka terminal atau Git Bash, lalu jalankan perintah berikut secara berurutan:
-
-### 1. Clone Repository
-Unduh source code project dari GitHub ke komputer lokal Anda:
-```bash
-git clone [https://github.com/philippft/tempe-iris.git](https://github.com/philippft/tempe-iris.git)
+PHP >= 8.4
+Composer
+Node.js & NPM
+Laragon (atau XAMPP, tapi disarankan Laragon)
+2. ⚡ Menyalakan Server
+Jalankan Laragon
+Klik Start All
+3. 📥 Clone Repository
+git clone https://github.com/philippft/tempe-iris.git
 cd tempe-iris
-2. Install Dependencies
-Install semua package PHP dan JavaScript yang dibutuhkan:
+4. 📦 Install Dependency
+Backend (Laravel)
+composer install
+Frontend
+npm install
+5. ⚙️ Konfigurasi Environment
 
-Bash
-composer i
-npm i
-3. Setup Environment File
-Salin file konfigurasi .env.example menjadi .env:
+Copy file .env:
 
-Bash
 cp .env.example .env
-4. Konfigurasi Database
-A. Nyalakan Laragon, lalu klik Start All (pastikan Apache dan MySQL jalan).
 
-B. Buka database manager (HeidiSQL/phpMyAdmin) dan buat database baru dengan nama tempe_iris.
+Lalu generate key:
 
-C. Buka file .env pakai text editor, lalu sesuaikan konfigurasi database pada baris 23 sampai 28:
+php artisan key:generate
+6. 🗄️ Setting Database
 
-Cuplikan kode
+Buka file .env, lalu ubah bagian berikut (baris 23–28):
+
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=tempe_iris
+DB_DATABASE=nama_database_kamu
 DB_USERNAME=root
 DB_PASSWORD=
-5. Generate Application Key
-A. Pastikan Anda masih berada di dalam folder project melalui terminal atau Git Bash.
 
-B. Jalankan perintah berikut untuk membuat key pengaman aplikasi di file .env:
+📌 Pastikan:
 
-Bash
-php artisan key:generate
-6. Migrasi Database
-A. Pastikan database tempe_iris sudah dibuat di Laragon sebelum menjalankan langkah ini.
-
-B. Jalankan perintah migrasi berikut untuk membuat tabel-tabel ke dalam database:
-
-Bash
+Database sudah dibuat di phpMyAdmin / MySQL
+Nama database sesuai
+7. 🧱 Migrasi Database
 php artisan migrate
-(Catatan: Jika ada data bawaan awal/seeder, gunakan perintah php artisan migrate --seed)
 
-Menjalankan Aplikasi
-Setelah semua langkah instalasi di atas selesai, Anda bisa menjalankan aplikasi dengan membuka dua terminal terpisah:
+Kalau ada seeder:
 
-Terminal 1 (Server Laravel):
-
-Bash
+php artisan db:seed
+8. ▶️ Jalankan Project
+Laravel Server
 php artisan serve
+Frontend (Vite)
+npm run dev
+9. 🌐 Akses Aplikasi
 
-    Aplikasi bisa diakses di `http://127.0.0.1:8000` atau via domain Laragon (misal: `http://tempe-iris.test`).
+Buka di browser:
 
-*   **Terminal 2 (Compiler Asset):**
-    ```bash
-    npm run dev
-    ```
+http://127.0.0.1:8000
