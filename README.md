@@ -7,52 +7,54 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# Panduan Instalasi Project (Laravel)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Ikuti langkah-langkah di bawah ini untuk menjalankan project ini di komputer lokal Anda.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Prasyarat (Prerequisites)
+Sebelum memulai, pastikan perangkat Anda sudah menginstal dan menjalankan software berikut:
+*   **PHP 8.4**
+*   **Composer**
+*   **Node.js & NPM**
+*   **Laragon** (sebagai local server)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Langkah-Langkah Instalasi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Silakan buka terminal atau Git Bash, lalu jalankan perintah berikut secara berurutan:
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+<Sequence>
+{/* Reason: Urutan setup project Laravel sangat krusial; salah urutan (misal: generate key sebelum copy .env) akan menyebabkan error. */}
+    <Step title="Clone Repository" subtitle="Langkah 1">
+    1. Clone Repository
+    Unduh source code project dari GitHub ke komputer lokal Anda:
+    ```bash
+    git clone [https://github.com/philippft/tempe-iris.git](https://github.com/philippft/tempe-iris.git)
+    cd tempe-iris
+    </Step>
+    ### 2. Install Dependencies
+    ```bash
+    <Step title="Install Dependencies" subtitle="Langkah 2">
+    composer i
+    npm i
+    </Step>
+    ### 3. Setup Environment File
+    ```bash
+    <Step title="Setup Environment File" subtitle="Langkah 3">
+    cp .env.example .env
+    </Step>
+    ### 4. Konfigurasi Database
+    ```bash
+    A. Nyalakan **Laragon**, lalu klik **Start All** (pastikan Apache dan MySQL jalan).
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+    B. Buka database manager (HeidiSQL/phpMyAdmin) dan buat database baru dengan nama `tempe_iris`.
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
-```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    C. Buka file `.env` pakai text editor, lalu sesuaikan baris 23 sampai 28:
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=tempe_iris
+    DB_USERNAME=root
+    DB_PASSWORD=
