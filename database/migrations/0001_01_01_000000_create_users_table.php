@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('password', 255);
             $table->enum('role', ['mahasiswa', 'admin_LM', 'admin_dekanat', 'petinggi_dekanat']);
             $table->string('organization_name', 255);
+            $table->string('ktm', 255)->nullable();
             $table->string('nim_nip', 255)->unique();
             $table->rememberToken();
             $table->timestamps();

@@ -43,6 +43,7 @@ class DatabaseSeeder extends Seeder
                 'username' => $hima['slug'],
                 'role' => 'admin_LM',
                 'organization_name' => $hima['nama'] . ' (' . $hima['prodi'] . ')',
+                'ktm' => fake()->boolean(50) ? 'uploads/ktm/' . fake()->uuid() . '.jpg' : null,
                 'NIM_NIP' => $hima['nim'],
             ]);
         }
@@ -64,6 +65,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->count(3)->create([
             'role' => 'mahasiswa',
             'organization_name' => 'Non-Organisasi',
+            'ktm' => fake()->boolean(50) ? 'uploads/ktm/' . fake()->uuid() . '.jpg' : null,
         ]);
     }
 }
