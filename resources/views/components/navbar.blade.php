@@ -1,6 +1,6 @@
 @props(['active' => 'beranda'])
 
-<nav class="fixed top-0 left-0 right-0 w-full z-50 bg-white border-b-2 border-gray-300 px-6 py-4">
+<nav class="fixed top-0 left-0 right-0 w-full z-50 bg-bg-light border-b-2 border-gray-300 px-6 py-4">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <span class="text-2xl font-bold tracking-tight text-primary">TEMPE IRIS</span>

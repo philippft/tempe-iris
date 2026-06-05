@@ -1,4 +1,4 @@
-<footer class="bg-bg-light pt-16 pb-8 border-t border-gray-200 text-xs text-gray-500">
+<footer class="bg-bg-dark pt-16 pb-8 border-t border-gray-200 text-xs text-gray-500">
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
                 <div>
                     <span class="text-lg font-bold tracking-tight text-primary mb-4 block">TEMPE IRIS</span>
