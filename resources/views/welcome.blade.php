@@ -178,41 +178,44 @@
     </section>
 
     <section class="py-16">
-        <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-7xl mx-auto">
             <div class="mb-12">
                 <h2 class="text-[32px] font-bold text-judul mb-2">Fitur Unggulan</h2>
                 <p class="text-subtext text-base">Solusi komprehensif untuk setiap stakeholder di lingkungan FMIPA.</p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-bg-dark p-6 rounded-xl border border-gray-100">
-                    <div class="bg-primary w-10 h-10 rounded-lg flex items-center justify-center mb-4 text-primary shadow-sm">
-                        <svg class="w-5 h-5 backdrop-opacity-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                    </div>
-                    <h3 class="font-bold text-judul mb-2 text-xl">Hak Akses Spesifik</h3>
-                    <p class="text-sm text-subtext leading-relaxed">Dashboard khusus untuk Mahasiswa, Admin LM, hingga Dekanat dengan izin yang terenkripsi.</p>
-                </div>
-                <div class="bg-bg-dark p-6 rounded-xl border border-gray-100">
-                    <div class="bg-primary w-10 h-10 rounded-lg flex items-center justify-center mb-4 text-primary shadow-sm">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.965 11.965 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                    </div>
-                    <h3 class="font-bold text-judul mb-2 text-xl">Validasi Multi-Level</h3>
-                    <p class="text-sm text-subtext leading-relaxed">Alur persetujuan hierarkis yang menyesuaikan regulasi birokrasi universitas secara otomatis.</p>
-                </div>
-                <div class="bg-bg-dark p-6 rounded-xl border border-gray-100">
-                    <div class="bg-primary w-10 h-10 rounded-lg flex items-center justify-center mb-4 text-primary shadow-sm">
-                        <svg class="w-5 h-5 backdrop-opacity-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    </div>
-                    <h3 class="font-bold text-judul mb-2 text-xl">Surat Otomatis</h3>
-                    <p class="text-sm text-subtext leading-relaxed">Hasilkan formulir peminjaman dalam format PDF secara instan setelah disetujui oleh atasan.</p>
-                </div>
-                <div class="bg-bg-dark p-6 rounded-xl border border-gray-100">
-                    <div class="bg-primary w-10 h-10 rounded-lg flex items-center justify-center mb-4 text-primary shadow-sm">
-                        <svg class="w-5 h-5 backdrop-opacity-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    </div>
-                    <h3 class="font-bold text-judul mb-2 text-xl">Tracking Real-Time</h3>
-                    <p class="text-sm text-subtext leading-relaxed">Monitoring pergerakan barang dan status ketersediaan inventaris secara langsung di peta digital.</p>
-                </div>
+                <x-feature-card title="Hak Akses Spesifik" description="Dashboard khusus untuk Mahasiswa, Admin LM, hingga Dekanat dengan izin yang terenkripsi.">
+                    <x-slot:icon>
+                        <svg width="18" height="21" viewBox="0 0 18 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 21L6 18H2C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H16C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979167 18 1.45 18 2V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H12L9 21ZM2 14.85C2.9 13.9667 3.94583 13.2708 5.1375 12.7625C6.32917 12.2542 7.61667 12 9 12C10.3833 12 11.6708 12.2542 12.8625 12.7625C14.0542 13.2708 15.1 13.9667 16 14.85V2H2V14.85ZM9 10C9.96667 10 10.7917 9.65833 11.475 8.975C12.1583 8.29167 12.5 7.46667 12.5 6.5C12.5 5.53333 12.1583 4.70833 11.475 4.025C10.7917 3.34167 9.96667 3 9 3C8.03333 3 7.20833 3.34167 6.525 4.025C5.84167 4.70833 5.5 5.53333 5.5 6.5C5.5 7.46667 5.84167 8.29167 6.525 8.975C7.20833 9.65833 8.03333 10 9 10ZM4 16H14C14 15.95 14 15.9083 14 15.875C14 15.8417 14 15.8 14 15.75C13.3 15.1667 12.525 14.7292 11.675 14.4375C10.825 14.1458 9.93333 14 9 14C8.06667 14 7.175 14.1458 6.325 14.4375C5.475 14.7292 4.7 15.1667 4 15.75C4 15.8 4 15.8417 4 15.875C4 15.9083 4 15.95 4 16ZM9 8C8.58333 8 8.22917 7.85417 7.9375 7.5625C7.64583 7.27083 7.5 6.91667 7.5 6.5C7.5 6.08333 7.64583 5.72917 7.9375 5.4375C8.22917 5.14583 8.58333 5 9 5C9.41667 5 9.77083 5.14583 10.0625 5.4375C10.3542 5.72917 10.5 6.08333 10.5 6.5C10.5 6.91667 10.3542 7.27083 10.0625 7.5625C9.77083 7.85417 9.41667 8 9 8Z" fill="#095769"/>
+                        </svg>
+                    </x-slot:icon>
+                </x-feature-card>
+
+                <x-feature-card title="Validasi Multi-Level" description="Alur persetujuan hierarkis yang menyesuaikan regulasi birokrasi universitas secara otomatis.">
+                    <x-slot:icon>
+                        <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13 18V15H9V5H7V8H0V0H7V3H13V0H20V8H13V5H11V13H13V10H20V18H13ZM2 2V6V2ZM15 12V16V12ZM15 2V6V2ZM15 6H18V2H15V6ZM15 16H18V12H15V16ZM2 6H5V2H2V6Z" fill="#095769"/>
+                        </svg>
+                    </x-slot:icon>
+                </x-feature-card>
+
+                <x-feature-card title="Surat Otomatis" description="Hasilkan formulir peminjaman dalam format PDF secara instan setelah disetujui oleh atasan.">
+                    <x-slot:icon>
+                        <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 16H12V14H4V16ZM4 12H12V10H4V12ZM2 20C1.45 20 0.979167 19.8042 0.5875 19.4125C0.195833 19.0208 0 18.55 0 18V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H10L16 6V18C16 18.55 15.8042 19.0208 15.4125 19.4125C15.0208 19.8042 14.55 20 14 20H2ZM9 7V2H2V18H14V7H9ZM2 2V7V2V7V18V2Z" fill="#095769"/>
+                        </svg>
+                    </x-slot:icon>
+                </x-feature-card>
+
+                <x-feature-card title="Tracking Real-Time" description="Monitoring pergerakan barang dan status ketersediaan inventaris secara langsung di peta digital.">
+                    <x-slot:icon>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 18V16L2 14V18H0ZM4 18V12L6 10V18H4ZM8 18V10L10 12.025V18H8ZM12 18V12.025L14 10.025V18H12ZM16 18V8L18 6V18H16ZM0 12.825V10L7 3L11 7L18 0V2.825L11 9.825L7 5.825L0 12.825Z" fill="#095769"/>
+                        </svg>
+                    </x-slot:icon>
+                </x-feature-card>
             </div>
         </div>
     </section>
