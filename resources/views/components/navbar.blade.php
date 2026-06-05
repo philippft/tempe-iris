@@ -14,8 +14,8 @@
             </div>
 
             <div class="flex items-center space-x-4 text-sm font-medium">
-                <a href="#" class="text-gray-600 hover:text-primary transition">Login</a>
-                <a href="#" class="bg-primary hover:bg-primary-hover text-white px-5 py-2 rounded-md transition shadow-sm">Daftar Akun</a>
+                <a href="/login" class="text-gray-600 hover:text-primary transition">Login</a>
+                <a href="/register" class="bg-primary hover:bg-primary-hover text-white px-5 py-2 rounded-md transition shadow-sm">Daftar Akun</a>
             </div>
         </div>
 </nav>

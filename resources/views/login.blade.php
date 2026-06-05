@@ -64,7 +64,7 @@
             </div>
 
             <div class="text-center text-sm text-subtext">
-                Belum punya akun? <a href="#" class="font-bold text-primary hover:underline">Daftar Sekarang</a>
+                Belum punya akun? <a href="/register" class="font-bold text-primary hover:underline">Daftar Sekarang</a>
             </div>
         </form>
 
