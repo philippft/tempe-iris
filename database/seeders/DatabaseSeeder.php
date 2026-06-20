@@ -67,5 +67,16 @@ class DatabaseSeeder extends Seeder
             'organization_name' => 'Non-Organisasi',
             'ktm' => fake()->boolean(50) ? 'uploads/ktm/' . fake()->uuid() . '.jpg' : null,
         ]);
+
+        $organizations = [
+            ['nama' => 'Himpunan Mahasiswa Matematika'],
+            ['nama' => 'Himpunan Mahasiswa Fisika'],
+            ['nama' => 'Himpunan Mahasiswa Kimia'],
+            ['nama' => 'Himpunan Mahasiswa Biologi'],
+            ['nama' => 'Himpunan Mahasiswa Farmasi'],
+            ['nama' => 'Himpunan Mahasiswa Informatika'],
+        ];
+
+        
     }
 }
