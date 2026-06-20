@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
@@ -13,6 +14,8 @@ use Illuminate\Database\Eloquent\Model;
     'tandatangan_pimpinan', 'penyelenggara', 'acara', 'prodi', 
     'nama_peminjam', 'nim', 'nama_kegiatan'
 ])]
+
+#[Table(name: 'surat')]
 class Surat extends Model
 {
     protected $table = 'surat';

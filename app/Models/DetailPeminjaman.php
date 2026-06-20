@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 
+#[Table(name: 'detail_peminjaman')]
 #[Fillable(['id_inventaris', 'id_surat', 'qty_inventaris'])]
 class DetailPeminjaman extends Model
 {
