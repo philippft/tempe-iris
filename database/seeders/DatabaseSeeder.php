@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\Inventaris;
+use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,20 +18,56 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
+        // 1. SEED CATEGORIES TERLEBIH DAHULU
+        $categoriesData = [
+            ['name' => 'Elektronik & Audio'],
+            ['name' => 'Perlengkapan Acara'],
+            ['name' => 'Kesekretariatan & ATK'],
+            ['name' => 'Dokumentasi'],
+            ['name' => 'Inventaris Ruangan'],
+            ['name' => 'Konsumsi & Rumah Tangga'],
+        ];
+
+        // Simpan hasil collection categories untuk digunakan nanti
+        $categories = Category::factory()
+            ->count(count($categoriesData))
+            ->sequence(...$categoriesData)
+            ->create();
+
+        // 2. SEED ORGANIZATIONS
+        $organizationsData = [
+            ['name' => 'Himpunan Mahasiswa Matematika'],
+            ['name' => 'Himpunan Mahasiswa Fisika'],
+            ['name' => 'Himpunan Mahasiswa Kimia'],
+            ['name' => 'Himpunan Mahasiswa Biologi'],
+            ['name' => 'Himpunan Mahasiswa Farmasi'],
+            ['name' => 'Himpunan Mahasiswa Informatika'],
+        ];
+
+        Organization::factory()
+            ->count(count($organizationsData))
+            ->sequence(...$organizationsData)
+            ->create();
+
+        // Array penampung untuk semua akun admin LM yang akan dibuatkan inventaris
+        $lmUsers = [];
+
+        // 3. SEED USER (DPM & BEM)
+        $lmUsers[] = User::factory()->create([
             'username' => 'dpm_fmipa',
             'role' => 'admin_LM',
             'organization_name' => 'DPM FMIPA',
             'NIM_NIP' => '2308561001',
         ]);
 
-        User::factory()->create([
+        $lmUsers[] = User::factory()->create([
             'username' => 'bem_fmipa',
             'role' => 'admin_LM',
             'organization_name' => 'BEM FMIPA',
             'NIM_NIP' => '2308561002',
         ]);
 
+        // 4. SEED USER HIMA PRODI
         $himaProdi = [
             ['slug' => 'himatika', 'nama' => 'HimaTika', 'prodi' => 'Matematika', 'nim' => '2408511001'],
             ['slug' => 'himafi', 'nama' => 'HimaFi', 'prodi' => 'Fisika', 'nim' => '2408521001'],
@@ -39,7 +78,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($himaProdi as $hima) {
-            User::factory()->create([
+            $lmUsers[] = User::factory()->create([
                 'username' => $hima['slug'],
                 'role' => 'admin_LM',
                 'organization_name' => $hima['nama'] . ' (' . $hima['prodi'] . ')',
@@ -48,6 +87,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        // 5. SEED USER DEKANAT & MAHASISWA BIASA (Tidak mendapatkan inventaris)
         User::factory()->create([
             'username' => 'admin_dekanat',
             'role' => 'admin_dekanat',
@@ -68,15 +108,55 @@ class DatabaseSeeder extends Seeder
             'ktm' => fake()->boolean(50) ? 'uploads/ktm/' . fake()->uuid() . '.jpg' : null,
         ]);
 
-        $organizations = [
-            ['nama' => 'Himpunan Mahasiswa Matematika'],
-            ['nama' => 'Himpunan Mahasiswa Fisika'],
-            ['nama' => 'Himpunan Mahasiswa Kimia'],
-            ['nama' => 'Himpunan Mahasiswa Biologi'],
-            ['nama' => 'Himpunan Mahasiswa Farmasi'],
-            ['nama' => 'Himpunan Mahasiswa Informatika'],
+        // 6. GENERATE 2 INVENTARIS UNTUK SETIAP LM
+        // Daftar nama barang tiruan agar data inventaris terlihat realistis
+        $barangDummy = [
+            'Mikrofon Wireless',
+            'Sound System Portable',
+            'HT (Handy Talkie)',
+            'Kabel XLR 10m',
+            'Printer Inkjet',
+            'Stapler Jilid Besar',
+            'Papan Tulis Whiteboard',
+            'Kamera DSLR',
+            'Tripod Kamera',
+            'Kipas Angin Berdiri',
+            'Dispenser Air',
+            'Teko Listrik Pompa'
         ];
 
-        
+        $barangDummy = [
+            'Mikrofon Wireless',
+            'Sound System Portable',
+            'HT (Handy Talkie)',
+            'Kabel XLR 10m',
+            'Printer Inkjet',
+            'Stapler Jilid Besar',
+            'Papan Tulis Whiteboard',
+            'Kamera DSLR',
+            'Tripod Kamera',
+            'Kipas Angin Berdiri',
+            'Dispenser Air',
+            'Teko Listrik Pompa'
+        ];
+
+        foreach ($lmUsers as $user) {
+            for ($i = 1; $i <= 2; $i++) {
+                $randomCategory = $categories->random();
+                $namaBarang = fake()->randomElement($barangDummy) . ' ' . $user->username . ' ' . $i;
+
+                Inventaris::create([
+                    'id_user' => $user->id,
+                    'id_category' => $randomCategory->id,
+                    'nama' => $namaBarang,
+                    'status_pinjam' => fake()->boolean(20), 
+                    'stok' => fake()->numberBetween(1, 15), 
+                    'status' => fake()->boolean(90),
+                    'image' => 'uploads/inventaris/' . fake()->uuid() . '.jpg',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
     }
 }

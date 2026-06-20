@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Model;
 #[Table(name: 'surat')]
 class Surat extends Model
 {
-    protected $table = 'surat';
 
     protected function casts(): array
     {

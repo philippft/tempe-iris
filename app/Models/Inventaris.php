@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 #[Fillable(['id_user', 'id_category', 'nama', 'status', 'image'])]
 class Inventaris extends Model
 {
-    protected $table = 'inventaris';
 
     protected function casts(): array
     {

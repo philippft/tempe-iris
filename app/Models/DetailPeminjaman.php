@@ -12,8 +12,6 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 #[Fillable(['id_inventaris', 'id_surat', 'qty_inventaris'])]
 class DetailPeminjaman extends Model
 {
-    protected $table = 'detail_peminjaman';
-
     public function inventaris(): BelongsTo
     {
         return $this->belongsTo(Inventaris::class, 'id_inventaris');

@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 #[Fillable(['id_surat', 'nama', 'hari_mulal', 'tanggal_mulai', 'waktu_mulai', 'waktu_selesai'])]
 class Kegiatan extends Model
 {
-    protected $table = 'kegiatan';
 
     protected function casts(): array
     {
