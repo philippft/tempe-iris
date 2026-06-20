@@ -8,9 +8,21 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 #[Table(name: 'organizations')]
-#[Fillable(['nama'])]
+#[Fillable(['name'])]
 class Organization extends Model
 {
     //
     use HasFactory;
+
+    public function casts(): array
+    {
+        return [
+            'name' => 'string',
+        ];
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'id_organization');
+    }
 }

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 class Inventaris extends Model
 {
 
-    protected function casts(): array
+    public function casts(): array
     {
         return [
             'status' => 'boolean',
@@ -33,5 +33,10 @@ class Inventaris extends Model
     public function detailPeminjaman(): HasMany
     {
         return $this->hasMany(DetailPeminjaman::class, 'id_inventaris');
+    }
+
+    public function stock(): HasMany
+    {
+        return $this->hasMany(Stock::class, 'id_inventaris');
     }
 }
