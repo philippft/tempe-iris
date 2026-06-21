@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Inventaris;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class InventarisController extends Controller
 {
@@ -12,7 +14,46 @@ class InventarisController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+
+        $inventaris = Inventaris::with('category')
+            ->where('id_user', $user->id)
+            ->withCount([
+                'stocks as stok_aktif' => function ($query) {
+                    $query->where('status', 1);
+                },
+                'stocks as stok_tidak_aktif' => function ($query) {
+                    $query->where('status', 0);
+                }
+            ])
+            ->get();
+        // dd($inventaris);
+
+        $categories = Category::all();
+        $totalBarang = $inventaris->count();
+
+        $stokAktif = $inventaris->sum('stok_aktif');
+        $stokTidakAktif = $inventaris->sum('stok_tidak_aktif');
+        $totalStok = $stokAktif + $stokTidakAktif;
+
+        $viewPath = 'inventaris.index';
+
+        if ($user) {
+            if ($user->role === 'admin_LM') {
+                $viewPath = 'admin.inventaris.index';
+            } elseif ($user->role === 'admin_dekanat') {
+                $viewPath = 'dekanat.inventaris.index';
+            }
+        }
+
+        return view($viewPath, compact(
+            'inventaris',
+            'categories',
+            'totalBarang',
+            'totalStok',
+            'stokAktif',
+            'stokTidakAktif'
+        ));
     }
 
     /**
@@ -20,7 +61,7 @@ class InventarisController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.inventaris.create');
     }
 
     /**
