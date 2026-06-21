@@ -7,6 +7,8 @@ use App\Http\Controllers\DekanatDashboardController;
 use App\Http\Controllers\PetinggiDashboardController;
 use App\Http\Controllers\UserDashboardController;
 
+use Illuminate\Support\Facades\Auth;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -29,6 +31,19 @@ Route::middleware(['auth', 'isDekanat'])->group(function () {
 
 Route::middleware(['auth', 'isPetinggi'])->group(function () {
     Route::get('/petinggi_dekanat/dashboard', [PetinggiDashboardController::class, 'petinggiDashboard'])->name('petinggi_dekanat.dashboard');
+});
+
+Route::get('/preview-sidebar', function () {
+    // Simulasi user & role sesukamu
+    $fakeUser = new \App\Models\User([
+        'name'    => 'Admin Dekanat',
+        'role'    => 'admin_dekanat', // ganti: admin_lm | mahasiswa | petinggi_dekanat
+        'nim'     => '2408561030',
+        'jabatan' => 'Wakil Dekan III',
+    ]);
+
+    Auth::login($fakeUser); // login sementara tanpa password
+    return view('preview-sidebar');
 });
 
 // Route::get('/register', [AuthController::class, 'registerView'])->name('register');
