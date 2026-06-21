@@ -150,7 +150,6 @@ class DatabaseSeeder extends Seeder
                     'id_category' => $randomCategory->id,
                     'nama' => $namaBarang,
                     'status_pinjam' => fake()->boolean(20), 
-                    'status' => fake()->boolean(90),
                     'deskripsi' => fake()->paragraph(2),
                     'image' => 'uploads/inventaris/' . fake()->uuid() . '.jpg',
                     'created_at' => now(),

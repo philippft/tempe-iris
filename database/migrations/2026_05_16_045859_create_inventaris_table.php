@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
             $table->foreignId('id_category')->constrained('categories')->onDelete('cascade');
             $table->string('nama', 255);
-            $table->boolean('status');
             $table->boolean('status_pinjam')->default(false); 
             $table->text('deskripsi')->nullable();
             $table->string('image', 255);
