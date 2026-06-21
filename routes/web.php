@@ -22,7 +22,9 @@ Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('mahasiswa.')->
 
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'adminDashboard'])->name('dashboard');
-    Route::resource('inventaris', InventarisController::class);
+    Route::resource('inventaris', InventarisController::class)->parameters([
+        'inventaris' => 'inventaris'
+    ]);;
 });
     
 Route::middleware(['auth', 'isDekanat'])->prefix('dekanat')->name('dekanat.')->group(function () {
