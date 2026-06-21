@@ -35,7 +35,7 @@ class Inventaris extends Model
         return $this->hasMany(DetailPeminjaman::class, 'id_inventaris');
     }
 
-    public function stock(): HasMany
+    public function stocks(): HasMany
     {
         return $this->hasMany(Stock::class, 'id_inventaris');
     }
