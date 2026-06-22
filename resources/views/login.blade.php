@@ -1,60 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - TEMPE IRIS</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    @vite('resources/css/app.css')
+
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
+<body class="font-sans antialiased bg-white min-h-screen flex items-center justify-center p-4">
 
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">SIPINTAR FMIPA</h2>
-        <p class="text-sm text-gray-500 text-center mb-6">Sistem Peminjaman Inventaris</p>
+    <div class="w-full max-w-md bg-white rounded-xl border border-border-custom shadow-sm overflow-hidden">
+        
+        <div class="bg-bg-dark text-center py-6 px-4 border-b border-border-custom">
+            <h2 class="text-xl font-bold text-primary tracking-wide uppercase">LOGIN TEMPE IRIS</h2>
+            <p class="text-sm text-subtext mt-1">Silakan masuk ke akun Anda</p>
+        </div>
 
-        @if (session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-sm">
-                {{ session('success') }}
-            </div>
-        @endif
+        <form action="#" method="POST" class="p-6 space-y-5">
+            {{-- @csrf --}}
 
-        @if ($errors->has('username'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
-                {{ $errors->first('username') }}
-            </div>
-        @endif
+            <x-input id="nim" name="nim" label="NIM" placeholder="Nomor Induk Mahasiswa" />
 
-        <form action="{{ route('login.authenticate') }}" method="POST" class="space-y-4">
-            @csrf 
+            <x-input id="password" name="password" label="PASSWORD" type="password" placeholder="Password" />
 
-            <div>
-                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                <input type="text" id="username" name="username" value="{{ old('username') }}" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+            <div class="flex items-center justify-between text-sm">
+                <label class="flex items-center gap-2 text-subtext cursor-pointer select-none">
+                    <input type="checkbox" name="remember" class="w-4 h-4 rounded border-border-custom text-primary focus:ring-primary">
+                    <span>Ingat Saya</span>
+                </label>
+                <a href="#" class="font-semibold text-primary hover:text-primary-hover transition">Lupa Password?</a>
             </div>
 
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <input type="password" id="password" name="password" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+            <button type="submit" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-3 px-4 rounded-lg tracking-wide uppercase shadow-sm transition duration-200 text-sm mt-2">
+                LOGIN AKUN
+            </button>
+
+            <div class="relative flex py-1 items-center">
+                <div class="flex-grow border-t border-border-custom"></div>
             </div>
 
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <input id="remember" name="remember" type="checkbox" 
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                    <label for="remember" class="ml-2 block text-sm text-gray-900">Ingat Saya</label>
-                </div>
-            </div>
-
-            <div>
-                <button type="submit" 
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200 text-sm">
-                    Masuk
-                </button>
+            <div class="text-center text-sm text-subtext">
+                Belum punya akun? <a href="/register" class="font-bold text-primary hover:underline">Daftar Sekarang</a>
             </div>
         </form>
+
     </div>
 
 </body>

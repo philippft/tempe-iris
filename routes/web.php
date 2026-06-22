@@ -33,3 +33,7 @@ Route::middleware(['auth', 'isPetinggi'])->group(function () {
 
 // Route::get('/register', [AuthController::class, 'registerView'])->name('register');
 // Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+Route::get('/register', function () {
+    return view('register');
+});
