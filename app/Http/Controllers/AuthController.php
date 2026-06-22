@@ -20,7 +20,7 @@ class AuthController extends Controller
     public function authenticate(Request $request) 
     {
         $credentials = $request->validate([
-            'username' => ['required'],
+            'nim_nip' => ['required'],
             'password' => ['required']
         ]);
 
@@ -34,8 +34,8 @@ class AuthController extends Controller
         };
 
         return back()->withErrors([
-            'username' => 'NIM atau Password salah!',
-        ])->onlyInput('nim');
+            'nim_nip' => 'NIM atau Password salah!',
+        ])->onlyInput('nim_nip');
     }
 
     public function logout(Request $request)

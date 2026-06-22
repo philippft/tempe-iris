@@ -21,10 +21,10 @@
             <p class="text-sm text-subtext mt-1">Silakan masuk ke akun Anda</p>
         </div>
 
-        <form action="#" method="POST" class="p-6 space-y-5">
+        <form action="{{ route('login.authenticate') }}" method="POST" class="p-6 space-y-5">
             {{-- @csrf --}}
 
-            <x-input id="nim" name="nim" label="NIM" placeholder="Nomor Induk Mahasiswa" />
+            <x-input id="nim_nip" name="nim_nip" label="NIM" placeholder="Nomor Induk Mahasiswa" />
 
             <x-input id="password" name="password" label="PASSWORD" type="password" placeholder="Password" />
 
