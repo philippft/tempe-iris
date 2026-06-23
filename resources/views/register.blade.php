@@ -8,28 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { 
-                        sans: ['Plus Jakarta Sans', 'sans-serif'] 
-                    },
-                    colors: {
-                        primary: '#2E6F82', 
-                        'primary-hover': '#095769',
-                        'bg-light': '#FAF8FF',
-                        'bg-dark': '#F2F3FF', 
-                        'subtext': '#40484B',
-                        'judul': '#131B2E',
-                        'border-custom': '#BFC8CC',
-                    }
-                }
-            }
-        }
-    </script>
+    @vite('resources/css/app.css')
 </head>
 <body class="font-sans antialiased bg-white min-h-screen flex items-center justify-center p-6 md:p-12">
     <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -41,8 +20,8 @@
                 <h2 class="text-xl font-bold text-primary tracking-wide uppercase">DAFTAR AKUN TEMPE IRIS</h2>
                 <p class="text-sm text-subtext mt-1">Lengkapi formulir di bawah ini untuk melakukan pendaftaran akun pada sistem!</p>
             </div>
-            <form action="#" method="POST" enctype="multipart/form-error" class="p-6 space-y-4">
-                {{-- @csrf --}}
+            <form action="{{ route('register.post') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+                @csrf
                 <x-input id="name" name="name" label="NAMA LENGKAP" placeholder="Nama Lengkap" />
                 <x-input id="nim" name="nim" label="NIM" placeholder="Nomor Induk Mahasiswa" />
                 <x-input id="prodi" name="prodi" label="PROGRAM STUDI" placeholder="Pilih Program Studi" />

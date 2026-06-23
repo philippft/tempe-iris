@@ -8,28 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { 
-                        sans: ['Plus Jakarta Sans', 'sans-serif'] 
-                    },
-                    colors: {
-                        primary: '#2E6F82', 
-                        'primary-hover': '#095769',
-                        'bg-light': '#FAF8FF',
-                        'bg-dark': '#F2F3FF', 
-                        'subtext': '#40484B',
-                        'judul': '#131B2E',
-                        'border-custom': '#BFC8CC', 
-                    }
-                }
-            }
-        }
-    </script>
+    @vite('resources/css/app.css')
 </head>
 <body class="font-sans antialiased bg-white min-h-screen flex items-center justify-center p-4">
 
@@ -40,10 +19,10 @@
             <p class="text-sm text-subtext mt-1">Silakan masuk ke akun Anda</p>
         </div>
 
-        <form action="#" method="POST" class="p-6 space-y-5">
-            {{-- @csrf --}}
+        <form action="{{ route('login.authenticate') }}" method="POST" class="p-6 space-y-5">
+            @csrf
 
-            <x-input id="nim" name="nim" label="NIM" placeholder="Nomor Induk Mahasiswa" />
+            <x-input id="username" name="username" label="USERNAME" placeholder="Nomor Induk Mahasiswa" />
 
             <x-input id="password" name="password" label="PASSWORD" type="password" placeholder="Password" />
 

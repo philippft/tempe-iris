@@ -7,52 +7,123 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# Tempe Iris
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Tempe Iris** adalah aplikasi berbasis web yang dibangun menggunakan ekosistem terbaru dari Laravel framework. Project ini dirancang dengan struktur arsitektur modern yang efisien, performa optimal, serta alur kerja pengembangan yang terintegrasi penuh untuk kebutuhan manajemen data dan skalabilitas aplikasi backend.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Fitur Utama
 
-## Learning Laravel
+* **Arsitektur MVC Modern:** Memanfaatkan struktur dasar Laravel untuk pemisahan logika bisnis, database, dan presentasi secara rapi.
+* **Asset Bundling Cepat dengan Vite:** Kompilasi frontend secepat kilat menggunakan integrasi penuh Vite untuk manajemen CSS dan JavaScript.
+* **Database Management yang Andal:** Migrasi database otomatis yang aman serta pengelolaan relasi data berbasis Eloquent ORM.
+* **Pengujian Komprehensif (Testing Ready):** Terintegrasi langsung dengan **Pest PHP** untuk mendukung pengembangan berbasis *Test-Driven Development* (TDD).
+* **Otomatisasi Script Pengembang:** Menyediakan perintah otomatis satu pintu (`composer run setup`) untuk mempercepat instalasi lingkungan lokal.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠️ Teknologi yang Digunakan
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+* **Framework Inti:** Laravel ^13.0
+* **Bahasa Pemrograman:** PHP ^8.3
+* **Asset Compiler:** Vite & NPM Engine
+* **Testing Framework:** Pest PHP & Mockery
+* **Database Support:** MySQL / SQLite
+* **Code Style & Linting:** Laravel Pint
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## 📌 Prasyarat Instalasi
 
+Sebelum memulai proses instalasi di komputer lokal Anda, pastikan perangkat Anda sudah terpasang perkakas berikut:
+* **PHP (Minimal versi 8.3, disarankan versi 8.4)**
+* **Composer** (Manajer dependensi PHP)
+* **Node.js & NPM** (Runtime JavaScript dan Manajer Package)
+* **Laragon** atau Web Server Lokal sejenis (Apache/Nginx & MySQL)
+
+---
+
+## 💻 Langkah-Langkah Instalasi
+
+Silakan buka terminal, Command Prompt, atau Git Bash Anda, lalu jalankan perintah berikut secara berurutan:
+
+### 1. Clone Repository
+Unduh *source code* project dari GitHub ke komputer lokal Anda:
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone [https://github.com/philippft/tempe-iris.git](https://github.com/philippft/tempe-iris.git)
+cd tempe-iris
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Install Dependencies
+```bash
+Pasang semua package PHP dan JavaScript yang dibutuhkan oleh aplikasi:
+composer install
+npm install
+```
 
-## Contributing
+### 3. Setup Environment File
+Salin file konfigurasi lingkungan dasar dari `.env.example` menjadi `.env`:
+```bash
+cp .env.example .env
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Konfigurasi Database
+A. Nyalakan panel control **Laragon**, lalu klik tombol **Start All** (Pastikan layanan Apache dan MySQL berjalan).
 
-## Code of Conduct
+B. Buka aplikasi database manager favorit Anda (seperti HeidiSQL atau phpMyAdmin) lalu buat sebuah database baru bernama **`tempe_iris`**.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+C. Buka file `.env` yang baru saja dibuat menggunakan text editor Anda, lalu sesuaikan konfigurasi database Anda pada baris berikut:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=tempe_iris
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Security Vulnerabilities
+### 5. Generate Application Key
+Jalankan perintah berikut untuk membuat kunci pengaman (*security key*) aplikasi unik di dalam file `.env`:
+```bash
+php artisan key:generate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 5. Generate Application Key
+Jalankan perintah berikut untuk membuat kunci pengaman (*security key*) aplikasi unik di dalam file `.env`:
+```bash
+php artisan key:generate
+```
+---
 
-## License
+## ⚡ Menjalankan Aplikasi
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Setelah seluruh proses konfigurasi di atas selesai, Anda dapat menjalankan aplikasi dengan membuka dua jendela terminal terpisah:
+
+* **Terminal 1 (Menjalankan Server Lokal Laravel):**
+    ```bash
+    php artisan serve
+    ```
+    Aplikasi kini dapat diakses secara lokal melalui browser Anda di alamat `http://127.0.0.1:8000` atau via alamat domain otomatis Laragon di `http://tempe-iris.test`.
+
+* **Terminal 2 (Menjalankan Asset Compiler Vite):**
+    ```bash
+    npm run dev
+    ```
+    Terminal ini akan mendeteksi setiap perubahan file CSS atau JS di frontend secara langsung (*hot-reloading*).
+
+---
+
+## 🤝 Kontribusi
+
+Kontribusi selalu terbuka lebar untuk meningkatkan kualitas project ini! Jika Anda ingin berkontribusi:
+
+1. Lakukan **Fork** pada repository ini.
+2. Buat branch fitur baru Anda (`git checkout -b fitur/FiturKerenAnda`).
+3. Lakukan *commit* terhadap perubahan Anda (`git commit -m 'Menambahkan Fitur Keren Anda'`).
+4. *Push* branch tersebut ke GitHub (`git push origin fitur/FiturKerenAnda`).
+5. Buka sebuah **Pull Request** untuk kami tinjau lebih lanjut.
+
+Pastikan kode Anda tetap rapi dengan menjalankan linter bawaan project sebelum melakukan commit:
+```bash
+./vendor/bin/pint
