@@ -33,29 +33,29 @@ Route::middleware(['auth', 'isPetinggi'])->group(function () {
     Route::get('/petinggi_dekanat/dashboard', [PetinggiDashboardController::class, 'petinggiDashboard'])->name('petinggi_dekanat.dashboard');
 });
 
-Route::get('/preview-sidebar', function () {
-    $fakeUser = new \App\Models\User([
-        'name'    => 'Admin Dekanat',
-        'role'    => 'admin_dekanat', // admin_lm | mahasiswa | petinggi_dekanat
-        'nim'     => '2408561030',
-        'jabatan' => 'Wakil Dekan III',
-    ]);
 
-    Auth::login($fakeUser);
-    return view('preview-sidebar');
-});
+// Fake Data Punya LEO
+// MULAI
 
-Route::get('/pilih-barang', function () {
-    $fakeUser = new \App\Models\User([
-        'name'    => 'Admin Dekanat',
-        'role'    => 'admin_dekanat', // admin_lm | mahasiswa | petinggi_dekanat
-        'nim'     => '2408561030',
-        'jabatan' => 'Wakil Dekan III',
-    ]);
+    Route::get('/preview-sidebar', function () {
+        $fakeUser = new \App\Models\User([
+            'name'    => 'Admin Dekanat',
+            'role'    => 'admin_dekanat', // admin_lm | mahasiswa | petinggi_dekanat
+            'nim'     => '2408561030',
+            'jabatan' => 'Wakil Dekan III',
+        ]);
 
-    Auth::login($fakeUser);
-    return view('pilihbarang');
-});
+        Auth::login($fakeUser);
+        return view('preview-sidebar');
+    });
+
+    // BELUM SELESAI
+    Route::get('/pilih-barang', function () {
+        return view('pilihbarang');
+    });
+
+// SELESAI
+
 
 // Route::get('/register', [AuthController::class, 'registerView'])->name('register');
 // Route::post('/register', [AuthController::class, 'register'])->name('register.post');
