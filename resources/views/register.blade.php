@@ -20,8 +20,8 @@
                 <h2 class="text-xl font-bold text-primary tracking-wide uppercase">DAFTAR AKUN TEMPE IRIS</h2>
                 <p class="text-sm text-subtext mt-1">Lengkapi formulir di bawah ini untuk melakukan pendaftaran akun pada sistem!</p>
             </div>
-            <form action="#" method="POST" enctype="multipart/form-error" class="p-6 space-y-4">
-                {{-- @csrf --}}
+            <form action="{{ route('register.post') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-4">
+                @csrf
                 <x-input id="name" name="name" label="NAMA LENGKAP" placeholder="Nama Lengkap" />
                 <x-input id="nim" name="nim" label="NIM" placeholder="Nomor Induk Mahasiswa" />
                 <x-input id="prodi" name="prodi" label="PROGRAM STUDI" placeholder="Pilih Program Studi" />
