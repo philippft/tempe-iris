@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,33 +7,12 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { 
-                        sans: ['Plus Jakarta Sans', 'sans-serif'] 
-                    },
-                    colors: {
-                        primary: '#2E6F82', 
-                        'primary-hover': '#095769',
-                        'bg-light': '#FAF8FF',
-                        'bg-dark': '#F2F3FF', 
-                        'subtext': '#40484B',
-                        'judul': '#131B2E',
-                    }
-                }
-            }
-        }
-    </script>
+    @vite('resources/css/app.css')
 </head>
 <body class="font-sans antialiased text-judul bg-bg-light">
 
     <x-navbar active="beranda" />
-    <section class="max-w-7xl mx-auto py-16 md:py-24"> 
+    <section class="max-w-7xl mx-auto py-16 md:py-24" id="beranda"> 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-11 items-center">
             <div>
                 <h1 class="text-3xl md:text-[40px] font-bold text-judul leading-tight mb-6">
@@ -177,7 +156,7 @@
         </div>
     </section>
 
-    <section class="py-24">
+    <section class="py-24" id="fitur">
         <div class="max-w-7xl mx-auto">
             <div class="mb-12">
                 <h2 class="text-[32px] font-bold text-judul mb-2">Fitur Unggulan</h2>
@@ -220,60 +199,62 @@
         </div>
     </section>
 
-    <section class="bg-bg-dark py-16">
+    <section class="bg-bg-dark py-24" id="alur-kerja">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16">
                 <h2 class="text-3xl font-bold text-judul mb-3">Bagaimana Cara Meminjam?</h2>
-                <p class="text-subtext text-sm">Proses mudah hanya dalam 4 langkah sederhana.</p>
+                <p class="text-subtext text-base">Proses mudah hanya dalam 4 langkah sederhana.</p>
             </div>
 
             <div class="relative max-w-5xl mx-auto">
-                <div class="hidden md:block absolute top-8 left-12 right-12 h-[2px] bg-gray-200 z-0"></div>
+                <div class="hidden md:block absolute top-8 left-21 right-21 h-[2px] bg-border-custom z-0"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
                     <div class="text-center">
-                        <div class="w-16 h-16 bg-white border-4 border-bg-light shadow-sm rounded-full flex items-center justify-center text-xl font-bold text-primary mx-auto mb-4">1</div>
-                        <h4 class="font-bold text-gray-900 text-sm mb-1">Cari & Ajukan</h4>
-                        <p class="text-xs text-gray-500 px-4">Pilih barang di katalog digital dan tentukan durasi peminjaman.</p>
+                        <div class="w-16 h-16 bg-white border-4 border-bg-light shadow-sm rounded-full flex items-center justify-center text-xl font-bold text-primary mx-auto mb-4 hover:bg-primary-hover hover:text-white transition-colors duration-300">1</div>
+                        <h4 class="font-bold text-judul text-xl mb-1">Cari & Ajukan</h4>
+                        <p class="text-sm text-subtext px-4">Pilih barang di katalog digital dan tentukan durasi peminjaman.</p>
                     </div>
                     <div class="text-center">
-                        <div class="w-16 h-16 bg-white border-4 border-bg-light shadow-sm rounded-full flex items-center justify-center text-xl font-bold text-primary mx-auto mb-4">2</div>
-                        <h4 class="font-bold text-gray-900 text-sm mb-1">Auto-Generate</h4>
-                        <p class="text-xs text-gray-500 px-4">Sistem membuat dokumen peminjaman secara otomatis untuk divalidasi.</p>
+                        <div class="w-16 h-16 bg-white border-4 border-bg-light shadow-sm rounded-full flex items-center justify-center text-xl font-bold text-primary mx-auto mb-4 hover:bg-primary-hover hover:text-white transition-colors duration-300">2</div>
+                        <h4 class="font-bold text-judul text-xl mb-1">Auto-Generate</h4>
+                        <p class="text-sm text-subtext px-4">Sistem membuat dokumen peminjaman secara otomatis untuk divalidasi.</p>
                     </div>
                     <div class="text-center">
-                        <div class="w-16 h-16 bg-white border-4 border-bg-light shadow-sm rounded-full flex items-center justify-center text-xl font-bold text-primary mx-auto mb-4">3</div>
-                        <h4 class="font-bold text-gray-900 text-sm mb-1">Validasi Digital</h4>
-                        <p class="text-xs text-gray-500 px-4">Persetujuan berjenjang dari Admin hingga Petinggi FMIPA.</p>
+                        <div class="w-16 h-16 bg-white border-4 border-bg-light shadow-sm rounded-full flex items-center justify-center text-xl font-bold text-primary mx-auto mb-4 hover:bg-primary-hover hover:text-white transition-colors duration-300">3</div>
+                        <h4 class="font-bold text-judul text-xl mb-1">Validasi Digital</h4>
+                        <p class="text-sm text-subtext px-4">Persetujuan berjenjang dari Admin hingga Petinggi FMIPA.</p>
                     </div>
                     <div class="text-center">
-                        <div class="w-16 h-16 bg-primary border-4 border-bg-light shadow-sm rounded-full flex items-center justify-center text-xl font-bold text-white mx-auto mb-4">4</div>
-                        <h4 class="font-bold text-gray-900 text-sm mb-1">Ambil & Gunakan</h4>
-                        <p class="text-xs text-gray-500 px-4">Dapatkan notifikasi dan ambil barang di sekre dengan QR Code.</p>
+                        <div class="w-16 h-16 bg-white border-4 border-bg-light shadow-sm rounded-full flex items-center justify-center text-xl font-bold text-primary mx-auto mb-4 hover:bg-primary-hover hover:text-white transition-colors duration-300">4</div>
+                        <h4 class="font-bold text-judul text-xl mb-1">Ambil & Gunakan</h4>
+                        <p class="text-sm text-subtext px-4">Dapatkan notifikasi dan ambil barang di sekre dengan QR Code.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="pb-24 px-6">
-        <div class="max-w-4xl mx-auto bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
-            <h2 class="text-3xl font-bold text-primary mb-4">Siap untuk meminjam barang?</h2>
-            <p class="text-gray-500 text-sm mb-8 max-w-2xl mx-auto">
+    <section class="pb-24 py-24 px-6">
+        <div class="max-w-4xl mx-auto bg-bg-dark rounded-2xl p-12 text-center shadow-sm border border-border-custom">
+            <h2 class="text-4xl font-bold text-primary mb-4">Siap untuk meminjam barang?</h2>
+            <p class="text-subtext text-base mb-8 max-w-2xl mx-auto">
                 Bergabunglah dengan ribuan mahasiswa FMIPA yang telah beralih ke sistem digital yang lebih cepat dan transparan.
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#" class="bg-primary hover:bg-primary-hover text-white px-8 py-3 rounded-md font-medium transition shadow-sm text-sm">
+                <x-button href="#" variant="primary" class="mb-4">
                     Daftar Sekarang
-                </a>
-                <a href="#" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-8 py-3 rounded-md font-medium transition text-sm">
+                </x-button>
+                <x-button href="#" variant="secondary" class="mb-4">
                     Hubungi Bantuan
-                </a>
+                </x-button>
             </div>
         </div>
     </section>
 
-    <x-footer />
+    <div id="tentang">
+        <x-footer />
+    </div>
 
 </body>
 </html>

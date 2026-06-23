@@ -1,13 +1,13 @@
-<footer class="bg-bg-dark pt-16 pb-8 border-t border-gray-200 text-xs text-gray-500">
+<footer class="bg-bg-dark pt-16 pb-8  text-sm text-gray-500">
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
                 <div>
-                    <span class="text-lg font-bold tracking-tight text-primary mb-4 block">TEMPE IRIS</span>
-                    <p class="leading-relaxed">
+                    <span class="text-xl font-bold tracking-tight text-primary mb-4 block">TEMPE IRIS</span>
+                    <p class="text-sm">
                         Sistem Peminjaman Inventaris FMIPA Universitas Udayana. Membangun tata kelola aset yang transparan dan akuntabel.
                     </p>
                 </div>
                 <div>
-                    <h4 class="font-bold text-primary mb-4 uppercase tracking-wider">Navigasi</h4>
+                    <h4 class="font-bold text-xs text-primary mb-4 uppercase tracking-wider">Navigasi</h4>
                     <ul class="space-y-2">
                         <li><a href="#" class="hover:text-primary">Beranda</a></li>
                         <li><a href="#" class="hover:text-primary">Fitur</a></li>
@@ -16,7 +16,7 @@
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-bold text-primary mb-4 uppercase tracking-wider">Layanan</h4>
+                    <h4 class="font-bold text-xs text-primary mb-4 uppercase tracking-wider">Layanan</h4>
                     <ul class="space-y-2">
                         <li><a href="#" class="hover:text-primary">Kebijakan Privasi</a></li>
                         <li><a href="#" class="hover:text-primary">Syarat & Ketentuan</a></li>
@@ -25,15 +25,15 @@
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-bold text-primary mb-4 uppercase tracking-wider">Kontak</h4>
-                    <p class="leading-relaxed">
+                    <h4 class="font-bold text-xs text-primary mb-4 uppercase tracking-wider">Kontak</h4>
+                    <p class="text-sm">
                         Jl. Kampus Udayana, Jimbaran, Bali<br>
                         Email: <a href="mailto:info@fmipa.unud.ac.id">info@fmipa.unud.ac.id</a>
                     </p>
             </div>
             
         </div>
-        <div class="border-t border-gray-200 pt-8 text-center text-gray-400">
+        <div class="border-t border-border-custom pt-8 text-center text-gray-400">
                 &copy; 2026 FMIPA Universitas Udayana. Sistem Peminjaman Inventaris (TEMPE IRIS).
         </div>
     </footer>
