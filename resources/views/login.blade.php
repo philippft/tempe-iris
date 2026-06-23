@@ -22,9 +22,9 @@
         </div>
 
         <form action="{{ route('login.authenticate') }}" method="POST" class="p-6 space-y-5">
-            {{-- @csrf --}}
+            @csrf
 
-            <x-input id="nim_nip" name="nim_nip" label="NIM" placeholder="Nomor Induk Mahasiswa" />
+            <x-input id="username" name="username" label="USERNAME" placeholder="Nomor Induk Mahasiswa" />
 
             <x-input id="password" name="password" label="PASSWORD" type="password" placeholder="Password" />
 
