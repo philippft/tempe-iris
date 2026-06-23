@@ -60,7 +60,7 @@
         </div>
     </section>
 
-    <section class="bg-bg-dark py-16">
+    <section class="bg-bg-dark py-24">
         <div class="max-w-7xl mx-auto">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-judul mb-3">Mengapa TEMPE IRIS?</h2>
@@ -177,7 +177,7 @@
         </div>
     </section>
 
-    <section class="py-16">
+    <section class="py-24">
         <div class="max-w-7xl mx-auto">
             <div class="mb-12">
                 <h2 class="text-[32px] font-bold text-judul mb-2">Fitur Unggulan</h2>
@@ -223,7 +223,7 @@
     <section class="bg-bg-dark py-16">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold text-judul mb-2">Bagaimana Cara Meminjam?</h2>
+                <h2 class="text-3xl font-bold text-judul mb-3">Bagaimana Cara Meminjam?</h2>
                 <p class="text-subtext text-sm">Proses mudah hanya dalam 4 langkah sederhana.</p>
             </div>
 
