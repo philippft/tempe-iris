@@ -34,16 +34,27 @@ Route::middleware(['auth', 'isPetinggi'])->group(function () {
 });
 
 Route::get('/preview-sidebar', function () {
-    // Simulasi user & role sesukamu
     $fakeUser = new \App\Models\User([
         'name'    => 'Admin Dekanat',
-        'role'    => 'admin_dekanat', // ganti: admin_lm | mahasiswa | petinggi_dekanat
+        'role'    => 'admin_dekanat', // admin_lm | mahasiswa | petinggi_dekanat
         'nim'     => '2408561030',
         'jabatan' => 'Wakil Dekan III',
     ]);
 
-    Auth::login($fakeUser); // login sementara tanpa password
+    Auth::login($fakeUser);
     return view('preview-sidebar');
+});
+
+Route::get('/pilih-barang', function () {
+    $fakeUser = new \App\Models\User([
+        'name'    => 'Admin Dekanat',
+        'role'    => 'admin_dekanat', // admin_lm | mahasiswa | petinggi_dekanat
+        'nim'     => '2408561030',
+        'jabatan' => 'Wakil Dekan III',
+    ]);
+
+    Auth::login($fakeUser);
+    return view('pilihbarang');
 });
 
 // Route::get('/register', [AuthController::class, 'registerView'])->name('register');

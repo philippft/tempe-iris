@@ -1,9 +1,3 @@
-{{--
-    Sidebar Partial - resources/views/partials/sidebar.blade.php
-    Mendukung 4 role: admin_dekanat | admin_lm | mahasiswa | petinggi_dekanat
-    Sesuaikan $user->role dengan field role di database kamu.
---}}
-
 @php
     $user = Auth::user();
     $role = 'admin_lm'; //sesuaikan dengan field role di model User kamu
@@ -108,6 +102,7 @@
                     <span class="w-6 h-6 flex-shrink-0 {{ $isActive ? 'text-[#1F6E6C]' : 'text-[#64748B]' }}">
                         @switch($menu['icon'])
 
+                        {{-- SVG ICON NANTI BISA DIUBAH SESUAI FRAMEWORK, ICON DIBUAT SAMA AI --}}
                             @case('dashboard')
                                 {{-- Grid 2x2 --}}
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
