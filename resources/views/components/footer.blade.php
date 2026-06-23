@@ -9,10 +9,10 @@
                 <div>
                     <h4 class="font-bold text-xs text-primary mb-4 uppercase tracking-wider">Navigasi</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="hover:text-primary">Beranda</a></li>
-                        <li><a href="#" class="hover:text-primary">Fitur</a></li>
-                        <li><a href="#" class="hover:text-primary">Alur Peminjaman</a></li>
-                        <li><a href="#" class="hover:text-primary">Tentang Kami</a></li>
+                        <li><a href="#beranda" class="hover:text-primary">Beranda</a></li>
+                        <li><a href="#fitur" class="hover:text-primary">Fitur</a></li>
+                        <li><a href="#alur" class="hover:text-primary">Alur Peminjaman</a></li>
+                        <li><a href="#tentang" class="hover:text-primary">Tentang Kami</a></li>
                     </ul>
                 </div>
                 <div>

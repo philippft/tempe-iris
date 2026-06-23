@@ -118,40 +118,6 @@
                         </li>
                     </ul>
                 </div>
-
-                
-                <!-- kotak yang kanan yang ijo -->
-                <!-- <div class="bg-primary rounded-xl p-8 text-white shadow-lg">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="bg-white/10 p-2 rounded-full border border-white/20">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <h3 class="text-2xl font-bold">TEMPE IRIS (Digital)</h3>
-                    </div>
-                    <ul class="space-y-5">
-                        <li class="flex gap-3 items-start">
-                            <span class="text-teal-300 font-bold">✓</span>
-                            <div>
-                                <h4 class="font-semibold text-sm">Aman & Terpusat</h4>
-                                <p class="text-xs text-teal-100/80 mt-0.5">Seluruh riwayat dan dokumen tersimpan permanen di server cloud.</p>
-                            </div>
-                        </li>
-                        <li class="flex gap-3 items-start">
-                            <span class="text-teal-300 font-bold">✓</span>
-                            <div>
-                                <h4 class="font-semibold text-sm">Validasi Digital Berjenjang</h4>
-                                <p class="text-xs text-teal-100/80 mt-0.5">Persetujuan instan melalui sistem notifikasi dashboard.</p>
-                            </div>
-                        </li>
-                        <li class="flex gap-3 items-start">
-                            <span class="text-teal-300 font-bold">✓</span>
-                            <div>
-                                <h4 class="font-semibold text-sm">Live Tracking</h4>
-                                <p class="text-xs text-teal-100/80 mt-0.5">Cek status peminjaman dan lokasi barang terintegrasi.</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div> -->
             </div>
         </div>
     </section>
