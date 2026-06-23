@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DekanatDashboardController;
 use App\Http\Controllers\InventarisController;
+use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PetinggiDashboardController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,15 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::resource('inventaris', InventarisController::class)->parameters([
         'inventaris' => 'inventaris'
     ]);;
+
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+    Route::get('/peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create');
+    Route::post('/peminjaman/add-detail',[PeminjamanController::class, 'addDetailPeminjaman'])->name('peminjaman.detail');
+
+    Route::get('/admin/peminjaman/create/kegiatan/{surat}', [PeminjamanController::class, 'kegiatan'])->name('peminjaman.kegiatan');
+    Route::put('/peminjaman/add-kegiatan/{surat}', [PeminjamanController::class, 'addKegiatan'])->name('peminjaman.add.kegiatan');
+
+
 });
     
 Route::middleware(['auth', 'isDekanat'])->prefix('dekanat')->name('dekanat.')->group(function () {
