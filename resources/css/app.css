@@ -15,4 +15,7 @@
     --color-subtext: #40484B;
     --color-judul: #131B2E;
     --color-border-custom: #BFC8CC;
+    --color-status-red: #EF4444;
+    --color-status-green: #00C853;
+    --color-status-yellow: #FFB33F;
 }
