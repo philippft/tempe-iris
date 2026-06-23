@@ -1,15 +1,13 @@
 @php
-    $user = Auth::user();
-    $role = 'admin_lm'; //sesuaikan dengan field role di model User kamu
+    $role = 'mahasiswa'; 
 
-    // Subtitle per role
     $username = 'Leonardo';
 
     $subtitle = match($role) {
-        'admin_dekanat'    => 'FMIPA – UNUD',
+        'admin_dekanat'    => 'FMIPA - UNUD',
         'admin_lm'         => 'ADMIN PANEL',
-        'mahasiswa'        => $user->nim ?? '',
-        'petinggi_dekanat' => strtoupper($user->jabatan ?? 'WAKIL DEKAN'),
+        'mahasiswa'        => '2408561098',
+        'petinggi_dekanat' => strtoupper('WAKIL DEKAN'),
         default            => ''
     };
 
@@ -101,8 +99,6 @@
                     {{-- Icon --}}
                     <span class="w-6 h-6 flex-shrink-0 {{ $isActive ? 'text-[#1F6E6C]' : 'text-[#64748B]' }}">
                         @switch($menu['icon'])
-
-                        {{-- SVG ICON NANTI BISA DIUBAH SESUAI FRAMEWORK, ICON DIBUAT SAMA AI --}}
                             @case('dashboard')
                                 {{-- Grid 2x2 --}}
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

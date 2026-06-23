@@ -1,49 +1,67 @@
-{{--
-    Page: Form Pengajuan Peminjaman – Pilih Barang
-    resources/views/peminjaman/pilih-barang.blade.php
---}}
+@php
+
+    // SETUP 
+        // Pagination Card 
+            // Dropdown Menu 
+
+
+    // SETUP 
+
+
+@endphp
+
 <!DOCTYPE html>
-<html lang="id">
+<html>
+
 <head>
     <meta charset="UTF-8">
-    <title>Pilih Barang – SIC</title>
+    <title>Preview Sidebar</title>
     @vite('resources/css/app.css')
 </head>
-<body class="flex bg-[#F0F4F8] min-h-screen overflow-hidden">
 
-    {{-- ===== SIDEBAR ===== --}}
+<body class="flex bg-gray-100 h-screen">
     @include('partials.sidebar')
+    <main class="flex-1 p-8">
 
-    {{-- ===== MAIN CONTENT ===== --}}
-    <main class="flex-1 flex flex-col h-screen overflow-hidden min-h-0">
-
-        {{-- ── Breadcrumb bar ── --}}
-        <div class="flex-shrink-0 flex items-center gap-3 px-8 py-4 bg-white border-b border-slate-200">
-            <a href="#"
-               class="flex items-center gap-2 text-[#1F6E6C] font-semibold text-[15px] hover:opacity-80 transition-opacity">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-                </svg>
-                Form Pengajuan Peminjaman
-            </a>
+        {{--Card Statistik --}}
+        <div>
+            @include('partials.card-statistik')
         </div>
 
-        {{-- ── Scrollable body ── --}}
-        <div class="flex-1 overflow-y-auto min-h-0 px-8 py-7">
+        <br>
+        <hr>
+        <br>
+        
+        {{--Card Product --}}
+        <div>
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                @for ($i = 0; $i < 4; $i++)
+                    @include('partials.card-product')
+                @endfor
+            </div>
+        </div>
 
-            {{-- Page heading --}}
-            <h1 class="text-[28px] font-extrabold text-[#1E293B] leading-tight">
-                Daftar Barang Inventaris
-            </h1>
-            <p class="text-[#64748B] text-[14px] mt-1 mb-6">
-                Pilih tujuan peminjaman dan barang yang ingin dipinjam
-            </p>
+        <br>
+        <hr>
+        <br>
 
-            {{-- ── White card ── --}}
+        {{--Popup Delete --}}
+        <div>
+            <button
+                type="button"
+                onclick="openDeleteModal('#')"
+                class="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700">
+                Hapus
+            </button>
+        </div>
+
+        <br>
+        <hr>
+        <br>
+
+        {{-- Pagination card --}}
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 px-7 py-6">
-
-                {{-- Tujuan Peminjaman --}}
+                {{-- Dropdown Menu --}}
                 <div class="mb-6">
                     <label class="block text-[11px] font-bold tracking-widest text-[#475569] uppercase mb-2">
                         Pilih Tujuan Peminjaman
@@ -91,7 +109,7 @@
                             <select class="w-full appearance-none border border-slate-300 rounded-xl px-4 py-3 text-[14px]
                                            text-[#1E293B] bg-white focus:outline-none focus:ring-2 focus:ring-[#1F6E6C]/30
                                            focus:border-[#1F6E6C] transition-colors cursor-pointer pr-8">
-                                <option value="" disabled selected>Pilih Kategori</option>
+                                <option value="" selected>Pilih Kategori</option>
                                 <option>Elektronik</option>
                                 <option>Furniture</option>
                                 <option>Alat Tulis</option>
@@ -118,17 +136,14 @@
                     </div>
                 </div>
 
-                {{-- ── Item grid ── --}}
+                {{-- Other content --}}
                 <div class="grid grid-cols-4 gap-4 mb-6">
-
-                    {{-- Repeat this card 12× in production (use @foreach $barangs as $barang) --}}
-                    @for ($i = 0; $i < 12; $i++)
-                    @include('partials.card-product')
+                    @for ($i = 0; $i < 4; $i++)
+                        @include('partials.card-product')
                     @endfor
-
                 </div>
 
-                {{-- ── Pagination ── --}}
+                {{-- Pagination --}}
                 <div class="flex items-center justify-between pt-4 border-t border-slate-200">
 
                     {{-- Info --}}
@@ -168,16 +183,35 @@
 
             </div>{{-- /white card --}}
 
-            {{-- ── Lanjut Peminjaman ── --}}
-            <div class="flex justify-end mt-5 mb-2">
-                <button class="px-7 py-3 rounded-xl bg-[#1F6E6C] text-white text-[15px] font-bold
-                               hover:bg-[#175b59] active:scale-95 transition-all shadow-md">
-                    Lanjut Peminjaman
-                </button>
-            </div>
 
-        </div>{{-- /scrollable body --}}
     </main>
-
+    @include('partials.popup-del')
 </body>
+
+<script>
+    function openDeleteModal(actionUrl) {
+        const modal = document.getElementById('deleteModal');
+        const form = document.getElementById('deleteForm');
+
+        form.action = actionUrl;
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    // Klik area gelap untuk menutup modal
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDeleteModal();
+        }
+    });
+</script>
+
 </html>

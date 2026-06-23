@@ -6,7 +6,7 @@
             hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
 
     {{-- Image placeholder --}}
-    <div class="bg-slate-200 aspect-[4/3] w-full flex-shrink-0"></div>
+    <div class="bg-slate-200 aspect-[4/3] flex-shrink-0 m-4 rounded-xl"></div>
 
     {{-- Card body --}}
     <div class="flex flex-col flex-1 p-3 gap-1.5">

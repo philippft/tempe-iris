@@ -37,16 +37,8 @@ Route::middleware(['auth', 'isPetinggi'])->group(function () {
 // Fake Data Punya LEO
 // MULAI
 
-    Route::get('/preview-sidebar', function () {
-        $fakeUser = new \App\Models\User([
-            'name'    => 'Admin Dekanat',
-            'role'    => 'admin_dekanat', // admin_lm | mahasiswa | petinggi_dekanat
-            'nim'     => '2408561030',
-            'jabatan' => 'Wakil Dekan III',
-        ]);
-
-        Auth::login($fakeUser);
-        return view('preview-sidebar');
+    Route::get('/preview', function () {
+        return view('preview');
     });
 
     // BELUM SELESAI
