@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 
 #[Table(name: 'stocks')]
-#[Fillable(['status'])]
+#[Fillable(['status', 'id_inventaris'])]
 class Stock extends Model
 {
     /** @use HasFactory<\Database\Factories\StockFactory> */
