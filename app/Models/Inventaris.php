@@ -9,14 +9,14 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 
 #[Table(name: 'inventaris')]
-#[Fillable(['id_user', 'id_category', 'nama', 'status', 'image'])]
+#[Fillable(['id_user', 'id_category', 'nama', 'deskripsi', 'image'])]
 class Inventaris extends Model
 {
-
     public function casts(): array
     {
         return [
-            'status' => 'boolean',
+            'id_user' => 'integer',
+            'id_category' => 'integer',
         ];
     }
 
@@ -35,7 +35,7 @@ class Inventaris extends Model
         return $this->hasMany(DetailPeminjaman::class, 'id_inventaris');
     }
 
-    public function stock(): HasMany
+    public function stocks(): HasMany
     {
         return $this->hasMany(Stock::class, 'id_inventaris');
     }

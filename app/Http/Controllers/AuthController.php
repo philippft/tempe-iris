@@ -53,9 +53,9 @@ class AuthController extends Controller
     {
         return match ($role) {
             'mahasiswa'         => redirect()->route('mahasiswa.dashboard'),
-            'admin_LM'          => redirect()->route('admin_lm.dashboard'),
-            'admin_dekanat'     => redirect()->route('admin_dekanat.dashboard'),
-            'petinggi_dekanat'  => redirect()->route('petinggi_dekanat.dashboard'),
+            'admin_LM'          => redirect()->route('admin.dashboard'),
+            'admin_dekanat'     => redirect()->route('dekanat.dashboard'),
+            'petinggi_dekanat'  => redirect()->route('petinggi.dashboard'),
             default             => redirect()->route('login'),
         };
     }

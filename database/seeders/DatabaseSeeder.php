@@ -145,17 +145,25 @@ class DatabaseSeeder extends Seeder
                 $randomCategory = $categories->random();
                 $namaBarang = fake()->randomElement($barangDummy) . ' ' . $user->username . ' ' . $i;
 
-                Inventaris::create([
+                $inventaris = Inventaris::create([
                     'id_user' => $user->id,
                     'id_category' => $randomCategory->id,
                     'nama' => $namaBarang,
                     'status_pinjam' => fake()->boolean(20), 
-                    'stok' => fake()->numberBetween(1, 15), 
-                    'status' => fake()->boolean(90),
+                    'deskripsi' => fake()->paragraph(2),
                     'image' => 'uploads/inventaris/' . fake()->uuid() . '.jpg',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
+
+                for ($j = 1; $j <= 5; $j++) {
+                    \App\Models\Stock::create([
+                        'id_inventaris' => $inventaris->id,
+                        'status' => fake()->boolean(80) ? 1 : 0,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
             }
         }
     }
