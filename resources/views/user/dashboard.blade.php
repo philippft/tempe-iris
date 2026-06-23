@@ -8,6 +8,7 @@
     @vite('resources/css/app.css')
 </head>
 <body class="font-sans bg-bg-dark">
+    <x-header-dashboard/>
     <h1>Ini Dashboard {{ auth()->user()->username }}</h1>
     <div>
         <x-statecard
