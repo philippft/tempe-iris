@@ -18,7 +18,7 @@
                 <div>
                     <h4 class="font-bold text-xs text-primary mb-4 uppercase tracking-wider">Layanan</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="hover:text-primary">Kebijakan Privasi</a></li>
+                        <li><a href="#tentang" class="hover:text-primary">Kebijakan Privasi</a></li>
                         <li><a href="#" class="hover:text-primary">Syarat & Ketentuan</a></li>
                         <li><a href="#" class="hover:text-primary">Bantuan</a></li>
                         <li><a href="#" class="hover:text-primary">Kontak Kami</a></li>
