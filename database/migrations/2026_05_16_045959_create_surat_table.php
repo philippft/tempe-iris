@@ -14,19 +14,19 @@ return new class extends Migration
         Schema::create('surat', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
-            $table->string('nomor', 255)->unique();
-            $table->boolean('status_peminjaman');
+            $table->string('nomor', 255)->unique()->nullable();
+            $table->boolean('status_peminjaman')->nullable()->default(null);
             $table->text('catatan_peminjaman')->nullable();
-            $table->string('perihal_peminjaman', 255);
-            $table->dateTime('tanggal_peminjaman');
-            $table->dateTime('tanggal_kembali');
+            $table->string('perihal_peminjaman', 255)->nullable();
+            $table->dateTime('tanggal_peminjaman')->nullable();
+            $table->dateTime('tanggal_kembali')->nullable();
             $table->boolean('tandatangan_pimpinan')->nullable();
-            $table->string('penyelenggara', 50);
-            $table->string('acara', 50);
-            $table->string('prodi', 255);
-            $table->string('nama_peminjam', 50);
-            $table->string('nim', 15);
-            $table->string('nama_kegiatan', 50);
+            $table->string('penyelenggara', 50)->nullable();
+            $table->string('acara', 50)->nullable();
+            $table->string('prodi', 255)->nullable();
+            $table->string('nama_peminjam', 50)->nullable();
+            $table->string('nim', 15)->nullable();
+            $table->string('nama_kegiatan', 50)->nullable();
             $table->timestamps();
         });
     }
