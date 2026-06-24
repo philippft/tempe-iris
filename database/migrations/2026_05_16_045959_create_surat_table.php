@@ -23,10 +23,10 @@ return new class extends Migration
             $table->boolean('tandatangan_pimpinan')->nullable();
             $table->string('penyelenggara', 50)->nullable();
             $table->string('acara', 50)->nullable();
+            $table->string('singkatan_acara', 25)->nullable();
             $table->string('prodi', 255)->nullable();
             $table->string('nama_peminjam', 50)->nullable();
             $table->string('nim', 15)->nullable();
-            $table->string('nama_kegiatan', 50)->nullable();
             $table->timestamps();
         });
     }
