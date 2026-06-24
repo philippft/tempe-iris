@@ -219,6 +219,39 @@ class PeminjamanController extends Controller
 
         public function addDetailKegiatan (Surat $surat, Request $request) 
         {
-            dd($surat, $request);
+            $request->validate([
+                'nomor'                         => 'required|string|max:255',
+                'penyelenggara'                 => 'required|string|max:255',
+                'prodi'                         => 'required|string|max:255',
+                'nama_peminjam'                 => 'required|string|max:50',
+                'nim'                           => 'required|string|max:15',
+                'kegiatan'                      => 'required|array|min:1',
+                'kegiatan.*.nama_kegiatan'      => 'required|string|max:50',
+                'kegiatan.*.hari'               => 'required|string|max:25',
+                'kegiatan.*.tanggal'            => 'required|date',
+                'kegiatan.*.waktu_mulai'        => 'required|string',
+                'kegiatan.*.waktu_selesai'      => 'required|string',
+            ]);
+
+            $surat->update([
+                'nomor'         => $request->nomor,
+                'penyelenggara' => $request->penyelenggara,
+                'prodi'         => $request->prodi,
+                'nama_peminjam' => $request->nama_peminjam,
+                'nim'           => $request->nim,
+            ]);
+
+            foreach ($request->kegiatan as $item) {
+                $surat->kegiatan()->create([
+                    'nama'          => $item['nama_kegiatan'],
+                    'hari_mulai'    => $item['hari'],
+                    'tanggal_mulai' => $item['tanggal'],
+                    'waktu_mulai'   => $item['waktu_mulai'],
+                    'waktu_selesai' => $item['waktu_selesai'],
+                ]);
+            }
+
+            return redirect()->route('admin.peminjaman.index')
+                ->with('success', 'Detail kegiatan berhasil disimpan.');
         }
 }
