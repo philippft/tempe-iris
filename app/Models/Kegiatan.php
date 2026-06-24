@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 
-#[Table(name: 'kegiatan')]
-#[Fillable(['id_surat', 'nama', 'hari_mulal', 'tanggal_mulai', 'waktu_mulai', 'waktu_selesai'])]
+#[Table(name: 'kegiatans')]
+#[Fillable(['id_surat', 'nama', 'hari_mulai', 'tanggal_mulai', 'waktu_mulai', 'waktu_selesai'])]
 class Kegiatan extends Model
 {
 
