@@ -34,6 +34,9 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::get('/admin/peminjaman/create/kegiatan/{surat}', [PeminjamanController::class, 'kegiatan'])->name('peminjaman.kegiatan');
     Route::put('/peminjaman/add-kegiatan/{surat}', [PeminjamanController::class, 'addKegiatan'])->name('peminjaman.add.kegiatan');
 
+    Route::get('/admin/peminjaman/create/detail-kegiatan/{surat}', [PeminjamanController::class, 'detailKegiatan'])->name('peminjaman.detail.kegiatan');
+    Route::put('/peminjaman/add-detail-kegiatan/{surat}', [PeminjamanController::class, 'addDetailKegiatan'])->name('peminjaman.store.kegiatan');
+
 
 });
     
