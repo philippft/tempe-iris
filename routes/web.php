@@ -42,6 +42,10 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
         Route::put('/peminjaman/add-detail-kegiatan/{surat}', 'addDetailKegiatan')->name('peminjaman.store.kegiatan');
     });
 
+    Route::get('/management-user', [AdminDashboardController::class, 'managementUser'])->name('management.user');
+    Route::get('/management-user/detail/{user}', [AdminDashboardController::class, 'userDetail'])->name('user.detail');
+
+    Route::put('/user/approve/{user}', [AdminDashboardController::class, 'approveUser'])->name('user.approve');
 
 });
     
