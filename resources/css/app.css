@@ -112,7 +112,7 @@
 
 @theme {
     --font-sans: "Plus Jakarta Sans", sans-serif;
-    --color-primary: #2E6F82;
+    --color-primary: #2E6F82; 
     --color-primary-hover: #095769;
     --color-dark-grey: #70787C;
     --color-bg-light: #FAF8FF;
