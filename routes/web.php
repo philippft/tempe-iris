@@ -23,19 +23,24 @@ Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('mahasiswa.')->
 
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'adminDashboard'])->name('dashboard');
+
+    // Inventaris
     Route::resource('inventaris', InventarisController::class)->parameters([
         'inventaris' => 'inventaris'
     ]);;
 
-    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
-    Route::get('/peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create');
-    Route::post('/peminjaman/add-detail',[PeminjamanController::class, 'addDetailPeminjaman'])->name('peminjaman.detail');
+    // Peminjaman
+    Route::controller(PeminjamanController::class)->group(function () {
+        Route::get('/peminjaman', 'index')->name('peminjaman.index');
+        Route::get('/peminjaman/create', 'create')->name('peminjaman.create');
+        Route::post('/peminjaman/add-detail', 'addDetailPeminjaman')->name('peminjaman.detail');
 
-    Route::get('/admin/peminjaman/create/kegiatan/{surat}', [PeminjamanController::class, 'kegiatan'])->name('peminjaman.kegiatan');
-    Route::put('/peminjaman/add-kegiatan/{surat}', [PeminjamanController::class, 'addKegiatan'])->name('peminjaman.add.kegiatan');
+        Route::get('/peminjaman/create/kegiatan/{surat}', 'kegiatan')->name('peminjaman.kegiatan');
+        Route::put('/peminjaman/add-kegiatan/{surat}', 'addKegiatan')->name('peminjaman.add.kegiatan');
 
-    Route::get('/admin/peminjaman/create/detail-kegiatan/{surat}', [PeminjamanController::class, 'detailKegiatan'])->name('peminjaman.detail.kegiatan');
-    Route::put('/peminjaman/add-detail-kegiatan/{surat}', [PeminjamanController::class, 'addDetailKegiatan'])->name('peminjaman.store.kegiatan');
+        Route::get('/peminjaman/create/detail-kegiatan/{surat}', 'detailKegiatan')->name('peminjaman.detail.kegiatan');
+        Route::put('/peminjaman/add-detail-kegiatan/{surat}', 'addDetailKegiatan')->name('peminjaman.store.kegiatan');
+    });
 
 
 });
