@@ -89,6 +89,7 @@ class PeminjamanController extends Controller
         $userPengaju = auth()->user();
         $timestamp = now();
 
+
         // mulai transaction
         DB::beginTransaction();
 
@@ -98,23 +99,22 @@ class PeminjamanController extends Controller
 
             //create surat
             $idSuratBaru = DB::table('surat')->insertGetId([
-                'id_user' => $userPengaju->id,
-                'nomor' => $nomorDrafSementara,
-                'status_peminjaman' => null,
-                'catatan_peminjaman' => null,
-                'perihal_peminjaman' => 'DRAF_PERMOHONAN',
-                'tanggal_peminjaman' => $timestamp,
-                'tanggal_kembali' => $timestamp->copy()->addDays(1),
-
+                'id_user'              => $userPengaju->id,
+                'nomor'                => $nomorDrafSementara,
+                'status_peminjaman'    => null,
+                'catatan_peminjaman'   => null,
+                'perihal_peminjaman'   => 'DRAF_PERMOHONAN',
+                'tanggal_peminjaman'   => $timestamp,
+                'tanggal_kembali'      => $timestamp->copy()->addDays(1),
                 'tandatangan_pimpinan' => null,
-                'penyelenggara' => $userPengaju->organization_name ?? 'DRAF_ORGANISASI',
-                'acara' => 'DRAF_ACARA',
-                'prodi' => 'Informatika',
-                'nama_peminjam' => $userPengaju->username ?? 'Anonim',
-                'nim' => $userPengaju->NIM_NIP ?? '0000000000',
-                'nama_kegiatan' => 'DRAF_KEGIATAN',
-                'created_at' => $timestamp,
-                'updated_at' => $timestamp,
+                'penyelenggara'        => $userPengaju->organization_name ?? 'DRAF_ORGANISASI',
+                'acara'                => 'DRAF_ACARA',
+                'singkatan_acara'      => null,           // ← ada di migration, tambahkan
+                'prodi'                => 'DRAF_PRODI',
+                'nama_peminjam'        => $userPengaju->username ?? 'Anonim',
+                'nim'                  => $userPengaju->NIM_NIP ?? '0000000000',
+                'created_at'           => $timestamp,
+                'updated_at'           => $timestamp,
             ]);
 
             // loop detail barang
@@ -182,7 +182,43 @@ class PeminjamanController extends Controller
         return view('admin.peminjaman.kegiatan', compact('surat', 'detailBarang'));
     }
 
-    public function addKegiatan (Surat $surat, Request $request) {
-        dd($surat, $request);
-    }
+        public function addKegiatan (Surat $surat, Request $request) {
+            // dd($request->all());
+            $request->validate([
+                'acara'       => 'required|string|max:50',
+                'singkatan'   => 'nullable|string|max:50',
+                'tanggal_peminjaman'  => 'required|date|after_or_equal:today',
+                'tanggal_kembali'     => 'required|date|after_or_equal:tanggal_peminjaman',
+                'perihal_peminjaman'  => 'required|string|max:255',
+            ], [
+                'tanggal_kembali.after_or_equal' => 'Tanggal kembali tidak boleh mendahului tanggal pinjam.',
+            ]);
+
+            $timestamp   = now();
+            $pengaju     = auth()->user();
+            // dd($pengaju);
+            $nomorSurat  = 'PJM/' . strtoupper($pengaju->username ?? 'USER') . '/' . $timestamp->format('m/Y') . '/' . strtoupper(bin2hex(random_bytes(2)));
+
+            $surat->update([
+                'nomor'               => $nomorSurat,
+                'acara'               => $request->acara,
+                'singkatan_acara'     => $request->singkatan,
+                'tanggal_peminjaman'  => $request->tanggal_peminjaman . ' 08:00:00',
+                'tanggal_kembali'     => $request->tanggal_kembali . ' 17:00:00',
+                'perihal_peminjaman'  => $request->perihal_peminjaman,
+                'status_peminjaman'   => 0,
+            ]);
+
+            return redirect()->route('admin.peminjaman.detail.kegiatan', ['surat' => $surat->id])
+                ->with('success', 'Permohonan ' . $nomorSurat . ' berhasil diajukan! Silakan tunggu pengecekan.');
+        }
+
+        public function detailKegiatan (Surat $surat) {
+            return view('admin.peminjaman.detail-kegiatan', compact('surat'));
+        }
+
+        public function addDetailKegiatan (Surat $surat, Request $request) 
+        {
+            dd($surat, $request);
+        }
 }
