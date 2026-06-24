@@ -319,10 +319,13 @@ class DatabaseSeeder extends Seeder
             $this->command->warn('Inventaris HimaIF kurang dari 3. Seed tetap jalan dengan yang ada.');
         }
 
+        $suratCounter = 1;
+        $nomorSuratManual = 'SRT/MHS/2025/' . str_pad($suratCounter, 3, '0', STR_PAD_LEFT);
+
         $suratMhsId = DB::table('surat')->insertGetId([
             'id_user'              => $mahasiswa->id,
-            'nomor'                => 'SRT/MHS/2025/001',
-            'status_peminjaman'    => false,  // masih pending / belum approved
+            'nomor'                => $nomorSuratManual,
+            'status_peminjaman'    => false,
             'catatan_peminjaman'   => null,
             'perihal_peminjaman'   => 'Peminjaman Peralatan untuk Lomba',
             'tanggal_peminjaman'   => now()->addDays(3),
@@ -372,5 +375,89 @@ class DatabaseSeeder extends Seeder
                 'updated_at'    => now(),
             ],
         ]);
+
+        $mahasiswas = User::where('role', 'mahasiswa')->get();
+        $allLM = User::where('role', 'admin_LM')->get();
+
+        $suratCounter = 2;
+
+        foreach ($mahasiswas as $mahasiswa) {
+            // Setiap mahasiswa punya 3 surat
+            for ($i = 1; $i <= 3; $i++) {
+                // Pilih 1 LM secara random untuk surat ini
+                $lm = $allLM->random();
+
+                // Ambil 2 inventaris dari LM yang dipilih
+                $inventaris = Inventaris::where('id_user', $lm->id)
+                    ->inRandomOrder()
+                    ->take(2)
+                    ->get();
+
+                if ($inventaris->isEmpty()) {
+                    $this->command->warn("LM {$lm->username} tidak punya inventaris, surat ke-{$i} untuk {$mahasiswa->username} dilewati.");
+                    continue;
+                }
+
+                $nomorSurat = 'SRT/MHS/2025/' . str_pad($suratCounter, 3, '0', STR_PAD_LEFT);
+                $tanggalPinjam = now()->addDays(rand(3, 14));
+                $tanggalKembali = (clone $tanggalPinjam)->addDays(rand(1, 3));
+
+                $suratId = DB::table('surat')->insertGetId([
+                    'id_user'              => $mahasiswa->id,
+                    'nomor'                => $nomorSurat,
+                    'status_peminjaman'    => false,
+                    'catatan_peminjaman'   => null,
+                    'perihal_peminjaman'   => 'Peminjaman Peralatan untuk Kegiatan ' . $i,
+                    'tanggal_peminjaman'   => $tanggalPinjam,
+                    'tanggal_kembali'      => $tanggalKembali,
+                    'tandatangan_pimpinan' => null,
+                    'penyelenggara'        => $mahasiswa->organization_name ?? 'Mahasiswa',
+                    'acara'                => 'Kegiatan Mahasiswa ' . $i,
+                    'singkatan_acara'      => 'KMHS' . $i,
+                    'prodi'                => $mahasiswa->prodi ?? 'Non-Organisasi',
+                    'nama_peminjam'        => $mahasiswa->name ?? $mahasiswa->username,
+                    'nim'                  => $mahasiswa->NIM_NIP ?? '0000000000',
+                    'created_at'           => now(),
+                    'updated_at'           => now(),
+                ]);
+
+                // Insert detail peminjaman — 2 barang dari LM yang sama
+                foreach ($inventaris as $inv) {
+                    DB::table('detail_peminjaman')->insert([
+                        'id_inventaris'  => $inv->id,
+                        'id_surat'       => $suratId,
+                        'qty_inventaris' => fake()->numberBetween(1, 2),
+                        'created_at'     => now(),
+                        'updated_at'     => now(),
+                    ]);
+                }
+
+                // Insert kegiatan — 2 sesi per surat
+                DB::table('kegiatans')->insert([
+                    [
+                        'id_surat'      => $suratId,
+                        'nama'          => 'Persiapan Kegiatan ' . $i,
+                        'hari_mulai'    => 'Rabu',
+                        'tanggal_mulai' => $tanggalPinjam->copy()->setTime(8, 0),
+                        'waktu_mulai'   => '08:00:00',
+                        'waktu_selesai' => '10:00:00',
+                        'created_at'    => now(),
+                        'updated_at'    => now(),
+                    ],
+                    [
+                        'id_surat'      => $suratId,
+                        'nama'          => 'Pelaksanaan Kegiatan ' . $i,
+                        'hari_mulai'    => 'Rabu',
+                        'tanggal_mulai' => $tanggalPinjam->copy()->setTime(10, 0),
+                        'waktu_mulai'   => '10:00:00',
+                        'waktu_selesai' => '16:00:00',
+                        'created_at'    => now(),
+                        'updated_at'    => now(),
+                    ],
+                ]);
+
+                $suratCounter++;
+            }
+        }
     }
 }

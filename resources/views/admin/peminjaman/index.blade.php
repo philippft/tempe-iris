@@ -239,7 +239,7 @@
 
                                 <td class="whitespace-nowrap px-4 py-4 text-center">
                                     <div class="flex items-center justify-center gap-1.5">
-                                        <a href="{{ route('admin.inventaris.show', ['inventaris' => $row->id, 'status_tampilan' => strtolower($statusText)]) }}"
+                                        <a href="{{ route('admin.peminjaman.detail-surat', $row->id) }}"
                                             class="rounded-md bg-slate-50 p-1.5 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition border border-slate-100 shadow-sm"
                                             title="Lihat Data">
                                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
