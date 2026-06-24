@@ -6,14 +6,126 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+@layer components {
+
+/* BASE */
+  .stat-card {
+    @apply relative bg-white rounded-2xl p-6 flex flex-col gap-3 shadow-sm overflow-hidden;
+  }
+
+  /* Icon box di pojok kanan atas */
+  .stat-icon {
+    @apply w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0;
+  }
+
+  /* Teks label atas ("Total Aktif", dsb.) */
+  .stat-label {
+    @apply font-bold text-[15px] text-[#1E293B];
+  }
+
+  /* Angka besar */
+  .stat-number {
+    @apply font-black text-[42px] leading-none text-[#1E293B];
+  }
+
+  /* Satuan di samping angka ("Peminjaman", "Barang") */
+  .stat-unit {
+    @apply text-[16px] font-medium text-[#64748B];
+  }
+
+/* BG PUTIH BORDER KIRI */
+  /* Teal (warna primer sidebar) */
+  .stat-teal {
+    @apply border-l-[5px];
+    border-left-color: #1F6E6C;
+  }
+  .stat-teal .stat-icon {
+    background-color: #CDEAEA;   /* sama dengan sidebar active bg */
+    color: #1F6E6C;
+  }
+
+  /*  Green  */
+  .stat-green {
+    @apply border-l-[5px] border-l-green-500;
+  }
+  .stat-green .stat-icon {
+    @apply bg-green-100 text-green-600;
+  }
+
+  /* Yellow Amber  */
+  .stat-yellow {
+    @apply border-l-[5px] border-l-yellow-400;
+  }
+  .stat-yellow .stat-icon {
+    @apply bg-yellow-100 text-yellow-500;
+  }
+
+  /*  Red  */
+  .stat-red {
+    @apply border-l-[5px] border-l-red-500;
+  }
+  .stat-red .stat-icon {
+    @apply bg-red-100 text-red-500;
+  }
+
+  /*  Dark Navy (full border)  */
+  .stat-dark {
+    @apply border-l-[5px] border-l-[#1E293B];
+  }
+  .stat-dark .stat-icon {
+    @apply bg-slate-100 text-slate-600;
+  }
+
+/* FILLED VARIANTS  (bg berwarna, teks putih) */
+  /*  Filled Green  */
+  .stat-filled-green {
+    @apply bg-green-500;
+  }
+  .stat-filled-green .stat-label,
+  .stat-filled-green .stat-number {
+    @apply text-white;
+  }
+  .stat-filled-green .stat-unit {
+    @apply text-white/80;
+  }
+  .stat-filled-green .stat-icon {
+    @apply bg-white/20 text-white;
+  }
+
+  /*  Filled Yellow / Amber  */
+  .stat-filled-yellow {
+    @apply bg-amber-400;
+  }
+  .stat-filled-yellow .stat-label,
+  .stat-filled-yellow .stat-number {
+    @apply text-white;
+  }
+  .stat-filled-yellow .stat-unit {
+    @apply text-white/80;
+  }
+  .stat-filled-yellow .stat-icon {
+    @apply bg-white/20 text-white;
+  }
+
+}
+
+
 @theme {
     --font-sans: "Plus Jakarta Sans", sans-serif;
     --color-primary: #2E6F82;
     --color-primary-hover: #095769;
+    --color-dark-grey: #70787C;
     --color-bg-light: #FAF8FF;
     --color-bg-dark: #F2F3FF;
     --color-subtext: #40484B;
     --color-judul: #131B2E;
     --color-border-custom: #BFC8CC;
-    --color-subjudul: #70787C;
+    --color-status-red: #EF4444;
+    --color-status-green: #00C853;
+    --color-status-yellow: #FFB33F;
+}
+
+
+.tombol{
+    font-family: 'arial';
 }
