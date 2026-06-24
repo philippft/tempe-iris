@@ -77,6 +77,11 @@ class PeminjamanController extends Controller
         return view('admin.peminjaman.create', compact('tujuan', 'categories', 'inventaris'));
     }
 
+    public function detailPeminjaman(Surat $surat)
+    {
+        return view('admin.peminjaman.detail-surat', compact('surat'));
+    }
+
     public function addDetailPeminjaman(Request $request) 
     {
         $request->validate([
@@ -182,7 +187,8 @@ class PeminjamanController extends Controller
         return view('admin.peminjaman.kegiatan', compact('surat', 'detailBarang'));
     }
 
-        public function addKegiatan (Surat $surat, Request $request) {
+    public function addKegiatan (Surat $surat, Request $request) 
+    {
             // dd($request->all());
             $request->validate([
                 'acara'       => 'required|string|max:50',
@@ -211,14 +217,15 @@ class PeminjamanController extends Controller
 
             return redirect()->route('admin.peminjaman.detail.kegiatan', ['surat' => $surat->id])
                 ->with('success', 'Permohonan ' . $nomorSurat . ' berhasil diajukan! Silakan tunggu pengecekan.');
-        }
+    }
 
-        public function detailKegiatan (Surat $surat) {
-            return view('admin.peminjaman.detail-kegiatan', compact('surat'));
-        }
+    public function detailKegiatan (Surat $surat) 
+    {
+        return view('admin.peminjaman.detail-kegiatan', compact('surat'));
+    }
 
-        public function addDetailKegiatan (Surat $surat, Request $request) 
-        {
+    public function addDetailKegiatan (Surat $surat, Request $request) 
+    {
             $request->validate([
                 'nomor'                         => 'required|string|max:255',
                 'penyelenggara'                 => 'required|string|max:255',
@@ -253,5 +260,5 @@ class PeminjamanController extends Controller
 
             return redirect()->route('admin.peminjaman.index')
                 ->with('success', 'Detail kegiatan berhasil disimpan.');
-        }
+    }
 }
