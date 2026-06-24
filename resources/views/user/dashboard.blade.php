@@ -7,8 +7,8 @@
     <title>Document</title>
     @vite('resources/css/app.css')
 </head>
-<body class="font-sans bg-white">
-    <h1>Ini Dashboard {{ auth()->user()->username }}</h1>
+<body class="font-sans bg-bg-dark min-h-screen">
+    <x-header-dashboard/>
     <div>
         <x-statecard
             title="Total Aktif"
