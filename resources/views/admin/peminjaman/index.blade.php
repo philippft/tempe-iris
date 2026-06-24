@@ -208,7 +208,7 @@
                                 </td>
 
                                 <td class="px-6 py-4 font-bold text-slate-800">
-                                    {{ $row->nama_kegiatan }}
+                                    {{ $row->acara }}
                                 </td>
 
                                 <td class="whitespace-nowrap px-4 py-4 text-center">
@@ -387,7 +387,7 @@
                                 </td>
 
                                 <td class="px-6 py-4 font-bold text-slate-800">
-                                    {{ $row->nama_kegiatan }}
+                                    {{ $row->acara }}
                                 </td>
 
                                 <td class="whitespace-nowrap px-4 py-4 text-center">
