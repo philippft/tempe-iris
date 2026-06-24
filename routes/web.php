@@ -21,6 +21,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'userDashboard'])->name('dashboard');
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
 });
 
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
@@ -53,10 +54,16 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     
 Route::middleware(['auth', 'isDekanat'])->prefix('dekanat')->name('dekanat.')->group(function () {
     Route::get('/dashboard', [DekanatDashboardController::class, 'dekanatDashboard'])->name('dashboard');
+
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+
+    Route::get('/inventaris', [InventarisController::class, 'index'])->name('inventaris.index');
 });
 
 Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')->group(function () {
     Route::get('/dashboard', [PetinggiDashboardController::class, 'petinggiDashboard'])->name('dashboard');
+
+    Route::get('/surat', [PetinggiDashboardController::class, 'suratIndex'])->name('surat.index');
 });
 
 
