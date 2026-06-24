@@ -7,7 +7,7 @@
     <title>Document</title>
     @vite('resources/css/app.css')
 </head>
-<body class="font-sans bg-bg-dark">
+<body class="font-sans bg-white">
     <h1>Ini Dashboard {{ auth()->user()->username }}</h1>
     <div>
         <x-statecard
