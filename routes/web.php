@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DekanatDashboardController;
 use App\Http\Controllers\InventarisController;
+use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PetinggiDashboardController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
@@ -22,9 +23,30 @@ Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('mahasiswa.')->
 
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'adminDashboard'])->name('dashboard');
+
+    // Inventaris
     Route::resource('inventaris', InventarisController::class)->parameters([
         'inventaris' => 'inventaris'
     ]);;
+
+    // Peminjaman
+    Route::controller(PeminjamanController::class)->group(function () {
+        Route::get('/peminjaman', 'index')->name('peminjaman.index');
+        Route::get('/peminjaman/create', 'create')->name('peminjaman.create');
+        Route::post('/peminjaman/add-detail', 'addDetailPeminjaman')->name('peminjaman.detail');
+
+        Route::get('/peminjaman/create/kegiatan/{surat}', 'kegiatan')->name('peminjaman.kegiatan');
+        Route::put('/peminjaman/add-kegiatan/{surat}', 'addKegiatan')->name('peminjaman.add.kegiatan');
+
+        Route::get('/peminjaman/create/detail-kegiatan/{surat}', 'detailKegiatan')->name('peminjaman.detail.kegiatan');
+        Route::put('/peminjaman/add-detail-kegiatan/{surat}', 'addDetailKegiatan')->name('peminjaman.store.kegiatan');
+    });
+
+    Route::get('/management-user', [AdminDashboardController::class, 'managementUser'])->name('management.user');
+    Route::get('/management-user/detail/{user}', [AdminDashboardController::class, 'userDetail'])->name('user.detail');
+
+    Route::put('/user/approve/{user}', [AdminDashboardController::class, 'approveUser'])->name('user.approve');
+
 });
     
 Route::middleware(['auth', 'isDekanat'])->prefix('dekanat')->name('dekanat.')->group(function () {
