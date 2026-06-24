@@ -1,6 +1,7 @@
 @props([
     'headers' => [],
     'cols' => [],
+    'data' => null,
 
     'bg' => 'bg-white',
     'headerBg' => 'bg-primary',
@@ -26,4 +27,8 @@
     {{-- Body --}}
     {{ $slot }}
 
+    {{-- pagination --}}
+    @if($data instanceof \Illuminate\Contracts\Pagination\Paginator)
+        <x-pagination :data="$data"/>
+    @endif
 </div>

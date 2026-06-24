@@ -25,7 +25,8 @@
 
         <x-table
             :headers="['No', 'Nomor Surat', 'Perihal', 'Nama Kegiatan', 'Tanggal Kirim', 'Status', 'Aksi']"
-            :cols="['60px', '0.5fr', '0.5fr', '0.5fr', '0.5fr', '180px', '180px']"
+            :cols="['60px', '0.5fr', '0.5fr', '0.5fr', '0.5fr', '0.5fr', '180px']"
+            :data="$surats"
             headerBg="bg-primary-hover/10"
             headerClass="text-primary font-bold text-sm uppercase"
             bg="bg-white"
@@ -33,11 +34,11 @@
             @foreach($surats as $surat)
                 <x-table-row>
                     <div> {{ $loop->iteration }} </div>
-                    <div class="font-bold"> {{ $surat->nomor }} </div>
-                    <div> {{ $surat->perihal_peminjaman }} </div>
-                    <div class="text-center"> {{ $surat->nama_kegiatan }} </div>
-                    <div> {{ $surat->tanggal_peminjaman->format('d M Y') }} </div>
-                    <div> 
+                    <div class="font-bold justify-start"> {{ $surat->nomor }} </div>
+                    <div class="justify-start"> {{ $surat->perihal_peminjaman }} </div>
+                    <div class="justify-center"> {{ $surat->nama_kegiatan }} </div>
+                    <div class="justify-center"> {{ $surat->tanggal_peminjaman->format('d M Y') }} </div>
+                    <div class="justify-center"> 
                         <x-status-card :status="$surat->status_peminjaman"/>
                     </div>
                     <div> 
