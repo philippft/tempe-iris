@@ -94,7 +94,7 @@
                                 <path d="M7.6 25L5.7 21.8L2.1 21L2.45 17.3L0 14.5L2.45 11.7L2.1 8L5.7 7.2L7.6 4L11 5.45L14.4 4L16.3 7.2L19.9 8L19.55 11.7L22 14.5L19.55 17.3L19.9 21L16.3 21.8L14.4 25L11 23.55L7.6 25ZM8.45 22.45L11 21.35L13.6 22.45L15 20.05L17.75 19.4L17.5 16.6L19.35 14.5L17.5 12.35L17.75 9.55L15 8.95L13.55 6.55L11 7.65L8.4 6.55L7 8.95L4.25 9.55L4.5 12.35L2.65 14.5L4.5 16.6L4.25 19.45L7 20.05L8.45 22.45ZM9.95 18.05L15.6 12.4L14.2 10.95L9.95 15.2L7.8 13.1L6.4 14.5L9.95 18.05Z" fill="#6FFBBE"/>
                             </svg>
                             <div>
-                                <h4 class="font-semibold text-judul text-white">Aman & Terpusat</h4>
+                                <h4 class="font-semibold text-white">Aman & Terpusat</h4>
                                 <p class="text-sm text-[#BFEEFF] mt-0.5">Seluruh riwayat dan dokumen tersimpan permanen di server cloud.</p>
                             </div>
                         </li>
@@ -103,7 +103,7 @@
                                 <path d="M7.6 25L5.7 21.8L2.1 21L2.45 17.3L0 14.5L2.45 11.7L2.1 8L5.7 7.2L7.6 4L11 5.45L14.4 4L16.3 7.2L19.9 8L19.55 11.7L22 14.5L19.55 17.3L19.9 21L16.3 21.8L14.4 25L11 23.55L7.6 25ZM8.45 22.45L11 21.35L13.6 22.45L15 20.05L17.75 19.4L17.5 16.6L19.35 14.5L17.5 12.35L17.75 9.55L15 8.95L13.55 6.55L11 7.65L8.4 6.55L7 8.95L4.25 9.55L4.5 12.35L2.65 14.5L4.5 16.6L4.25 19.45L7 20.05L8.45 22.45ZM9.95 18.05L15.6 12.4L14.2 10.95L9.95 15.2L7.8 13.1L6.4 14.5L9.95 18.05Z" fill="#6FFBBE"/>
                             </svg>
                             <div>
-                                <h4 class="font-semibold text-judul text-white">Validasi Digital Berjenjang</h4>
+                                <h4 class="font-semibold text-white">Validasi Digital Berjenjang</h4>
                                 <p class="text-sm text-[#BFEEFF] mt-0.5">Persetujuan instan melalui sistem notifikasi dashboard.</p>
                             </div>
                         </li>
@@ -112,7 +112,7 @@
                                 <path d="M7.6 25L5.7 21.8L2.1 21L2.45 17.3L0 14.5L2.45 11.7L2.1 8L5.7 7.2L7.6 4L11 5.45L14.4 4L16.3 7.2L19.9 8L19.55 11.7L22 14.5L19.55 17.3L19.9 21L16.3 21.8L14.4 25L11 23.55L7.6 25ZM8.45 22.45L11 21.35L13.6 22.45L15 20.05L17.75 19.4L17.5 16.6L19.35 14.5L17.5 12.35L17.75 9.55L15 8.95L13.55 6.55L11 7.65L8.4 6.55L7 8.95L4.25 9.55L4.5 12.35L2.65 14.5L4.5 16.6L4.25 19.45L7 20.05L8.45 22.45ZM9.95 18.05L15.6 12.4L14.2 10.95L9.95 15.2L7.8 13.1L6.4 14.5L9.95 18.05Z" fill="#6FFBBE"/>
                             </svg>
                             <div>
-                                <h4 class="font-semibold text-judul text-white">Live Tracking</h4>
+                                <h4 class="font-semibold text-white">Live Tracking</h4>
                                 <p class="text-sm text-[#BFEEFF] mt-0.5">Cek status peminjaman dan lokasi barang terintegrasi.</p>
                             </div>
                         </li>
@@ -173,7 +173,7 @@
             </div>
 
             <div class="relative max-w-5xl mx-auto">
-                <div class="hidden md:block absolute top-8 left-21 right-21 h-[2px] bg-border-custom z-0"></div>
+                <div class="hidden md:block absolute top-8 left-21 right-21 h-0.5 bg-border-custom z-0"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
                     <div class="text-center">
