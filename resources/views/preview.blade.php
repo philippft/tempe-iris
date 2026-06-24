@@ -183,6 +183,12 @@
 
             </div>{{-- /white card --}}
 
+        <br>
+        <hr>
+        <br>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 px-7 py-6">
+        </div>
 
     </main>
     @include('partials.popup-del')
