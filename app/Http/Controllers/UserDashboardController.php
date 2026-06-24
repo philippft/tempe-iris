@@ -9,7 +9,7 @@ class UserDashboardController extends Controller
 {
     public function userDashboard()
     {
-        $surats = Surat::paginate(10);
+        $surats = Surat::paginate(1);
 
         return view('user.dashboard', compact('surats'));
     }
