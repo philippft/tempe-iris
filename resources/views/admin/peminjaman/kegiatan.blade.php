@@ -35,16 +35,14 @@
             <div class="p-6 space-y-4">
 
                 <div>
-                    <label class="block text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5">ID
-                        Peminjaman</label>
-                    <input type="text" name="nama_kegiatan" placeholder="Nama Kegiatan" required
+                    <label class="block text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5">Nama Acara</label>
+                    <input type="text" name="acara" placeholder="Nama Kegiatan" required
                         class="block w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-4 py-2.5 text-xs text-gray-900 focus:border-[#0A5C66] focus:ring-[#0A5C66] transition">
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5">Nama
-                        Acara</label>
-                    <input type="text" name="acara" placeholder="Nama Kegiatan" required
+                    <label class="block text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1.5">Singkatan Acara</label>
+                    <input type="text" name="singkatan" placeholder="Singkatan Acara" required
                         class="block w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-4 py-2.5 text-xs text-gray-900 focus:border-[#0A5C66] focus:ring-[#0A5C66] transition">
                 </div>
 
