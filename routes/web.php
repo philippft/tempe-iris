@@ -10,6 +10,8 @@ use App\Http\Controllers\PetinggiDashboardController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
+use Illuminate\Support\Facades\Auth;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -62,5 +64,24 @@ Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')
     Route::get('/dashboard', [PetinggiDashboardController::class, 'petinggiDashboard'])->name('dashboard');
 });
 
+
+// Fake Data Punya LEO
+// MULAI
+
+    Route::get('/preview', function () {
+        return view('preview');
+    });
+
+    // BELUM SELESAI
+    Route::get('/pilih-barang', function () {
+        return view('pilihbarang');
+    });
+
+// SELESAI
+
 // Route::get('/register', [AuthController::class, 'registerView'])->name('register');
 // Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
+Route::get('/register', function () {
+    return view('register');
+});
