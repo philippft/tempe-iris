@@ -29,38 +29,6 @@ Route::middleware(['auth', 'isDekanat'])->group(function () {
     Route::get('/admin_dekanat/dashboard', [DekanatDashboardController::class, 'dekanatDashboard'])->name('admin_dekanat.dashboard');
 });
 
-    $menus = [
-        [
-            'label'  => 'Dashboard',
-            'route'  => 'dashboard',
-            'roles'  => ['admin_dekanat', 'admin_lm', 'mahasiswa', 'petinggi_dekanat'],
-            'icon'   => 'dashboard',
-        ],
-        [
-            'label'  => 'Peminjaman',
-            'route'  => 'peminjaman.index',
-            'roles'  => ['admin_dekanat', 'admin_lm', 'mahasiswa'],
-            'icon'   => 'transfer',
-        ],
-        [
-            'label'  => 'Manajemen User',
-            'route'  => 'manajemen-user.index',
-            'roles'  => ['admin_lm'],
-            'icon'   => 'users',
-        ],
-        [
-            'label'  => 'Manajemen Inventaris',
-            'route'  => 'manajemen-inventaris.index',
-            'roles'  => ['admin_dekanat', 'admin_lm'],
-            'icon'   => 'archive',
-        ],
-        [
-            'label'  => 'Manajemen Surat',
-            'route'  => 'manajemen-surat.index',
-            'roles'  => ['admin_dekanat', 'admin_lm', 'mahasiswa', 'petinggi_dekanat'],
-            'icon'   => 'document',
-        ],
-
 // Fake Data Punya LEO
 // MULAI
 
