@@ -119,41 +119,52 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-xs text-slate-700 font-medium">
 
-                        {{-- Dummy Loops - Ganti dengan @forelse($users as $index => $user) jika diintegrasikan --}}
-                        @php
-                        $dummyData = [
-                        ['status' => 'AKTIF', 'color' => 'bg-emerald-50 text-emerald-600 border-emerald-200
-                        bg-emerald-500'],
-                        ['status' => 'DITOLAK', 'color' => 'bg-rose-50 text-rose-600 border-rose-200 bg-rose-500'],
-                        ['status' => 'PENDING', 'color' => 'bg-amber-50 text-amber-600 border-amber-200 bg-amber-500'],
-                        ['status' => 'DITOLAK', 'color' => 'bg-rose-50 text-rose-600 border-rose-200 bg-rose-500'],
-                        ['status' => 'AKTIF', 'color' => 'bg-emerald-50 text-emerald-600 border-emerald-200
-                        bg-emerald-500'],
-                        ['status' => 'PENDING', 'color' => 'bg-amber-50 text-amber-600 border-amber-200 bg-amber-500'],
-                        ];
-                        @endphp
-
-                        @foreach($dummyData as $index => $data)
+                        @foreach($user as $index => $data)
                         <tr class="hover:bg-slate-50/70 transition">
-                            <td class="px-6 py-5 text-center text-slate-400 font-normal">01</td>
-                            <td class="px-6 py-5 text-slate-800 font-extrabold leading-tight">I Putu Ardyana<br>Darma
-                                Nugraha</td>
+                            <td class="px-6 py-5 text-center text-slate-400 font-normal">
+                                {{ sprintf('%02d', $index + 1) }}
+                            </td>
+
+                            <td class="px-6 py-5 text-slate-800 font-extrabold leading-tight">
+                                {{ $data->username }}
+                            </td>
+
                             <td class="px-6 py-5">
                                 <span
                                     class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-[10px] font-bold border border-blue-100">
-                                    2408561030
+                                    {{ $data->NIM_NIP ?? '0000000000' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-5 text-slate-400 font-normal">ardyanadarma@gmail.com</td>
-                            <td class="px-6 py-5 text-slate-500 font-semibold">11 April 2026</td>
+
+                            <td class="px-6 py-5 text-slate-400 font-normal">
+                                {{ $data->email }}
+                            </td>
+
+                            <td class="px-6 py-5 text-slate-500 font-semibold">
+                                {{ $data->created_at ? $data->created_at->format('d F Y') : '-' }}
+                            </td>
+
                             <td class="px-6 py-5 text-center">
+                                @if($data->verify_at)
                                 <span
-                                    class="inline-flex items-center justify-center rounded-full px-3 py-1 text-[9px] font-extrabold uppercase tracking-wide border {{ strtok($data['color'], ' ') }} {{ str_replace(strtok($data['color'], ' ').' ', '', $data['color']) }}">
-                                    {{ $data['status'] }}
+                                    class="inline-flex items-center justify-center rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 px-3 py-1 text-[9px] font-extrabold uppercase tracking-wide">
+                                    AKTIF
                                 </span>
+                                @elseif($data->note)
+                                <span
+                                    class="inline-flex items-center justify-center rounded-full bg-rose-50 text-rose-600 border border-rose-200 px-3 py-1 text-[9px] font-extrabold uppercase tracking-wide">
+                                    DITOLAK
+                                </span>
+                                @else
+                                <span
+                                    class="inline-flex items-center justify-center rounded-full bg-amber-50 text-amber-600 border border-amber-200 px-3 py-1 text-[9px] font-extrabold uppercase tracking-wide">
+                                    PENDING
+                                </span>
+                                @endif
                             </td>
+
                             <td class="px-6 py-5 text-center">
-                                <a href="#"
+                                <a href="{{ route('admin.user.detail', $data->id) }}"
                                     class="inline-block px-4 py-1.5 rounded-xl border border-slate-300 text-slate-700 font-bold hover:bg-slate-50 transition text-xs shadow-sm">
                                     Detail
                                 </a>
@@ -186,6 +197,17 @@
             </div>
 
         </div>
+        @if(session('success'))
+        <div class="p-4 mb-4 text-xs text-emerald-800 bg-emerald-50 rounded-xl border border-emerald-200">
+            {{ session('success') }}
+        </div>
+        @endif
+
+        @if(session('error'))
+        <div class="p-4 mb-4 text-xs text-rose-800 bg-rose-50 rounded-xl border border-rose-200">
+            {{ session('error') }}
+        </div>
+        @endif
     </div>
 
 </body>
