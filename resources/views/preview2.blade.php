@@ -4,7 +4,7 @@
 
 @section('content')
 
-<<<<<<< Updated upstream
+
 <x-header-dashboard/>
 <div class="grid grid-cols-2 gap-4 mb-10">
 <x-stat-card
@@ -18,9 +18,5 @@
     number="12"
 />
 </div>
-=======
-<p>hi</p>
->>>>>>> Stashed changes
-
 
 @endsection
