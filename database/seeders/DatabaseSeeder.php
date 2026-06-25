@@ -79,6 +79,7 @@ class DatabaseSeeder extends Seeder
             'id_organization' => $orgId['DPM'],
             'username'        => 'dpm_fmipa',
             'name'            => 'Ketua Umum DPM FMIPA',
+            'email'           => 'dpmfmipa@student.unud.ac.id',
             'role'            => 'admin_LM',
             'nim_nip'         => '2308561001',
             'verify_at'       => now(),
@@ -88,6 +89,7 @@ class DatabaseSeeder extends Seeder
             'id_organization' => $orgId['BEM'],
             'username'        => 'bem_fmipa',
             'name'            => 'Presiden Mahasiswa BEM FMIPA',
+            'email'           => 'bemfmipa@student.unud.ac.id', 
             'role'            => 'admin_LM',
             'nim_nip'         => '2308561002',
             'verify_at'       => now(),
@@ -110,6 +112,7 @@ class DatabaseSeeder extends Seeder
                 'id_organization' => $orgId[$hima['org_key']],
                 'username'        => $hima['slug'],
                 'name'            => $hima['nama'],
+                'email'           => $hima['slug'] . '@student.unud.ac.id',
                 'role'            => 'admin_LM',
                 'ktm'             => fake()->boolean(50) ? 'uploads/ktm/' . fake()->uuid() . '.jpg' : null,
                 'nim_nip'         => $hima['nim'],
@@ -124,6 +127,7 @@ class DatabaseSeeder extends Seeder
             'id_organization' => $orgId['DEK'],
             'username'        => 'admin_dekanat',
             'name'            => 'Staff Admin Dekanat FMIPA',
+            'email'           => 'admin.fmipa@unud.ac.id',
             'role'            => 'admin_dekanat',
             'nim_nip'         => '198503152010121001',
             'verify_at'       => now(),
@@ -133,6 +137,7 @@ class DatabaseSeeder extends Seeder
             'id_organization' => $orgId['DEK'],
             'username'        => 'dekan_fmipa',
             'name'            => 'Prof. Dr. Dekan FMIPA',
+            'email'           => 'dekan.fmipa@unud.ac.id',
             'role'            => 'petinggi_dekanat',
             'nim_nip'         => '197305201999031002',
             'verify_at'       => now(),
@@ -149,7 +154,7 @@ class DatabaseSeeder extends Seeder
                 'role'            => 'mahasiswa',
                 'nim_nip'         => '24085610' . str_pad($index + 10, 2, '0', STR_PAD_LEFT),
                 'ktm'             => 'uploads/ktm/ktm_dummy_' . ($index + 1) . '.jpg',
-                'verify_at'       => fake()->boolean(50) ? now() : null, // Variasi 70% aktif, 30% pending (null)
+                'verify_at'       => null, // Variasi 70% aktif, 30% pending (null)
             ]);
         }
 
