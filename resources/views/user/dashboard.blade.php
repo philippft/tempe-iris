@@ -11,7 +11,7 @@
     <div class="flex w-full justify-start gap-6">
         <x-statecard
             title="Total Aktif"
-            :value="$totalAktif"
+            :value="$suratAprove"
             label="Peminjaman"
             border="border-l-primary-hover"
             iconBg="bg-primary-hover/10"
@@ -20,7 +20,7 @@
         </x-statecard>
         <x-statecard
             title="Total Pending"
-            :value="$totalPending"
+            :value="$suratPending"
             label="Peminjaman"
             border="border-l-status-yellow"
             iconBg="bg-status-yellow/10"
@@ -29,7 +29,7 @@
         </x-statecard>
         <x-statecard
             title="Total Ditolak"
-            :value="$totalTolak"
+            :value="$suratReject"
             label="Peminjaman"
             border="border-l-status-red"
             iconBg="bg-status-red/10"
