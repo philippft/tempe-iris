@@ -20,7 +20,7 @@
         <form action="{{ route('login.authenticate') }}" method="POST" class="p-6 space-y-5">
             @csrf
 
-            <x-input id="username" name="username" label="USERNAME" placeholder="Nomor Induk Mahasiswa" />
+            <x-input id="username" name="username" label="USERNAME" placeholder="Username" />
 
             <x-input id="password" name="password" label="PASSWORD" type="password" placeholder="Password" />
 
