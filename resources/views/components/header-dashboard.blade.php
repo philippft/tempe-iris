@@ -4,7 +4,7 @@
     'username' => auth()->user()->username ?? 'Guest',
 ])
 
-<div class="w-full flex justify-between items-start">
+<div class="w-full flex justify-between items-start pb-10">
     <div>
         <h1 class="text-judul font-extrabold text-4xl pb-2">
             {{ $title }}

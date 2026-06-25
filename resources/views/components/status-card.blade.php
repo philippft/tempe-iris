@@ -4,16 +4,16 @@
 
 @php
     $statusText = match((int) $status) {
-        0 => 'Pending',
+        NULL => 'Pending',
+        0 => 'Ditolak',
         1 => 'Diterima',
-        2 => 'Ditolak',
         default => 'Unknown',
     };
 
     $colorClasses = match((int) $status) {
-        0 => 'bg-status-yellow',
+        NULL => 'bg-status-yellow',
+        0 => 'bg-status-red',
         1 => 'bg-status-green',
-        2 => 'bg-status-red',
         default => 'bg-gray-400 shadow-sm',
     };
 @endphp
