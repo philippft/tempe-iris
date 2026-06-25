@@ -27,6 +27,16 @@ class AuthController extends Controller
         // dd($credentials);
 
         if(Auth::attempt($credentials)) {
+            if (is_null(Auth::user()->verify_at)) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'username' => 'Akun Anda belum diverifikasi oleh Admin.',
+                ])->onlyInput('username');
+            }
+
             $request->session()->regenerate();
             if(Auth::user()->role) {
                 return $this->redirectBasedOnRole(Auth::user()->role);

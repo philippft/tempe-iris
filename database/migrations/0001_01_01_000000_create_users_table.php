@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('organization_name', 255);
             $table->string('ktm', 255)->nullable();
             $table->string('nim_nip', 255)->unique();
+            $table->text('note')->nullable();
             $table->timestamp('verify_at')->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();
