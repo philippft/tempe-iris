@@ -1,5 +1,9 @@
 @php
-$user = auth()->user();
+$user = auth()->user() ?? (object) [
+    'role' => 'mahasiswa',
+    'username' => 'Guest',
+    'NIM_NIP' => '00000000',
+];;
 
 if (!$user) return;
 

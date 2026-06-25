@@ -79,6 +79,10 @@ Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')
         return view('preview');
     });
 
+    Route::get('/preview2', function () {
+        return view('preview2');
+    });
+
     // BELUM SELESAI
     Route::get('/pilih-barang', function () {
         return view('pilihbarang');
