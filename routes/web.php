@@ -9,7 +9,6 @@ use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PetinggiDashboardController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
-
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -38,7 +37,6 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
         Route::get('/peminjaman', 'index')->name('peminjaman.index');
         Route::get('/peminjaman/create', 'create')->name('peminjaman.create');
         Route::get('/peminjaman/detail/{surat}', 'detailPeminjaman')->name('peminjaman.detail-surat');
-        Route::get('/peminjaman/create', 'create')->name('peminjaman.create');
         Route::post('/peminjaman/add-detail', 'addDetailPeminjaman')->name('peminjaman.detail');
 
         Route::get('/peminjaman/create/kegiatan/{surat}', 'kegiatan')->name('peminjaman.kegiatan');
@@ -53,7 +51,7 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
 
     Route::put('/user/approve/{user}', [AdminDashboardController::class, 'approveUser'])->name('user.approve');
 
-    Route::get('/user/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
+    Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 
 });
     
@@ -80,14 +78,11 @@ Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')
 
     Route::get('/preview2', function () {
         return view('preview2');
-<<<<<<< Updated upstream
     });
 
     // BELUM SELESAI
     Route::get('/pilih-barang', function () {
         return view('pilihbarang');
-=======
->>>>>>> Stashed changes
     });
 
 // SELESAI
