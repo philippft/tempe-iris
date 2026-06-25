@@ -20,10 +20,6 @@
 </head>
 
 <body class="flex bg-gray-100 h-screen">
-<<<<<<< Updated upstream
-=======
-    <x-sidebar />
->>>>>>> Stashed changes
     <main class="flex-1 p-8">
 
         {{--Card Statistik --}}
@@ -180,10 +176,6 @@
         </div>
 
     </main>
-<<<<<<< Updated upstream
-=======
-    @include('components.popup-del')
->>>>>>> Stashed changes
 </body>
 
 <script>

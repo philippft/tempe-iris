@@ -13,7 +13,7 @@
     number="12"
 />
 <x-stat-card
-    variant="red"
+    variant="yellow"
     label="Peminjaman Ditolak"
     number="12"
 />
