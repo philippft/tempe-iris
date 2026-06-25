@@ -9,10 +9,12 @@ class UserDashboardController extends Controller
 {
     public function userDashboard()
     {
-        $surats = Surat::paginate(1);
+        $surats = Surat::paginate(10);
+        $totalPending = Surat::where('status_peminjaman', NULL)->count();
         $totalAktif = Surat::where('status_peminjaman', 1)->count();
-        $totalPending = Surat::where('status_peminjaman', 0)->count();
+        // kurang totalSelesai
+        $totalTolak = Surat::where('status_peminjaman', 0)->count();
 
-        return view('user.dashboard', compact('surats', 'totalAktif', 'totalPending'));
+        return view('user.dashboard', compact('surats', 'totalPending', 'totalAktif', 'totalTolak'));
     }
 }
