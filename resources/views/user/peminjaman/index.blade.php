@@ -17,7 +17,7 @@
                 <h1 class="text-2xl font-extrabold text-[#0F172A]">Daftar Peminjaman Inventaris</h1>
                 <p class="mt-1 text-sm text-[#64748B]">Kelola dan pantau status peminjaman inventaris Anda.</p>
             </div>
-            <a href="#"
+            <a href="{{ route('user.peminjaman.create') }}"
                 class="inline-flex items-center gap-2 rounded-lg bg-[#0A5C66] px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#084952] transition">
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -32,22 +32,6 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                 <!-- Card 1: Total Masuk -->
-                <div
-                    class="relative rounded-2xl border-l-[4px] border-[#0A5C66] bg-white p-5 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wide">Total Peminjaman Masuk
-                        </p>
-                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratMasuk->count() }} <span
-                                class="text-xs font-medium text-[#94A3B8] normal-case tracking-normal">Peminjaman</span>
-                        </p>
-                    </div>
-                    <div class="rounded-lg bg-[#E0F2FE] p-1.5 text-[#0A5C66]">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.656 48.656 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
-                        </svg>
-                    </div>
-                </div>
 
                 <!-- Card 2: Total Keluar -->
                 <div
@@ -197,12 +181,12 @@
                             if ($row->tandatangan_pimpinan === 1 && $row->status_peminjaman == 1) {
                             $statusText = 'AKTIF';
                             $badgeBg = 'bg-[#22C55E]'; // Hijau
-                            } elseif ($row->tandatangan_pimpinan === 0) {
+                            } elseif ($row->status_peminjaman === 0) {
                             $statusText = 'DITOLAK';
                             $badgeBg = 'bg-[#EF4444]'; // Merah
-                            } else {
-                            $statusText = 'PENDING';
-                            $badgeBg = 'bg-[#FDB022]'; // Oranye (Default menunggu review)
+                            } elseif ($row->status_peminjaman === null) {
+                                $statusText = 'PENDING';
+                                $badgeBg = 'bg-[#FDB022]';
                             }
                             @endphp
 
@@ -243,7 +227,7 @@
 
                                 <td class="whitespace-nowrap px-4 py-4 text-center">
                                     <div class="flex items-center justify-center gap-1.5">
-                                        <a href=""
+                                        <a href="{{ route('user.peminjaman.detail-surat', $row->id) }}"
                                             class="rounded-md bg-slate-50 p-1.5 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition border border-slate-100 shadow-sm"
                                             title="Lihat Data">
                                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
