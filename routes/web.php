@@ -8,8 +8,9 @@ use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PetinggiDashboardController;
 use App\Http\Controllers\UserDashboardController;
+use App\Mail\NotificationMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -20,9 +21,21 @@ Route::get('/login', [AuthController::class, 'loginView'])->name('login');
 Route::post('/login', [AuthController::class, 'authenticate'])->name('login.authenticate');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
-    Route::get('/dashboard', [UserDashboardController::class, 'userDashboard'])->name('dashboard');
-    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('user.')->group(function () {
+    Route::controller(UserDashboardController::class)->group(function () {
+        Route::get('/dashboard', 'userDashboard')->name('dashboard');
+        Route::get('/peminjaman', 'index')->name('peminjaman.index');
+        Route::get('/peminjaman/create', 'create')->name('peminjaman.create');
+        Route::get('/peminjaman/detail/{surat}', 'detailPeminjaman')->name('peminjaman.detail-surat');
+        Route::post('/peminjaman/add-detail', 'addDetailPeminjaman')->name('peminjaman.detail');
+
+        Route::get('/peminjaman/create/kegiatan/{surat}', 'kegiatan')->name('peminjaman.kegiatan');
+        Route::put('/peminjaman/add-kegiatan/{surat}', 'addKegiatan')->name('peminjaman.add.kegiatan');
+
+        Route::get('/peminjaman/create/detail-kegiatan/{surat}', 'detailKegiatan')->name('peminjaman.detail.kegiatan');
+        Route::put('/peminjaman/add-detail-kegiatan/{surat}', 'addDetailKegiatan')->name('peminjaman.store.kegiatan');
+    });
+    Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 });
 
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
@@ -38,7 +51,6 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
         Route::get('/peminjaman', 'index')->name('peminjaman.index');
         Route::get('/peminjaman/create', 'create')->name('peminjaman.create');
         Route::get('/peminjaman/detail/{surat}', 'detailPeminjaman')->name('peminjaman.detail-surat');
-        Route::get('/peminjaman/create', 'create')->name('peminjaman.create');
         Route::post('/peminjaman/add-detail', 'addDetailPeminjaman')->name('peminjaman.detail');
 
         Route::get('/peminjaman/create/kegiatan/{surat}', 'kegiatan')->name('peminjaman.kegiatan');
@@ -51,9 +63,9 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::get('/management-user', [AdminDashboardController::class, 'managementUser'])->name('management.user');
     Route::get('/management-user/detail/{user}', [AdminDashboardController::class, 'userDetail'])->name('user.detail');
 
-    Route::put('/user/approve/{user}', [AdminDashboardController::class, 'approveUser'])->name('user.approve');
+    Route::put('/user/approve/{user}', [AdminDashboardController::class, 'approveUser'])->name('user.approve')->middleware('throttle:2,1');;
 
-    Route::get('/user/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
+    Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 
 });
     
