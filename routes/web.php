@@ -24,6 +24,10 @@ Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('mahasiswa.')->
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
 });
 
+Route::middleware(['auth', 'isUser'])->prefix('dekanat')->name('dekanat.')->group(function () {
+    Route::get('/dashboard', [DekanatDashboardController::class, 'dekanatDashboard'])->name('dashboard');
+});
+
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'adminDashboard'])->name('dashboard');
 

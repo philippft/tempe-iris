@@ -37,6 +37,7 @@ class AuthController extends Controller
                 ])->onlyInput('username');
             }
 
+
             $request->session()->regenerate();
             if(Auth::user()->role) {
                 return $this->redirectBasedOnRole(Auth::user()->role);
