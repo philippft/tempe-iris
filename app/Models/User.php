@@ -34,6 +34,17 @@ class User extends Authenticatable
         ];
     }
 
+    protected $fillable = [
+        'name',
+        'nim_nip',              // Atau nim_nip, sesuaikan dengan nama kolom asli di database Anda
+        'username',
+        'email',
+        'id_organization',  // Kolom dropdown prodi tadi
+        'ktm',
+        'password',
+        'role',
+    ];
+
     public function inventaris(): HasMany
     {
         return $this->hasMany(Inventaris::class, 'id_user');

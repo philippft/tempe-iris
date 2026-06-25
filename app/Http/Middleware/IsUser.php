@@ -20,11 +20,11 @@ class IsUser
 
             if (is_null(Auth::user()->verify_at)) {
                 
-                if ($request->routeIs('mahasiswa.user.detail-akun') || $request->routeIs('logout')) {
+                if ($request->routeIs('user.detail-akun') || $request->routeIs('logout')) {
                     return $next($request);
                 }
 
-                return redirect()->route('mahasiswa.user.detail-akun', Auth::user()->id);
+                return redirect()->route('user.detail-akun', Auth::user()->id);
             }
 
             return $next($request); 

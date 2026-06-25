@@ -26,10 +26,16 @@ class UserFactory extends Factory
     {
         return [
             'username' => fake()->unique()->userName(),
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
             'role' => 'mahasiswa',
-            'organization_name' => 'Umum',
-            'NIM_NIP' => fake()->unique()->numerify('2408561###'),
+            'id_organization' => 1,
+            'nim_nip' => fake()->unique()->numerify('##########'),
+            'ktm' => null,
+            'profile' => null,
+            'note' => null,
+            'verify_at' => null,
             'remember_token' => Str::random(10),
         ];
     }

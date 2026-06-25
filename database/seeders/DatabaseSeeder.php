@@ -35,84 +35,123 @@ class DatabaseSeeder extends Seeder
             ->sequence(...$categoriesData)
             ->create();
 
-        // 2. SEED ORGANIZATIONS
+        // ==========================================
+        // 2. SEED ORGANIZATIONS (Master Data)
+        // ==========================================
         $organizationsData = [
-            ['name' => 'Himpunan Mahasiswa Matematika'],
-            ['name' => 'Himpunan Mahasiswa Fisika'],
-            ['name' => 'Himpunan Mahasiswa Kimia'],
-            ['name' => 'Himpunan Mahasiswa Biologi'],
-            ['name' => 'Himpunan Mahasiswa Farmasi'],
-            ['name' => 'Himpunan Mahasiswa Informatika'],
+            'DPM' => ['name' => 'Dewan Perwakilan Mahasiswa FMIPA'],
+            'BEM' => ['name' => 'Badan Eksekutif Mahasiswa FMIPA'],
+            'MAT' => ['name' => 'Himpunan Mahasiswa Matematika'],
+            'FIS' => ['name' => 'Himpunan Mahasiswa Fisika'],
+            'KIM' => ['name' => 'Himpunan Mahasiswa Kimia'],
+            'BIO' => ['name' => 'Himpunan Mahasiswa Biologi'],
+            'FAR' => ['name' => 'Himpunan Mahasiswa Farmasi'],
+            'INF' => ['name' => 'Himpunan Mahasiswa Informatika'],
+            'DEK' => ['name' => 'Dekanat FMIPA'],
+            'NON' => ['name' => 'Non-Organisasi / Umum'],
         ];
 
-        Organization::factory()
-            ->count(count($organizationsData))
-            ->sequence(...$organizationsData)
-            ->create();
+        // Simpan instance ID ke dalam array penampung untuk memudahkan asosiasi FK
+        $orgId = [];
+        foreach ($organizationsData as $key => $org) {
+            $createdOrg = Organization::factory()->create([
+                'name' => $org['name']
+            ]);
+            $orgId[$key] = $createdOrg->id;
+        }
 
-        // Array penampung untuk semua akun admin LM yang akan dibuatkan inventaris
+        // Variable konstan nama mahasiswa lokalan biar realistis, cok!
+        $namaKonstan = [
+            'I Putu Ardyana Darma Nugraha',
+            'I Gede Bagus Teja Wijaya',
+            'Made Satya Pramana',
+            'Ketut Agus Adi Putra',
+            'Ni Wayan Sri Wahyuni',
+            'Ni Luh Gede Kirana Dewi'
+        ];
+
         $lmUsers = [];
 
-        // 3. SEED USER (DPM & BEM)
+        // ==========================================
+        // 3. SEED USER INTI (DPM & BEM)
+        // ==========================================
         $lmUsers[] = User::factory()->create([
-            'username' => 'dpm_fmipa',
-            'role' => 'admin_LM',
-            'organization_name' => 'DPM FMIPA',
-            'NIM_NIP' => '2308561001',
-            'verify_at' => now(),
-            ]);
+            'id_organization' => $orgId['DPM'],
+            'username'        => 'dpm_fmipa',
+            'name'            => 'Ketua Umum DPM FMIPA',
+            'role'            => 'admin_LM',
+            'nim_nip'         => '2308561001',
+            'verify_at'       => now(),
+        ]);
 
+        $lmUsers[] = User::factory()->create([
+            'id_organization' => $orgId['BEM'],
+            'username'        => 'bem_fmipa',
+            'name'            => 'Presiden Mahasiswa BEM FMIPA',
+            'role'            => 'admin_LM',
+            'nim_nip'         => '2308561002',
+            'verify_at'       => now(),
+        ]);
+
+        // ==========================================
+        // 4. SEED USER HIMA PRODI
+        // ==========================================
+        $himaProdi = [
+            ['slug' => 'himatika',  'org_key' => 'MAT', 'nama' => 'Ketua Himatika',  'nim' => '2408511001'],
+            ['slug' => 'himafi',     'org_key' => 'FIS', 'nama' => 'Ketua Himafi',     'nim' => '2408521001'],
+            ['slug' => 'himaki',     'org_key' => 'KIM', 'nama' => 'Ketua Himaki',     'nim' => '2408531001'],
+            ['slug' => 'himabio',    'org_key' => 'BIO', 'nama' => 'Ketua Himabio',    'nim' => '2408541001'],
+            ['slug' => 'himafarma',  'org_key' => 'FAR', 'nama' => 'Ketua Himafarma',  'nim' => '2408551001'],
+            ['slug' => 'himaif',     'org_key' => 'INF', 'nama' => 'Ketua HimaIF',     'nim' => '2408561081'],
+        ];
+
+        foreach ($himaProdi as $hima) {
             $lmUsers[] = User::factory()->create([
-                'username' => 'bem_fmipa',
-                'role' => 'admin_LM',
-                'organization_name' => 'BEM FMIPA',
-                'NIM_NIP' => '2308561002',
-                'verify_at' => now(),
+                'id_organization' => $orgId[$hima['org_key']],
+                'username'        => $hima['slug'],
+                'name'            => $hima['nama'],
+                'role'            => 'admin_LM',
+                'ktm'             => fake()->boolean(50) ? 'uploads/ktm/' . fake()->uuid() . '.jpg' : null,
+                'nim_nip'         => $hima['nim'],
+                'verify_at'       => now(),
             ]);
+        }
 
-            // 4. SEED USER HIMA PRODI
-            $himaProdi = [
-                ['slug' => 'himatika', 'nama' => 'HimaTika', 'prodi' => 'Matematika', 'nim' => '2408511001'],
-                ['slug' => 'himafi', 'nama' => 'HimaFi', 'prodi' => 'Fisika', 'nim' => '2408521001'],
-                ['slug' => 'himaki', 'nama' => 'HimaKi', 'prodi' => 'Kimia', 'nim' => '2408531001'],
-                ['slug' => 'himabio', 'nama' => 'HimaBio', 'prodi' => 'Biologi', 'nim' => '2408541001'],
-                ['slug' => 'himafarma', 'nama' => 'HimaFarma', 'prodi' => 'Farmasi', 'nim' => '2408551001'],
-                ['slug' => 'himaif', 'nama' => 'HimaIF', 'prodi' => 'Informatika', 'nim' => '2408561081'],
-            ];
+        // ==========================================
+        // 5. SEED USER DEKANAT (PIMPINAN & ADMIN)
+        // ==========================================
+        User::factory()->create([
+            'id_organization' => $orgId['DEK'],
+            'username'        => 'admin_dekanat',
+            'name'            => 'Staff Admin Dekanat FMIPA',
+            'role'            => 'admin_dekanat',
+            'nim_nip'         => '198503152010121001',
+            'verify_at'       => now(),
+        ]);
 
-            foreach ($himaProdi as $hima) {
-                $lmUsers[] = User::factory()->create([
-                    'username' => $hima['slug'],
-                    'role' => 'admin_LM',
-                    'organization_name' => $hima['nama'] . ' (' . $hima['prodi'] . ')',
-                    'ktm' => fake()->boolean(50) ? 'uploads/ktm/' . fake()->uuid() . '.jpg' : null,
-                    'NIM_NIP' => $hima['nim'],
-                    'verify_at' => now(),
-                ]);
-            }
+        User::factory()->create([
+            'id_organization' => $orgId['DEK'],
+            'username'        => 'dekan_fmipa',
+            'name'            => 'Prof. Dr. Dekan FMIPA',
+            'role'            => 'petinggi_dekanat',
+            'nim_nip'         => '197305201999031002',
+            'verify_at'       => now(),
+        ]);
 
-            // 5. SEED USER DEKANAT & MAHASISWA BIASA (Tidak mendapatkan inventaris)
+        // ==========================================
+        // 6. SEED MAHASISWA UMUM (Menggunakan Variabel Nama Konstan)
+        // ==========================================
+        foreach ($namaKonstan as $index => $nama) {
             User::factory()->create([
-                'username' => 'admin_dekanat',
-                'role' => 'admin_dekanat',
-                'organization_name' => 'Dekanat FMIPA',
-                'NIM_NIP' => '198503152010121001',
-                'verify_at' => now(),
+                'id_organization' => $orgId['NON'], // Terikat ke entitas Non-Organisasi
+                'username'        => 'mahasiswa_' . ($index + 1),
+                'name'            => $nama, // 💡 Diambil dari array konstan atas
+                'role'            => 'mahasiswa',
+                'nim_nip'         => '24085610' . str_pad($index + 10, 2, '0', STR_PAD_LEFT),
+                'ktm'             => 'uploads/ktm/ktm_dummy_' . ($index + 1) . '.jpg',
+                'verify_at'       => fake()->boolean(50) ? now() : null, // Variasi 70% aktif, 30% pending (null)
             ]);
-
-            User::factory()->create([
-                'username' => 'dekan_fmipa',
-                'role' => 'petinggi_dekanat',
-                'organization_name' => 'Dekan FMIPA',
-                'NIM_NIP' => '197305201999031002',
-                'verify_at' => now(),
-            ]);
-
-            User::factory()->count(3)->create([
-                'role' => 'mahasiswa',
-                'organization_name' => 'Non-Organisasi',
-                'ktm' => fake()->boolean(50) ? 'uploads/ktm/' . fake()->uuid() . '.jpg' : null,
-            ]);
+        }
 
         // 6. GENERATE 2 INVENTARIS UNTUK SETIAP LM
         // Daftar nama barang tiruan agar data inventaris terlihat realistis
@@ -402,10 +441,12 @@ class DatabaseSeeder extends Seeder
                 $tanggalPinjam = now()->addDays(rand(3, 14));
                 $tanggalKembali = (clone $tanggalPinjam)->addDays(rand(1, 3));
 
+                $statusPeminjaman = ($i % 2 === 0) ? 0 : null;
+
                 $suratId = DB::table('surat')->insertGetId([
                     'id_user'              => $mahasiswa->id,
                     'nomor'                => $nomorSurat,
-                    'status_peminjaman'    => false,
+                    'status_peminjaman'    => $statusPeminjaman,
                     'catatan_peminjaman'   => null,
                     'perihal_peminjaman'   => 'Peminjaman Peralatan untuk Kegiatan ' . $i,
                     'tanggal_peminjaman'   => $tanggalPinjam,
