@@ -72,7 +72,6 @@ Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')
 });
 
 
-// Fake Data Punya LEO
 // MULAI
 
     Route::get('/preview', function () {
@@ -81,11 +80,14 @@ Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')
 
     Route::get('/preview2', function () {
         return view('preview2');
+<<<<<<< Updated upstream
     });
 
     // BELUM SELESAI
     Route::get('/pilih-barang', function () {
         return view('pilihbarang');
+=======
+>>>>>>> Stashed changes
     });
 
 // SELESAI
