@@ -20,7 +20,11 @@ Route::get('/login', [AuthController::class, 'loginView'])->name('login');
 Route::post('/login', [AuthController::class, 'authenticate'])->name('login.authenticate');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/register', [AuthController::class, 'registerView'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+
 Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
+    Route::get('/akun/detail/{user:id}', [UserDashboardController::class, 'detail'])->name('user.detail-akun');
     Route::get('/dashboard', [UserDashboardController::class, 'userDashboard'])->name('dashboard');
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
 });
