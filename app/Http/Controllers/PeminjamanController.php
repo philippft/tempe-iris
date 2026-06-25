@@ -7,8 +7,6 @@ use App\Models\Inventaris;
 use App\Models\Surat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class PeminjamanController extends Controller
 {
@@ -24,15 +22,18 @@ class PeminjamanController extends Controller
         $suratKeluar = $totalSurat->where('id_user', auth()->id());
         // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
         
-        $suratReject = $totalSurat->where('id_user', auth()->id())->where('status_peminjaman', 0);
+        $suratReject = $totalSurat->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 0
+        );
 
-        $suratAprove = $totalSurat->where('id_user', auth()->id())->where('status_peminjaman', 1);
+        $suratAprove = $totalSurat->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 1
+        );
 
         $suratPending = $totalSurat->filter(function ($surat) {
             return $surat->id_user === auth()->id()
                 && $surat->status_peminjaman === null;
         });
-
         // dd($totalSurat);
 
         return view('admin.peminjaman.index', compact('totalSurat', 'suratMasuk', 'suratKeluar', 'suratReject', 'suratAprove', 'suratPending'));
