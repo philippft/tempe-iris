@@ -402,10 +402,12 @@ class DatabaseSeeder extends Seeder
                 $tanggalPinjam = now()->addDays(rand(3, 14));
                 $tanggalKembali = (clone $tanggalPinjam)->addDays(rand(1, 3));
 
+                $statusPeminjaman = ($i % 2 === 0) ? 0 : null;
+
                 $suratId = DB::table('surat')->insertGetId([
                     'id_user'              => $mahasiswa->id,
                     'nomor'                => $nomorSurat,
-                    'status_peminjaman'    => false,
+                    'status_peminjaman'    => $statusPeminjaman,
                     'catatan_peminjaman'   => null,
                     'perihal_peminjaman'   => 'Peminjaman Peralatan untuk Kegiatan ' . $i,
                     'tanggal_peminjaman'   => $tanggalPinjam,
