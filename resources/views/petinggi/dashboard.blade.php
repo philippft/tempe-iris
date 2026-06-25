@@ -1,18 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Ini Dashboard Petinggi Dekanaat, Halo admin {{ auth()->user()->organization_name}}</h1>
+@extends('layouts.app')
 
-    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-    @csrf <button type="submit" style="color: red; background: none; border: none; cursor: pointer; font-weight: bold;">
+@section('title', 'Dashboard')
+
+@section('content')
+
+<x-header-dashboard/>
+
+<div class="space-y-8">
+
+<form action="{{ route('logout') }}" method="POST">
+    @csrf
+    <button type="submit" class="text-red-500 hover:text-red-700 font-bold">
         Logout
     </button>
 </form>
-</body>
-</html>
+
+@endsection
