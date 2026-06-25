@@ -22,6 +22,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'userDashboard'])->name('dashboard');
+    Route::get('/peminjaman', [UserDashboardController::class, 'indexPeminjamanUser'])->name('peminjaman');
 });
 
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
