@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'SIMPRAK')</title>
 
-    @vite('resources/css/app.css')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="bg-bg-light h-screen font-sans overflow-hidden">
@@ -13,7 +13,7 @@
         {{-- Sidebar --}}
         <x-sidebar class="flex-shrink-0" />
         {{-- Content --}}
-        <main class="flex-1 p-10 overflow-y-auto">
+        <main class="flex-1 overflow-y-auto">
             @yield('content')
         </main>
     </div>
