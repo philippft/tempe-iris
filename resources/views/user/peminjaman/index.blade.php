@@ -222,7 +222,7 @@
                                 </td>
 
                                 <td class="px-6 py-4 font-bold text-[#0A5C66]">
-                                    {{ $row->detailPeminjaman->first()->inventaris->user->organization_name }}
+                                    {{ $row->detailPeminjaman->first()->inventaris->user->organization->name }}
                                 </td>
 
                                 <td class="whitespace-nowrap px-4 py-4 text-center">

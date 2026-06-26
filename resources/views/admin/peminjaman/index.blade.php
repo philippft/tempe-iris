@@ -70,7 +70,7 @@
                     class="relative rounded-2xl border-l-[4px] border-[#22C55E] bg-white p-5 shadow-sm flex items-center justify-between">
                     <div>
                         <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wide">Total Selesai</p>
-                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratAprove->count() }} <span
+                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratApprove->count() }} <span
                                 class="text-xs font-medium text-[#94A3B8] normal-case tracking-normal">Peminjaman</span>
                         </p>
                     </div>
@@ -234,7 +234,7 @@
                                 </td>
 
                                 <td class="px-6 py-4 font-bold text-[#0A5C66]">
-                                    {{ $row->detailPeminjaman->first()->inventaris->user->organization_name }}
+                                    {{ $row->detailPeminjaman->first()->inventaris->user->organization->name }}
                                 </td>
 
                                 <td class="whitespace-nowrap px-4 py-4 text-center">
@@ -372,7 +372,7 @@
                             if ($row->tandatangan_pimpinan === 1 && $row->status_peminjaman == 1) {
                             $statusText = 'AKTIF';
                             $badgeBg = 'bg-[#22C55E]'; // Hijau
-                            } elseif ($row->tandatangan_pimpinan === 0) {
+                            } elseif ($row->status_peminjaman === 0) {
                             $statusText = 'DITOLAK';
                             $badgeBg = 'bg-[#EF4444]'; // Merah
                             } else {
@@ -413,7 +413,7 @@
                                 </td>
 
                                 <td class="px-6 py-4 font-bold text-[#0A5C66]">
-                                    {{ $row->detailPeminjaman->first()->inventaris->user->organization_name }}
+                                    {{ $row->detailPeminjaman->first()->inventaris->user->organization->name }}
                                 </td>
 
                                 <td class="whitespace-nowrap px-4 py-4 text-center">
