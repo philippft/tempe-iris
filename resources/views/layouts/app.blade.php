@@ -11,9 +11,9 @@
 <body class="bg-bg-light min-h-screen font-sans">
     <div class="flex">
         {{-- Sidebar --}}
-        <x-sidebar />
+        <x-sidebar class="flex-shrink-0" />
         {{-- Content --}}
-        <main class="flex-1 p-10">
+        <main class="flex-1 overflow-y-auto">
             @yield('content')
         </main>
     </div>
