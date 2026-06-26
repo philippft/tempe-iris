@@ -8,7 +8,7 @@
     @vite('resources/css/app.css')
 </head>
 
-<body class="bg-bg-light min-h-screen font-sans p-8">
+<body class="bg-bg-light min-h-screen font-sans">
     <div class="flex">
         {{-- Sidebar --}}
         <x-sidebar />
