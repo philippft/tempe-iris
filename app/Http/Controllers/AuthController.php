@@ -25,6 +25,7 @@ class AuthController extends Controller
         ]);
 
         // dd($credentials);
+        dd($request);
 
         if(Auth::attempt($credentials)) {
             if (is_null(Auth::user()->verify_at)) {
