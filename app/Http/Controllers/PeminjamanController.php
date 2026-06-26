@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Inventaris;
 use App\Models\Surat;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,45 +13,58 @@ class PeminjamanController extends Controller
 {
     public function index()
     {
-        $totalSurat = Surat::with('detailPeminjaman.inventaris')->get();
-
         $suratMasuk = Surat::whereHas('detailPeminjaman.inventaris', function ($q) {
             $q->where('id_user', auth()->id());
         })->get();
         // dd($suratMasuk->first()->detailPeminjaman->first()->inventaris->user);
 
-        $suratKeluar = $totalSurat->where('id_user', auth()->id());
+        $suratKeluar = Surat::where('id_user', auth()->id())->get();
         // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
-        
-        $suratReject = $totalSurat->filter(
-            fn($s) => $s->getRawOriginal('status_peminjaman') === 0
-        );
 
-        $suratAprove = $totalSurat->filter(
-            fn($s) => $s->getRawOriginal('status_peminjaman') === 1
-        );
+        $suratMasukReject = $suratMasuk->filter(fn($s) => $s->getRawOriginal('status_peminjaman') === 0);
+        $suratKeluarReject = $suratKeluar->filter(fn($s) => $s->getRawOriginal('status_peminjaman') === 0);
 
-        $suratPending = $totalSurat->filter(function ($surat) {
-            return $surat->id_user === auth()->id()
-                && $surat->status_peminjaman === null;
-        });
-        // dd($totalSurat);
+        $suratMasukApprove = $suratMasuk->filter(fn($s) => $s->getRawOriginal('status_peminjaman') === 1);
+        $suratKeluarApprove = $suratKeluar->filter(fn($s) => $s->getRawOriginal('status_peminjaman') === 1);
 
-        return view('admin.peminjaman.index', compact('totalSurat', 'suratMasuk', 'suratKeluar', 'suratReject', 'suratAprove', 'suratPending'));
+        $suratMasukPending = $suratMasuk->filter(fn($s) => $s->getRawOriginal('status_peminjaman') === null);
+        $suratKeluarPending = $suratKeluar->filter(fn($s) => $s->getRawOriginal('status_peminjaman') === null);
+
+        $suratReject  = $suratMasukReject->merge($suratKeluarReject);
+        $suratApprove = $suratMasukApprove->merge($suratKeluarApprove);
+        $suratPending = $suratMasukPending->merge($suratKeluarPending);
+
+        // dd($suratApprove, $suratPending, $suratReject);
+
+        return view('admin.peminjaman.index', compact(
+            'suratMasuk',
+            'suratKeluar',
+            'suratReject',
+            'suratApprove',
+            'suratPending'
+        ));
     }
 
     public function create(Request $request)
     {
-        $tujuan = DB::table('users')
+        $tujuan = User::with('organization')
             ->where('id', '!=', auth()->id())
-            ->whereNotNull('organization_name')
-            ->where('organization_name', '!=', '')
+            ->whereNotNull('id_organization')
             ->whereNotIn('role', ['mahasiswa'])
-            ->whereNotIn('organization_name', ['Non-Organisasi'])
-            ->select('id', 'organization_name')
             ->get()
-            ->unique('organization_name');
-
+            ->unique('id_organization')
+            ->filter(function ($user) {
+                $name = $user->organization?->name;
+                return $name !== 'Non-Organisasi' && !empty($name);
+            })
+            ->map(function ($user) {
+                return (object) [
+                    'id' => $user->id,
+                    'organization_name' => $user->organization->name
+                ];
+            })
+            ->values();
+        // dd($tujuan);
         $categories = Category::all();
 
         $selectedTujuan = $request->query('id_tujuan');
@@ -173,6 +187,8 @@ class PeminjamanController extends Controller
 
     public function kegiatan (Surat $surat) 
     {
+        $surat->load('detailPeminjaman.inventaris.user.organization');
+
         $detailBarang = DB::table('detail_peminjaman')
             ->join('inventaris', 'detail_peminjaman.id_inventaris', '=', 'inventaris.id')
             ->join('categories', 'inventaris.id_category', '=', 'categories.id')
@@ -185,7 +201,10 @@ class PeminjamanController extends Controller
             )
             ->get();
 
-        return view('admin.peminjaman.kegiatan', compact('surat', 'detailBarang'));
+        $tujuan = $surat->detailPeminjaman->map(function ($detail) {return $detail->inventaris?->user?->organization?->name;})->unique()->filter()->first();
+        // dd($tujuan);
+
+        return view('admin.peminjaman.kegiatan', compact('surat', 'detailBarang', 'tujuan'));
     }
 
     public function addKegiatan (Surat $surat, Request $request) 
@@ -228,7 +247,7 @@ class PeminjamanController extends Controller
     public function addDetailKegiatan (Surat $surat, Request $request) 
     {
             $request->validate([
-                'nomor'                         => 'required|string|max:255',
+                'nomor'                         => 'required|string|max:255|unique:surat,nomor,',
                 'penyelenggara'                 => 'required|string|max:255',
                 'prodi'                         => 'required|string|max:255',
                 'nama_peminjam'                 => 'required|string|max:50',

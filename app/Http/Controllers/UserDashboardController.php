@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Surat;
 use App\Models\Category;
 use App\Models\Inventaris;
+use App\Models\Surat;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class UserDashboardController extends Controller
@@ -46,15 +47,23 @@ class UserDashboardController extends Controller
 
     public function create(Request $request)
     {
-        $tujuan = DB::table('users')
+        $tujuan = User::with('organization')
             ->where('id', '!=', auth()->id())
-            ->whereNotNull('organization_name')
-            ->where('organization_name', '!=', '')
+            ->whereNotNull('id_organization')
             ->whereNotIn('role', ['mahasiswa'])
-            ->whereNotIn('organization_name', ['Non-Organisasi'])
-            ->select('id', 'organization_name')
             ->get()
-            ->unique('organization_name');
+            ->unique('id_organization')
+            ->filter(function ($user) {
+                $name = $user->organization?->name;
+                return $name !== 'Non-Organisasi' && !empty($name);
+            })
+            ->map(function ($user) {
+                return (object) [
+                    'id' => $user->id,
+                    'organization_name' => $user->organization->name
+                ];
+            })
+            ->values();
 
         $categories = Category::all();
 
@@ -178,6 +187,8 @@ class UserDashboardController extends Controller
 
     public function kegiatan (Surat $surat) 
     {
+        $surat->load('detailPeminjaman.inventaris.user.organization');
+
         $detailBarang = DB::table('detail_peminjaman')
             ->join('inventaris', 'detail_peminjaman.id_inventaris', '=', 'inventaris.id')
             ->join('categories', 'inventaris.id_category', '=', 'categories.id')
@@ -190,7 +201,11 @@ class UserDashboardController extends Controller
             )
             ->get();
 
-        return view('user.peminjaman.kegiatan', compact('surat', 'detailBarang'));
+        $tujuan = $surat->detailPeminjaman->map(function ($detail) {
+            return $detail->inventaris?->user?->organization?->name;
+        })->unique()->filter()->first();
+
+        return view('user.peminjaman.kegiatan', compact('surat', 'detailBarang', 'tujuan'));
     }
 
     public function addKegiatan (Surat $surat, Request $request) 
@@ -259,8 +274,8 @@ class UserDashboardController extends Controller
                     'nama'          => $item['nama_kegiatan'],
                     'hari_mulai'    => $item['hari'],
                     'tanggal_mulai' => $item['tanggal'],
-                    'waktu_mulai'   => $item['waktu_mulai'],
-                    'waktu_selesai' => $item['waktu_selesai'],
+                    'waktu_mulai'   => $item['waktu_mulai'], // waktu mulai perlu di benarkan 
+                    'waktu_selesai' => $item['waktu_selesai'], //waktu selesai perlu di benarkan 
                 ]);
             }
 
