@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Organization;
+use Carbon\Carbon;
 
 class UserDashboardController extends Controller
 {
@@ -76,10 +77,16 @@ class UserDashboardController extends Controller
 
         $categories = Category::all();
 
-        $selectedTujuan = $request->query('id_tujuan');
-        $search = $request->query('search');
-        $categoryId = $request->query('category_id');
+        // Catch data dari query string URL
+    $selectedTujuan = $request->query('id_tujuan');
+    $search = $request->query('search');
+    $categoryId = $request->query('category_id');
 
+    // 1. Secara default, inventaris kosong jika tujuan belum dipilih
+    $inventaris = collect(); 
+
+    // 2. Jika tujuan sudah dipilih, baru tarik data dari database
+    if ($selectedTujuan) {
         $inventaris = Inventaris::where('id_user', '!=', auth()->id())
             ->with(['category'])
             ->withCount([
@@ -87,9 +94,8 @@ class UserDashboardController extends Controller
                     $query->where('status', 1);
                 }
             ])
-            ->when($selectedTujuan, function ($query, $selectedTujuan) {
-                return $query->where('id_user', $selectedTujuan);
-            })
+            // Langsung gunakan where karena $selectedTujuan pasti ada nilainya
+            ->where('id_user', $selectedTujuan) 
             ->when($search, function ($query, $search) {
                 return $query->where('nama', 'like', '%' . $search . '%');
             })
@@ -97,6 +103,11 @@ class UserDashboardController extends Controller
                 return $query->where('id_category', $categoryId);
             })
             ->get();
+    }
+
+    return view('user.peminjaman.create', compact('tujuan', 'categories', 'inventaris'));
+
+        // dd($tujuan);
 
         return view('user.peminjaman.create', compact('tujuan', 'categories', 'inventaris'));
     }
@@ -257,7 +268,9 @@ class UserDashboardController extends Controller
             )
             ->get();
 
-        return view('user.peminjaman.kegiatan', compact('surat', 'detailBarang'));
+        $nama_tujuan = $surat->detailPeminjaman->first()->inventaris->user->organization->name ?? '-' ;
+
+        return view('user.peminjaman.kegiatan', compact('surat', 'detailBarang', 'nama_tujuan'));
     }
 
     public function addKegiatan (Surat $surat, Request $request) 
@@ -322,13 +335,22 @@ class UserDashboardController extends Controller
             ]);
 
             foreach ($request->kegiatan as $item) {
+                $waktuMulaiRaw = str_replace('.', ':', $item['waktu_mulai']);
+                $waktuSelesaiRaw = str_replace('.', ':', $item['waktu_selesai']);
+                
+                $waktuMulaiFormatted = Carbon::parse($waktuMulaiRaw)->format('H:i');
+                $waktuSelesaiFormatted = Carbon::parse($waktuSelesaiRaw)->format('H:i');
+                
+
                 $surat->kegiatan()->create([
                     'nama'          => $item['nama_kegiatan'],
                     'hari_mulai'    => $item['hari'],
                     'tanggal_mulai' => $item['tanggal'],
-                    'waktu_mulai'   => $item['waktu_mulai'],
-                    'waktu_selesai' => $item['waktu_selesai'],
+                    'waktu_mulai'   => $waktuMulaiFormatted,
+                    'waktu_selesai' => $waktuSelesaiFormatted,
                 ]);
+
+                
             }
 
             return redirect()->route('user.peminjaman.index')
