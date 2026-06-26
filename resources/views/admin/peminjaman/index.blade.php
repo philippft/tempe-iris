@@ -1,125 +1,178 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body>
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 bg-[#F8FAFC]">
+@extends('layouts.app')
+
+@section('title', 'Peminjaman Inventaris') 
+
+@section('content')
+
+<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+        <h3 class="text-4xl font-extrabold text-judul">Daftar Peminjaman Inventaris</h3>
+        <p class="text-base text-dark-grey font-medium">Kelola dan pantau status peminjaman inventaris Anda.</p>
+    </div>
+    <a href="{{ route('admin.peminjaman.create') }}"
+                class="text-white bg-primary-hover px-4 py-2.5 text-xs font-bold rounded-lg shadow-sm hover:bg-primary transition flex items-center gap-2">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 15H11V11H15V9H11V5H9V9H5V11H9V15ZM10 20C8.61667 20 7.31667 19.7375 6.1 19.2125C4.88333 18.6875 3.825 17.975 2.925 17.075C2.025 16.175 1.3125 15.1167 0.7875 13.9C0.2625 12.6833 0 11.3833 0 10C0 8.61667 0.2625 7.31667 0.7875 6.1C1.3125 4.88333 2.025 3.825 2.925 2.925C3.825 2.025 4.88333 1.3125 6.1 0.7875C7.31667 0.2625 8.61667 0 10 0C11.3833 0 12.6833 0.2625 13.9 0.7875C15.1167 1.3125 16.175 2.025 17.075 2.925C17.975 3.825 18.6875 4.88333 19.2125 6.1C19.7375 7.31667 20 8.61667 20 10C20 11.3833 19.7375 12.6833 19.2125 13.9C18.6875 15.1167 17.975 16.175 17.075 17.075C16.175 17.975 15.1167 18.6875 13.9 19.2125C12.6833 19.7375 11.3833 20 10 20ZM10 18C12.2333 18 14.125 17.225 15.675 15.675C17.225 14.125 18 12.2333 18 10C18 7.76667 17.225 5.875 15.675 4.325C14.125 2.775 12.2333 2 10 2C7.76667 2 5.875 2.775 4.325 4.325C2.775 5.875 2 7.76667 2 10C2 12.2333 2.775 14.125 4.325 15.675C5.875 17.225 7.76667 18 10 18Z" fill="white"/>
+            </svg>
+        Tambah Peminjaman
+    </a>
+</div>
+
+<div class="space-y-4 my-10">
+    <h2 class="text-base font-bold text-dark-grey tracking-[1.5px]">STATISTIK PEMINJAMAN</h2>
+    <div class="flex flex-wrap w-full justify-start gap-6">
+    <x-statecard
+            title="Total Peminjaman Masuk"
+            :value="$suratMasuk->count()"
+            label="Peminjaman"
+            border="border-l-primary-hover"
+            iconBg="bg-primary/10"
+        > 
+            <x-icons.totalaktif/>
+        </x-statecard>
+        <x-statecard
+            title="Total Peminjaman Keluar"
+            :value="$suratKeluar->count()"
+            label="Peminjaman"
+            border="border-l-status-black"
+            iconBg="bg-black/10"
+        > 
+            <x-icons.totalaktif/>
+        </x-statecard>
+        <x-statecard
+            title="Total Selesai"
+            :value="$suratAprove->count()"
+            label="Peminjaman"
+            border="border-l-status-green"
+            iconBg="bg-status-green/10"
+        > 
+            <x-icons.totalaktif/>
+        </x-statecard>
+        <x-statecard
+            title="Total Diproses"
+            :value="$suratPending->count()"
+            label="Peminjaman"
+            border="border-l-status-yellow"
+            iconBg="bg-status-yellow/10"
+        > 
+            <x-icons.totalpending/>
+        </x-statecard>
+        <x-statecard
+            title="Total Ditolak"
+            :value="$suratReject->count()"
+            label="Peminjaman"
+            border="border-l-status-red"
+            iconBg="bg-status-red/10"
+        > 
+            <x-icons.totaltolak/>
+        </x-statecard>
+    </div>
+</div>
+
+<div class="bg bg-white rounded-2xl p-6 space-y-6">
+    <div class="space-y-1">
+            <h3 class="text-xl font-extrabold text-judul tracking-tight">
+                Peminjaman Masuk
+            </h3>
+            <p class="text-sm font-medium text-dark-grey">Daftar peminjaman barang kepada {{ auth()->user()->username }}</p>
+    </div>
+    <x-search-bar />
+    <!-- SIAPAPUN HELP INI GIMANA CARANYA MAKE SEARCH BAR -->
+    <x-container>
+        <x-table
+            :headers="['NO', 'Nama kegiatan', 'id pinjam', 'tanggal pinjam', 'estimasi kembali', 'status', 'tujuan', 'aksi']"
+            :cols="['60px', '1fr', '1fr', '1.2fr', '1.2fr', '1fr', '1fr', '0.8fr']"
+            data=""
+            headerBg="bg-primary-hover"
+            headerClass="text-white font-bold text-sm uppercase"
+            bg="bg-white overflow-hidden"
+        >
+        @foreach($suratMasuk as $surat)
+            <x-table-row>
+                <div>{{ sprintf('%02d', $loop->iteration) }}</div>
+                <div class="font-bold justify-center">
+                    {{ $surat->acara }}
+                </div>
+                <div class="font-bold  justify-center">
+                    <span
+                        class="text-wrap items-center rounded bg-primary-hover/20 px-2 py-0.5 font-bold text-primary-hover ">
+                        {{ $surat->nomor }}
+                    </span>
+                </div>
+                <div>
+                    {{ \Carbon\Carbon::parse($surat->tanggal_peminjaman)->translatedFormat('d M Y') }}
+                </div>
+                <div>
+                    {{ \Carbon\Carbon::parse($surat->tanggal_kembali)->translatedFormat('d M Y') }}
+                </div>
+                
+                <div class="justify-center">
+                    <x-status-card status="1"/>
+                </div>
+                <div>
+                    {{ $surat->detailPeminjaman->first()->inventaris->user->organization_name }}
+                </div>
+                <div class="justify-center rounded-">
+                    <x-action-button type="view" as="a" href="#"></x-action-button>
+                    <x-action-button type="delete" as="a" href="#"></x-action-button>
+                </div>
+            </x-table-row>
+        @endforeach
+        </x-table>
+    </x-container>
+</div>
+
+
+<div class="bg-white p-6 rounded-[32px] border border-gray-100 shadow-sm space-y-6">
+        
+
+        {{-- 4. RENDERING TABEL DARI DATA $suratMasuk --}}
+        <x-container>
+            <x-table
+                :headers="['No', 'Nama Peminjam', 'NIM', 'Nama Kegiatan', 'Tanggal Kirim', 'Status', 'Aksi']"
+                :cols="['60px', '1.2fr', '0.8fr', '1.5fr', '1fr', '1fr', '140px']"
+                :data="$suratMasuk"
+                headerBg="bg-primary-hover/10"
+                headerClass="text-primary font-bold text-sm uppercase"
+                bg="bg-white overflow-hidden"
+            >
+                @foreach($suratMasuk as $surat)
+                    <x-table-row>
+                        <div>{{ sprintf('%02d', $loop->iteration) }}</div>
+                        
+                        <div class="font-bold justify-start text-judul">
+                            {{ $surat->nama_peminjam }}
+                        </div>
+                        
+                        <div class="justify-start  font-medium">
+                            {{ $surat->nim }}
+                        </div>
+                        
+                        <div class="justify-start text-subtext">
+                            {{ $surat->nama_kegiatan ?? $surat->perihal_peminjaman }}
+                        </div>
+                        
+                        <div class="justify-center text-dark-grey font-medium">
+                            {{ $surat->created_at ? $surat->created_at->format('d M Y') : '-' }}
+                        </div>
+                        
+                        <div class="justify-center">
+                            <x-status-card :status="$surat->status_peminjaman"/>
+                        </div>
+                        <div>
+                            <x-take-action/>
+                        </div>
+                    </x-table-row>
+                @endforeach
+            </x-table>
+        </x-container>
+
+    </div>
 
         <!-- HEADER SECTION -->
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
-            <div>
-                <h1 class="text-2xl font-extrabold text-[#0F172A]">Daftar Peminjaman Inventaris</h1>
-                <p class="mt-1 text-sm text-[#64748B]">Kelola dan pantau status peminjaman inventaris Anda.</p>
-            </div>
-            <a href="{{ route('admin.peminjaman.create') }}"
-                class="inline-flex items-center gap-2 rounded-lg bg-[#0A5C66] px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#084952] transition">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                Tambah Peminjaman
-            </a>
-        </div>
-
-        <!-- STATISTIK PEMINJAMAN (GRID CARD) -->
-        <div class="mb-4">
-            <h2 class="text-xs font-bold text-[#94A3B8] uppercase tracking-wider mb-4">Statistik Peminjaman</h2>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                <!-- Card 1: Total Masuk -->
-                <div
-                    class="relative rounded-2xl border-l-[4px] border-[#0A5C66] bg-white p-5 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wide">Total Peminjaman Masuk
-                        </p>
-                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratMasuk->count() }} <span
-                                class="text-xs font-medium text-[#94A3B8] normal-case tracking-normal">Peminjaman</span>
-                        </p>
-                    </div>
-                    <div class="rounded-lg bg-[#E0F2FE] p-1.5 text-[#0A5C66]">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.656 48.656 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Card 2: Total Keluar -->
-                <div
-                    class="relative rounded-2xl border-l-[4px] border-[#0F172A] bg-white p-5 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wide">Total Peminjaman Keluar
-                        </p>
-                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratKeluar->count() }} <span
-                                class="text-xs font-medium text-[#94A3B8] normal-case tracking-normal">Peminjaman</span>
-                        </p>
-                    </div>
-                    <div class="rounded-lg bg-[#E2E8F0] p-1.5 text-[#0F172A]">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.656 48.656 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Card 3: Total Selesai -->
-                <div
-                    class="relative rounded-2xl border-l-[4px] border-[#22C55E] bg-white p-5 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wide">Total Selesai</p>
-                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratAprove->count() }} <span
-                                class="text-xs font-medium text-[#94A3B8] normal-case tracking-normal">Peminjaman</span>
-                        </p>
-                    </div>
-                    <div class="rounded-lg bg-[#DCFCE7] p-1.5 text-[#22C55E]">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Card 4: Total Diproses -->
-                <div
-                    class="relative rounded-2xl border-l-[4px] border-[#EAAA08] bg-white p-5 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wide">Total Diproses</p>
-                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratPending->count() }}<span
-                                class="text-xs font-medium text-[#94A3B8] normal-case tracking-normal">Peminjaman</span>
-                        </p>
-                    </div>
-                    <div class="rounded-lg bg-[#FEF9E7] p-1.5 text-[#EAAA08]">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Baris Kedua Statistik: Total Ditolak -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div
-                    class="relative rounded-2xl border-l-[4px] border-[#EF4444] bg-white p-5 shadow-sm flex items-center justify-between">
-                    <div>
-                        <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wide">Total Ditolak</p>
-                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratReject->count() }} <span
-                                class="text-xs font-medium text-[#94A3B8] normal-case tracking-normal">Peminjaman</span>
-                        </p>
-                    </div>
-                    <div class="rounded-lg bg-[#FEE2E2] p-1.5 text-[#EF4444]">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+<div class="p-10">
+</div> 
+        <!-- STATISTIK PEMINJAMAN (GRID CARD) --
         <!-- MAIN DATA BOX -->
         <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm mb-8">
 
@@ -136,7 +189,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                     </svg>
-                </button>
+                </button> 
             </div>
 
             <!-- FILTER & CARI PANEL -->
@@ -479,5 +532,6 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+
+
+@endsection
