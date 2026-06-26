@@ -62,7 +62,7 @@ class AuthController extends Controller
     private function redirectBasedOnRole(string $role): RedirectResponse
     {
         return match ($role) {
-            'mahasiswa'         => redirect()->route('mahasiswa.dashboard'),
+            'mahasiswa'         => redirect()->route('user.dashboard'),
             'admin_LM'          => redirect()->route('admin.dashboard'),
             'admin_dekanat'     => redirect()->route('dekanat.dashboard'),
             'petinggi_dekanat'  => redirect()->route('petinggi.dashboard'),
