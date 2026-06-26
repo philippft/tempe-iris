@@ -8,7 +8,6 @@ use App\Models\Surat;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Organization;
 
@@ -38,18 +37,11 @@ class UserDashboardController extends Controller
         ->get();
         // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
         
-        $suratReject = $suratKeluar->filter(
-            fn($s) => $s->getRawOriginal('status_peminjaman') === 0
-        );
+        $suratReject = $suratKeluar->whereStrict('status_peminjaman', 0);
 
-        $suratAprove = $suratKeluar->filter(
-            fn($s) => $s->getRawOriginal('status_peminjaman') === 1
-        );
+        $suratAprove = $suratKeluar->where('status_peminjaman', 1);
 
-        $suratPending = $suratKeluar->filter(function ($surat) {
-            return $surat->id_user === auth()->id()
-                && $surat->status_peminjaman === null;
-        });
+        $suratPending = $suratKeluar->where('status_peminjaman', null);
         // dd($totalSurat);
 
         return view('user.peminjaman.index', compact('suratKeluar', 'suratReject', 'suratAprove', 'suratPending'));
@@ -201,7 +193,7 @@ class UserDashboardController extends Controller
             abort(403, 'Anda tidak memiliki akses ke halaman profil ini.');
         }
 
-        $organizations = Organization::where('name', 'like', 'Himpunan Mahasiswa%')
+        $organizations = Organization::where('name', 'like', 'Program Studi%')
         ->orderBy('id')
         ->get();
 
@@ -210,6 +202,7 @@ class UserDashboardController extends Controller
 
     public function detailAkunEdit(User $user, Request $request)
     {
+        // dd($request, $user);    
         if (auth()->id() !== $user->id) {
             abort(403, 'Anda tidak memiliki akses untuk mengedit profil ini.');
         }
@@ -235,6 +228,9 @@ class UserDashboardController extends Controller
 
             $validatedData['ktm'] = $path;
         }
+
+        $validatedData['verify_at'] = null;
+        $validatedData['note']      = null;
 
         // 4. Update Database
         $user->update($validatedData);
@@ -341,4 +337,9 @@ class UserDashboardController extends Controller
             return redirect()->route('user.peminjaman.index')
                 ->with('success', 'Detail kegiatan berhasil disimpan.');
     }
+
+    // public function verifikasiSurat (Request $request, Surat $surat) 
+    // {
+    //     dd($surat, $request);
+    // }
 }
