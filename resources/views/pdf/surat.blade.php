@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Surat Permohonan Peminjaman Inventaris</title>
+    <title>Surat Permohonan Peminjaman Inventaris & Lampiran</title>
     <style>
         @page {
             margin: 1.2in 1in 1in 1in;
@@ -20,6 +20,7 @@
             width: 100%;
         }
 
+        /* ----- STYLING HALAMAN 1 (SURAT) ----- */
         .info-table {
             width: 100%;
             margin-bottom: 25px;
@@ -31,13 +32,11 @@
             vertical-align: top;
         }
 
-        /* Isi Surat */
         .isi-surat {
             text-align: justify;
             margin-bottom: 20px;
         }
 
-        /* Agenda/Jadwal Kegiatan */
         .jadwal-container {
             margin-left: 20px;
             margin-bottom: 20px;
@@ -57,7 +56,6 @@
             padding: 2px 0;
         }
 
-        /* Bagian Tanda Tangan */
         .ttd-container {
             width: 100%;
             margin-top: 40px;
@@ -65,24 +63,59 @@
         }
 
         .ttd-container td {
-            text-align: center;
             vertical-align: top;
-            width: 50%;
+        }
+        
+        .text-center {
+            text-align: center;
         }
 
-        .space-ttd {
-            height: 75px;
+        .stempel-container {
+            margin-top: 5px;
+            text-align: center;
         }
 
         .stempel-img {
-            height: 85px;
-            margin-top: -10px;
-            margin-bottom: -15px;
+            width: 140px; /* Sesuaikan ukuran cap dengan kebutuhan */
+            height: auto;
+            opacity: 0.9; /* Sedikit transparan agar terlihat seperti cap asli */
         }
 
-        .nama-terang {
+        /* ----- STYLING HALAMAN 2 (LAMPIRAN) ----- */
+        
+        /* Memaksa elemen setelah class ini untuk pindah ke halaman baru saat di-print/PDF */
+        .page-break {
+            page-break-before: always;
+        }
+
+        .table-lampiran {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px; /* Sedikit dikecilkan agar pas di tabel */
+        }
+
+        .table-lampiran th,
+        .table-lampiran td {
+            border: 1px solid #cbd5e1; /* Warna border abu-abu muda */
+            padding: 12px 10px;
+            vertical-align: middle;
+        }
+
+        .table-lampiran th {
+            background-color: #e2e8f0; /* Warna biru muda keabuan mirip di gambar */
             font-weight: bold;
-            text-decoration: underline;
+            color: #1e293b;
+        }
+
+        .table-lampiran th:first-child,
+        .table-lampiran th:nth-child(3),
+        .table-lampiran th:nth-child(4),
+        .table-lampiran th:nth-child(5) {
+            text-align: center;
+        }
+        
+        .table-lampiran th:nth-child(2) {
+            text-align: left;
         }
     </style>
 </head>
@@ -94,8 +127,8 @@
             <tr>
                 <td style="width: 12%;">Nomor</td>
                 <td style="width: 3%;">:</td>
-                <td style="width: 50%;">SURAT/2023/INV/042</td>
-                <td style="text-align: right; width: 35%;">14 Oktober 2023</td>
+                <td style="width: 50%;">{{ $surat->nomor }}</td>
+                <td style="text-align: right; width: 35%;">{{ $surat->created_at->locale('id')->translatedFormat('d F Y') }}</td>
             </tr>
             <tr>
                 <td>Lampiran</td>
@@ -105,13 +138,13 @@
             <tr>
                 <td>Hal</td>
                 <td>:</td>
-                <td colspan="2">Permohonan Peminjaman Inventaris</td>
+                <td colspan="2">{{ $surat->perihal_peminjaman }}</td>
             </tr>
         </table>
 
         <div style="margin-bottom: 25px;">
-            Yth. <strong>Badan Eksekutif Mahasiswa Fakultas Matematika dan Ilmu Pengetahuan Alam<br>
-                Universitas Udayana</strong><br>
+            Yth. <strong>{{ $tujuan }}</strong><br>
+            Universitas Udayana</strong><br>
             di Jimbaran
         </div>
 
@@ -120,70 +153,87 @@
         </div>
 
         <div class="isi-surat">
-            Dalam rangka melaksanakan kegiatan Workshop Sharing Insight, Tech, and Action Knowledge Session (Workshop
-            SINTAKS), yang diselenggarakan oleh SIC Program Studi Informatika Fakultas MIPA Universitas Udayana, maka
-            kami bermaksud untuk mengajukan Permohonan Peminjaman Inventaris (terlampir). Adapun kegiatan tersebut akan
-            diselenggarakan pada:
+            Dalam rangka melaksanakan kegiatan {{ $surat->acara }}, yang diselenggarakan oleh {{ $surat->penyelenggara }} Fakultas MIPA Universitas Udayana, maka kami bermaksud untuk mengajukan Permohonan Peminjaman Inventaris (terlampir). Adapun kegiatan tersebut akan diselenggarakan pada:
         </div>
 
-        <div class="jadwal-container">
-            <div class="jadwal-title">1. Gladi H-1</div>
-            <div class="jadwal-detail">
-                <table cellspacing="0" cellpadding="0">
-                    <tr>
-                        <td style="width: 100px;">Hari, tanggal</td>
-                        <td style="width: 15px;">:</td>
-                        <td>Kamis, 26 Maret 2026</td>
-                    </tr>
-                    <tr>
-                        <td>Waktu</td>
-                        <td>:</td>
-                        <td>13.00 – 19.00 WITA</td>
-                    </tr>
-                </table>
+        @foreach ($kegiatan as $k)
+            <div class="jadwal-container">
+                <div class="jadwal-title">{{ $k['nama_kegiatan'] }}</div>
+                <div class="jadwal-detail">
+                    <table cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td style="width: 100px;">Hari, tanggal</td>
+                            <td style="width: 15px;">:</td>
+                            <td>{{ $k['hari_mulai'] }}, {{ $k['tanggal_kegiatan'] }}</td>
+                        </tr>
+                        <tr>
+                            <td>Waktu</td>
+                            <td>:</td>
+                            <td>{{ $k['waktu_mulai'] }} – {{ $k['waktu_selesai'] }} WITA</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-
-            <div class="jadwal-title">2. Pelaksanaan Kegiatan</div>
-            <div class="jadwal-detail">
-                <table cellspacing="0" cellpadding="0">
-                    <tr>
-                        <td style="width: 100px;">Hari, tanggal</td>
-                        <td style="width: 15px;">:</td>
-                        <td>Jumat, 27 Maret 2026</td>
-                    </tr>
-                    <tr>
-                        <td>Waktu</td>
-                        <td>:</td>
-                        <td>08.00 – Selesai WITA</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+        @endforeach
 
         <div class="isi-surat">
-            Demikian surat peminjaman ini kami sampaikan. Atas kerja sama dan dukungan yang diberikan, kami ucapkan
-            terima kasih.
+            Demikian surat peminjaman ini kami sampaikan. Atas kerja sama dan dukungan yang diberikan, kami ucapkan terima kasih.
         </div>
 
-        <table style="width: 100%; border-collapse: collapse; margin-top: 30px;">
+        <table class="ttd-container">
             <tr>
-                <td style="width: 55%;"></td>
-                <td style="width: 45%; text-align: center; vertical-align: top;">
+                <td style="width: 60%;"></td>
+                <td style="width: 40%;" class="text-center">
                     Panitia Pelaksana<br>
-                    Workshop SINTAKS 1<br>
+                    {{ $surat->acara }} ({{ $surat->singkatan_acara }})<br>
                     Universitas Udayana
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center" style="padding-top: 60px;">
+                    Mengetahui,<br>
+                    {{ $surat->prodi }} FMIPA UNUD 2026
+                    
+                    {{-- @if($statusPeminjaman === 'Diterima' || $statusPeminjaman === 'Approved') --}}
+                        <div class="stempel-container">
+                            {{-- Ganti URL src dengan path gambar cap Anda (bisa pakai asset() atau base64 untuk PDF) --}}
+                            <img src="{{ public_path('images/cap_panpel.png') }}" alt="Cap PANPEL" class="stempel-img">
+                        </div>
+                    {{-- @else --}}
+                        {{-- <div class="stempel-container" style="height: 140px;"></div> --}}
+                    {{-- @endif --}}
 
-                    <div class="space-ttd"></div>
-
-                    <div>
-                        <span class="nama-terang">Nama Ketua Panitia</span><br>
-                        NIM. 2408561000
-                    </div>
                 </td>
             </tr>
         </table>
     </div>
 
-</body>
+    <div class="page-break"></div>
 
+    <div class="content">
+        <table class="table-lampiran">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">No.</th>
+                    <th style="width: 25%;">Alat</th>
+                    <th style="width: 15%;">Jumlah</th>
+                    <th style="width: 25%;">Waktu dan Tanggal<br>Peminjaman</th>
+                    <th style="width: 30%;">Waktu dan Tanggal<br>Pengembalian</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($inventaris as $inv)
+                    <tr>
+                        <td class="text-center">{{ $loop->iteration }}</td>
+                        <td>{{ $inv['nama_inventaris'] }}</td>
+                        <td class="text-center">{{ $inv['jumlah'] }}</td>
+                        <td class="text-center">{{ $inv['waktu_peminjaman'] }} WITA <br>{{ $inv['tanggal_peminjaman'] }}</td>
+                        <td class="text-center">{{ $inv['waktu_kembali'] }} WITA <br>{{ $inv['tanggal_kembali'] }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+</body>
 </html>
