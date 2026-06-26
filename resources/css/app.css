@@ -33,7 +33,7 @@
     @apply text-[16px] font-medium text-[#64748B];
   }
 
-/* BG PUTIH BORDER KIRI */
+/* Background PUTIH BORDER KIRI */
   /* Teal (warna primer sidebar) */
   .stat-teal {
     @apply border-l-[5px];
