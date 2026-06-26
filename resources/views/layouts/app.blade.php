@@ -13,7 +13,7 @@
         {{-- Sidebar --}}
         <x-sidebar class="flex-shrink-0" />
         {{-- Content --}}
-        <main class="flex-1 p-10 overflow-y-auto">
+        <main class="flex-1 overflow-y-auto">
             @yield('content')
         </main>
     </div>
