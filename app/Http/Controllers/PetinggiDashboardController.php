@@ -12,6 +12,7 @@ class PetinggiDashboardController extends Controller
 {
     public function petinggiDashboard () 
     {
+        $surats = Surat::paginate(10);
         $suratKeluar = Surat::where('id_user', auth()->id())->get();
         // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
         
@@ -31,6 +32,6 @@ class PetinggiDashboardController extends Controller
             return $surat->id_user === auth()->id()
                 && $surat->status_peminjaman === null;
         })->count();
-        return view('petinggi.dashboard', compact('suratKeluar', 'suratDone', 'suratReject', 'suratAprove', 'suratPending'));
+        return view('petinggi.dashboard', compact('surats', 'suratKeluar', 'suratDone', 'suratReject', 'suratAprove', 'suratPending'));
     }
 }

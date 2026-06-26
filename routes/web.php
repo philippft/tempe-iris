@@ -35,7 +35,9 @@ Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('user.')->group
         Route::get('/peminjaman/create', 'create')->name('peminjaman.create');
         Route::get('/peminjaman/detail/{surat}', 'detailPeminjaman')->name('peminjaman.detail-surat');
         Route::post('/peminjaman/add-detail', 'addDetailPeminjaman')->name('peminjaman.detail');
-
+    });
+});
+    
 Route::middleware(['auth', 'isUser'])->prefix('dekanat')->name('dekanat.')->group(function () {
     Route::get('/dashboard', [DekanatDashboardController::class, 'dekanatDashboard'])->name('dashboard');
 });
@@ -81,8 +83,7 @@ Route::middleware(['auth', 'isDekanat'])->prefix('dekanat')->name('dekanat.')->g
 
 Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')->group(function () {
     Route::get('/dashboard', [PetinggiDashboardController::class, 'petinggiDashboard'])->name('dashboard');
-
-    Route::get('/surat', [PetinggiDashboardController::class, 'suratIndex'])->name('surat.index');
+    Route::get('/manage-surat', [PetinggiDashboardController::class, 'suratIndex'])->name('manage-surat.index');
 });
 
 
