@@ -24,8 +24,8 @@ $subtitle = match($role) {
 
 $menus = match($role) {
     'mahasiswa' => [
-        ['label'=>'Dashboard','route'=>'mahasiswa.dashboard','icon'=>'dashboard'],
-        ['label'=>'Peminjaman','route'=>'mahasiswa.peminjaman.index','icon'=>'transfer'],
+        ['label'=>'Dashboard','route'=>'user.dashboard','icon'=>'dashboard'],
+        ['label'=>'Peminjaman','route'=>'user.peminjaman.index','icon'=>'transfer'],
     ],
 
     'admin_LM' => [

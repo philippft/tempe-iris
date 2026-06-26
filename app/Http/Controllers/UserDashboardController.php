@@ -15,7 +15,7 @@ class UserDashboardController extends Controller
         $surats = Surat::paginate(10);
         $suratKeluar = Surat::where('id_user', auth()->id())
         ->get();
-        dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
+        // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
         
         $suratReject = $suratKeluar->filter(
             fn($s) => $s->getRawOriginal('status_peminjaman') === 0
