@@ -8,6 +8,9 @@ use App\Models\Surat;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Organization;
 
 class UserDashboardController extends Controller
 {
@@ -20,6 +23,13 @@ class UserDashboardController extends Controller
         return view('user.dashboard', compact('surats', 'totalAktif', 'totalPending'));
     }
 
+    public function detail(User $user)
+    {
+        if (auth()->user()->id !== $user->id) {
+            abort(403, 'Anda tidak memiliki akses ke halaman profil ini.');
+        }
+        return view('user.detail-akun', compact('user'));
+    } 
     public function index()
     {
         // dd($suratMasuk->first()->detailPeminjaman->first()->inventaris->user);
@@ -183,6 +193,55 @@ class UserDashboardController extends Controller
                 'Baris Kode' => $e->getLine()
             ]);
         }
+    }
+
+    public function detailAkun(User $user)
+    {
+        if (auth()->user()->id !== $user->id) {
+            abort(403, 'Anda tidak memiliki akses ke halaman profil ini.');
+        }
+
+        $organizations = Organization::where('name', 'like', 'Himpunan Mahasiswa%')
+        ->orderBy('id')
+        ->get();
+
+        return view('user.detail-akun', compact('user', 'organizations'));
+    }
+
+    public function detailAkunEdit(User $user, Request $request)
+    {
+        if (auth()->id() !== $user->id) {
+            abort(403, 'Anda tidak memiliki akses untuk mengedit profil ini.');
+        }
+
+        // 2. Validasi Data
+        $validatedData = $request->validate([
+            'name'            => 'required|string|max:255',
+            'nim_nip'         => 'required|string|max:20|unique:users,nim_nip,' . $user->id,
+            'id_organization' => 'required|exists:organizations,id',
+            'email'           => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'ktm'             => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Wajib file gambar
+        ]);
+
+        // 3. Logika Upload Menggunakan Storage::
+        if ($request->hasFile('ktm')) {
+            if ($user->ktm && Storage::disk('public')->exists($user->ktm)) {
+                Storage::disk('public')->delete($user->ktm);
+            }
+
+            $file = $request->file('ktm');
+            $fileName = 'ktm_' . $user->nim_nip . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = Storage::disk('public')->putFileAs('ktm', $file, $fileName);
+
+            $validatedData['ktm'] = $path;
+        }
+
+        // 4. Update Database
+        $user->update($validatedData);
+
+        // 5. Kembali dengan pesan sukses
+        return redirect()->route('user.detail-akun', $user->id)
+            ->with('success', 'Profil dan Foto KTM berhasil diperbarui.');
     }
 
     public function kegiatan (Surat $surat) 
