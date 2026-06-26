@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'SIMPRAK')</title>
 
-    @vite('resources/css/app.css')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-bg-light min-h-screen font-sans p-8">
-    <div class="flex">
+<body class="bg-bg-light h-screen font-sans overflow-hidden overflow-hidden">
+    <div class="flex h-full">
         {{-- Sidebar --}}
-        <x-sidebar />
+        <x-sidebar class="flex-shrink-0" />
         {{-- Content --}}
-        <main class="flex-1 p-10">
+        <main class="flex-1 overflow-y-auto">
             @yield('content')
         </main>
     </div>

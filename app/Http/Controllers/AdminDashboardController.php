@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Mail\NotificationMail;
+use Illuminate\Support\Facades\Mail;
 
 class AdminDashboardController extends Controller
 {
@@ -33,11 +35,26 @@ class AdminDashboardController extends Controller
             'notes' => 'required_if:status,tolak|nullable|string|max:255',
         ]);
 
+
+
         if ($request->status === 'setuju') {
             $user->update([
                 'verify_at' => now(),
                 'note'     => null,
             ]);
+
+            $userLogin = auth()->user();
+            // dd($user);
+            $emailPenerima = $user->email;
+            $namaPenerima = $user->name;
+            $emailPengirim = $userLogin->email;
+            $namaPengirim = $userLogin->username;
+            // dd($namaPengirim, $emailPengirim, $namaPenerima);
+
+            Mail::to($emailPenerima)->send(
+                new NotificationMail($namaPenerima, $emailPengirim, $namaPengirim)
+            );
+
             return redirect()->route('admin.management.user')->with('success', 'Akun berhasil disetujui!');
         }
 

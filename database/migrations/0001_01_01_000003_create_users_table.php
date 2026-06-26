@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_organization')->constrained('organizations')->onDelete('cascade')->nullable();
             $table->string('username', 100);
+            $table->string('name', 255);
             $table->string('password', 255);
             $table->enum('role', ['mahasiswa', 'admin_LM', 'admin_dekanat', 'petinggi_dekanat']);
-            $table->string('organization_name', 255);
+            $table->string('email', 255)->unique();
+            $table->string('profile', 255)->nullable();
             $table->string('ktm', 255)->nullable();
             $table->string('nim_nip', 255)->unique();
             $table->text('note')->nullable();
