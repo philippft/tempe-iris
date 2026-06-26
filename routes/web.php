@@ -83,7 +83,7 @@ Route::middleware(['auth', 'isDekanat'])->prefix('dekanat')->name('dekanat.')->g
 
 Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')->group(function () {
     Route::get('/dashboard', [PetinggiDashboardController::class, 'petinggiDashboard'])->name('dashboard');
-    Route::get('/manage-surat', [PetinggiDashboardController::class, 'suratIndex'])->name('manage-surat.index');
+    Route::get('/surat', [PetinggiDashboardController::class, 'suratDashboard'])->name('surat.index');
 });
 
 
