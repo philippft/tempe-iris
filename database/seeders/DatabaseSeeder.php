@@ -226,6 +226,50 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        $dekanatUsers = User::where('role', 'admin_dekanat')->get();
+
+        // 2. List barang dummy khusus aset dekanat / fakultas (biar lebih realistis)
+        $barangDekanatDummy = [
+            'Proyektor EPSON Laser',
+            'Kursi Lipat Kuliah',
+            'Meja IBM Seminar',
+            'Laser Pointer Presentasi',
+            'Sound System Aula Gedung',
+            'AC Portable 2 PK',
+            'Podium Kayu Jati',
+            'Papan Tulis Kaca (Glassboard)',
+            'Genset Portable 5000W'
+        ];
+
+        foreach ($dekanatUsers as $user) {
+
+            for ($i = 1; $i <= 4; $i++) {
+                $randomCategory = $categories->random();
+                $namaBarang = fake()->randomElement($barangDekanatDummy) . ' ' . $user->username . ' ' . $i;
+
+                $inventaris = Inventaris::create([
+                    'id_user'       => $user->id,
+                    'id_category'   => $randomCategory->id,
+                    'nama'          => $namaBarang,
+                    'status_pinjam' => fake()->boolean(10), // Lebih jarang dipinjam secara random
+                    'deskripsi'     => fake()->paragraph(2),
+                    'image'         => 'uploads/inventaris/' . fake()->uuid() . '.jpg',
+                    'created_at'    => now(),
+                    'updated_at'    => now(),
+                ]);
+
+                for ($j = 1; $j <= 10; $j++) {
+                    \App\Models\Stock::create([
+                        'id_inventaris' => $inventaris->id,
+                        // Set 95% bernilai 1 (Tersedia), karena barang fakultas biasanya selalu ready di awal
+                        'status'        => fake()->boolean(95) ? 1 : 0,
+                        'created_at'    => now(),
+                        'updated_at'    => now(),
+                    ]);
+                }
+            }
+        }
+
         $himaif = User::where('username', 'himaif')->firstOrFail();
 
         // Surat hanya boleh meminjam barang dari 1 LM saja.
