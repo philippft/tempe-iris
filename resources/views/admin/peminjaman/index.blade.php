@@ -170,9 +170,116 @@
     </div>
 
         <!-- HEADER SECTION -->
-<div class="p-10">
-</div> 
-        <!-- STATISTIK PEMINJAMAN (GRID CARD) --
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+            <div>
+                <h1 class="text-2xl font-extrabold text-[#0F172A]">Daftar Peminjaman Inventaris</h1>
+                <p class="mt-1 text-sm text-[#64748B]">Kelola dan pantau status peminjaman inventaris Anda.</p>
+            </div>
+            <a href="{{ route('admin.peminjaman.create') }}"
+                class="inline-flex items-center gap-2 rounded-lg bg-[#0A5C66] px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#084952] transition">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Tambah Peminjaman
+            </a>
+        </div>
+
+        <!-- STATISTIK PEMINJAMAN (GRID CARD) -->
+        <div class="mb-4">
+            <h2 class="text-xs font-bold text-[#94A3B8] uppercase tracking-wider mb-4">Statistik Peminjaman</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <!-- Card 1: Total Masuk -->
+                <div
+                    class="relative rounded-2xl border-l-[4px] border-[#0A5C66] bg-white p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wide">Total Peminjaman Masuk
+                        </p>
+                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratMasuk->count() }} <span
+                                class="text-xs font-medium text-[#94A3B8] normal-case tracking-normal">Peminjaman</span>
+                        </p>
+                    </div>
+                    <div class="rounded-lg bg-[#E0F2FE] p-1.5 text-[#0A5C66]">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.656 48.656 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Card 2: Total Keluar -->
+                <div
+                    class="relative rounded-2xl border-l-[4px] border-[#0F172A] bg-white p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wide">Total Peminjaman Keluar
+                        </p>
+                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratKeluar->count() }} <span
+                                class="text-xs font-medium text-[#94A3B8] normal-case tracking-normal">Peminjaman</span>
+                        </p>
+                    </div>
+                    <div class="rounded-lg bg-[#E2E8F0] p-1.5 text-[#0F172A]">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.656 48.656 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Card 3: Total Selesai -->
+                <div
+                    class="relative rounded-2xl border-l-[4px] border-[#22C55E] bg-white p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wide">Total Selesai</p>
+                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratApprove->count() }} <span
+                                class="text-xs font-medium text-[#94A3B8] normal-case tracking-normal">Peminjaman</span>
+                        </p>
+                    </div>
+                    <div class="rounded-lg bg-[#DCFCE7] p-1.5 text-[#22C55E]">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Card 4: Total Diproses -->
+                <div
+                    class="relative rounded-2xl border-l-[4px] border-[#EAAA08] bg-white p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wide">Total Diproses</p>
+                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratPending->count() }}<span
+                                class="text-xs font-medium text-[#94A3B8] normal-case tracking-normal">Peminjaman</span>
+                        </p>
+                    </div>
+                    <div class="rounded-lg bg-[#FEF9E7] p-1.5 text-[#EAAA08]">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baris Kedua Statistik: Total Ditolak -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div
+                    class="relative rounded-2xl border-l-[4px] border-[#EF4444] bg-white p-5 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wide">Total Ditolak</p>
+                        <p class="mt-2 text-3xl font-extrabold text-[#0F172A]">{{ $suratReject->count() }} <span
+                                class="text-xs font-medium text-[#94A3B8] normal-case tracking-normal">Peminjaman</span>
+                        </p>
+                    </div>
+                    <div class="rounded-lg bg-[#FEE2E2] p-1.5 text-[#EF4444]">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- MAIN DATA BOX -->
         <div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm mb-8">
 
@@ -287,7 +394,7 @@
                                 </td>
 
                                 <td class="px-6 py-4 font-bold text-[#0A5C66]">
-                                    {{ $row->detailPeminjaman->first()->inventaris->user->organization_name }}
+                                    {{ $row->detailPeminjaman->first()->inventaris->user->organization->name }}
                                 </td>
 
                                 <td class="whitespace-nowrap px-4 py-4 text-center">
@@ -304,7 +411,8 @@
                                             </svg>
                                         </a>
 
-                                        <form action="{{ route('admin.inventaris.destroy', $row->id) }}" method="POST"
+                                        <form action="{{ route('admin.peminjaman.destroy', $row->id) }}"
+                                            method="POST"
                                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan surat ini?')">
                                             @csrf
                                             @method('DELETE')
@@ -425,7 +533,7 @@
                             if ($row->tandatangan_pimpinan === 1 && $row->status_peminjaman == 1) {
                             $statusText = 'AKTIF';
                             $badgeBg = 'bg-[#22C55E]'; // Hijau
-                            } elseif ($row->tandatangan_pimpinan === 0) {
+                            } elseif ($row->status_peminjaman === 0) {
                             $statusText = 'DITOLAK';
                             $badgeBg = 'bg-[#EF4444]'; // Merah
                             } else {
@@ -466,7 +574,7 @@
                                 </td>
 
                                 <td class="px-6 py-4 font-bold text-[#0A5C66]">
-                                    {{ $row->detailPeminjaman->first()->inventaris->user->organization_name }}
+                                    {{ $row->detailPeminjaman->first()->inventaris->user->organization->name }}
                                 </td>
 
                                 <td class="whitespace-nowrap px-4 py-4 text-center">
@@ -483,7 +591,8 @@
                                             </svg>
                                         </a>
 
-                                        <form action="{{ route('admin.inventaris.destroy', $row->id) }}" method="POST"
+                                        <form action="{{ route('admin.peminjaman.destroy', $row->id) }}"
+                                            method="POST"
                                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan surat ini?')">
                                             @csrf
                                             @method('DELETE')

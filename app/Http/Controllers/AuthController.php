@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Models\Organization;
 
 class AuthController extends Controller
 {
@@ -15,6 +19,19 @@ class AuthController extends Controller
         }
 
         return view('login');
+    }
+
+    public function registerView() 
+    {
+        if (Auth::check()) {
+            return $this->redirectBasedOnRole(Auth::user()->role);
+        }
+
+        $organizations = Organization::where('name', 'like', 'Program Studi%')
+        ->orderBy('id')
+        ->get();
+
+        return view('register', compact('organizations'));
     }
 
     public function authenticate(Request $request) 
@@ -31,14 +48,13 @@ class AuthController extends Controller
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
+                $request->session()->regenerate();
 
-                return back()->withErrors([
-                    'username' => 'Akun Anda belum diverifikasi oleh Admin.',
-                ])->onlyInput('username');
+            if (is_null(Auth::user()->verify_at)) {
+                return redirect()->route('user.detail-akun', Auth::user()->id)
+                    ->with('warning', 'Akun Anda sedang menunggu verifikasi admin.');
             }
 
-
-            $request->session()->regenerate();
             if(Auth::user()->role) {
                 return $this->redirectBasedOnRole(Auth::user()->role);
             }
@@ -47,6 +63,47 @@ class AuthController extends Controller
         return back()->withErrors([
             'username' => 'Username atau Password salah!',
         ])->onlyInput('username');
+    }
+
+    public function register(Request $request) 
+    {
+        $validated = $request->validate([
+            'nama_lengkap'      => 'required|string|max:255',
+            'nim_nip'           => 'required|string|max:20|unique:users,nim_nip', // Input bernama nim_nip, tapi mengecek ke kolom nim di db
+            'prodi'             => 'required|exists:organizations,id',
+            'email'             => 'required|string|email|max:255|unique:users,email',
+            'ktm'               => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'password'          => 'required|string|min:8|confirmed', 
+        ], [
+            'nim_nip.unique'    => 'NIM/NIP ini sudah terdaftar di sistem.', // Diperbaiki agar sesuai dengan nama input
+            'email.unique'      => 'Email ini sudah digunakan.',
+            'password.confirmed'=> 'Konfirmasi password tidak cocok.',
+            'ktm.image'         => 'File yang diupload harus berupa gambar.',
+        ]);
+
+        $ktmPath = null;
+        if ($request->hasFile('ktm')) {
+            $file = $request->file('ktm');
+            $fileName = 'ktm_' . $validated['nim_nip'] . '_' . time() . '.' . $file->getClientOriginalExtension();
+            
+            Storage::disk('public')->putFileAs('ktm', $file, $fileName);
+            $ktmPath = 'storage/ktm/' . $fileName; 
+        }
+
+        User::create([
+            'name'      => $validated['nama_lengkap'], 
+            'nim_nip'   => $validated['nim_nip'],
+            'username'  => $validated['nim_nip'], 
+            'id_organization'     => $validated['prodi'],
+            'email'     => $validated['email'],
+            'ktm'       => $ktmPath,
+            'password'  => Hash::make($validated['password']), 
+            'role'      => 'mahasiswa', 
+            'verify_at' => null,
+        ]);
+
+        return redirect()->route('login')
+            ->with('success', 'Pendaftaran berhasil! Silakan login untuk mengecek status verifikasi Anda.');
     }
 
     public function logout(Request $request)
