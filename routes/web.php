@@ -73,7 +73,8 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::get('/management-user/detail/{user}', [AdminDashboardController::class, 'userDetail'])->name('user.detail');
 
     Route::put('/user/approve/{user}', [AdminDashboardController::class, 'approveUser'])->name('user.approve')->middleware('throttle:2,1');;
-
+    
+    Route::get('/surat/{surat}/preview',[PdfController::class,'previewSurat'])->name('preview.surat');
     Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 
 });
