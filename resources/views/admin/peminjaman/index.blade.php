@@ -88,7 +88,7 @@
                 headerClass="text-white font-bold text-sm uppercase"
                 bg="bg-white overflow-hidden"
             >
-            @foreach($suratMasuk as $surat)
+            @forelse($suratMasuk as $surat)
                 <x-table-row>
                     <div>{{ sprintf('%02d', $loop->iteration) }}</div>
                     <div class="font-bold justify-center">
@@ -126,8 +126,10 @@
                                                 </button>
                                             </form>
                     </div>
-                </x-table-row>            
-            @endforeach
+                </x-table-row>
+                @empty
+                <x-table-empty/>
+            @endforelse            
             </x-table>
         </x-container>
     </div>
