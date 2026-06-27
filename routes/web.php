@@ -34,6 +34,8 @@ Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('user.')->group
         Route::get('/dashboard', 'userDashboard')->name('dashboard');
         Route::get('/peminjaman', 'index')->name('peminjaman.index');
         Route::get('/peminjaman/create', 'create')->name('peminjaman.create');
+        Route::delete('/peminjaman/delete/{surat}', 'destroy')->name('peminjaman.destroy');
+
         Route::get('/peminjaman/detail/{surat}', 'detailPeminjaman')->name('peminjaman.detail-surat');
         Route::post('/peminjaman/add-detail', 'addDetailPeminjaman')->name('peminjaman.detail');
 
@@ -60,6 +62,8 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::controller(PeminjamanController::class)->group(function () {
         Route::get('/peminjaman', 'index')->name('peminjaman.index');
         Route::get('/peminjaman/create', 'create')->name('peminjaman.create');
+        Route::delete('/peminjaman/delete/{surat}', 'destroy')->name('peminjaman.destroy');
+
         Route::get('/peminjaman/detail/{surat}', 'detailPeminjaman')->name('peminjaman.detail-surat');
         Route::post('/peminjaman/add-detail', 'addDetailPeminjaman')->name('peminjaman.detail');
 
