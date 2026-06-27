@@ -18,6 +18,7 @@
             type="text"
             name="{{ $name }}"
             placeholder="{{ $placeholder }}"
+            value="{{ request($name) }}"
             {{ $attributes->merge(['class' => 'block w-full py-4 pl-12 pr-4 text-dark-grey font-sans bg-[#F2F3FF] border border-transparent rounded-xl focus:ring-2 focus:ring-[#0E5C66] focus:border-transparent focus:outline-none placeholder-gray-500 sm:text-base transition-shadow']) }}
         >
     </div>
@@ -50,7 +51,7 @@
                 <div class="py-1 divide-y divide-gray-100">
                     @if(!empty($filterOptions))
                         @foreach($filterOptions as $value => $label)
-                            <button type="button" class="w-full text-left block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+                            <button type="submit" name="sort" value="{{ $value }}" class="w-full text-left block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors">
                                 {{ $label }}
                             </button>
                         @endforeach

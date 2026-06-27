@@ -8,7 +8,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-bg-light h-screen font-sans overflow-hidden overflow-hidden">
+<body class="bg-bg-light h-screen font-sans overflow-x-auto">
     <div class="flex h-full">
         {{-- Sidebar --}}
         <x-sidebar class="flex-shrink-0" />

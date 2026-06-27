@@ -16,7 +16,10 @@ class UserDashboardController extends Controller
 {
     public function userDashboard()
     {
-        $surats = Surat::paginate(10);
+        $surats = Surat::where('id_user', auth()->id())
+        ->latest()
+        ->paginate(5);
+
         $suratKeluar = Surat::where('id_user', auth()->id())
         ->get();
         // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
@@ -35,7 +38,34 @@ class UserDashboardController extends Controller
         })->count();
         // dd($totalSurat);
 
-        return view('user.dashboard', compact('surats', 'suratKeluar', 'suratReject', 'suratAprove', 'suratPending'));
+        $search = request('search');
+        $sort = request('sort');
+
+        $peminjamanAktif = Surat::with([
+            'detailPeminjaman.inventaris.user.organization'
+        ])
+        ->where('id_user', auth()->id())
+        ->where('status_peminjaman', 1)
+
+        ->when($search, function ($query) use ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('nomor', 'like', "%{$search}%")
+                    ->orWhere('acara', 'like', "%{$search}%");
+            });
+        })
+        ->when($sort === 'terbaru', function ($query) {
+            $query->orderByDesc('tanggal_peminjaman');
+        })
+        ->when($sort === 'terlama', function ($query) {
+            $query->orderBy('tanggal_peminjaman');
+        })
+        ->when(!$sort, function ($query) {
+            $query->latest('tanggal_peminjaman');
+        })
+
+        ->paginate(5, ['*'], 'aktif_page')
+        ->withQueryString();
+        return view('user.dashboard', compact('surats', 'suratKeluar', 'suratReject', 'suratAprove', 'suratPending', 'peminjamanAktif'));
     }
 
     public function detail(User $user)
@@ -45,8 +75,50 @@ class UserDashboardController extends Controller
         }
         return view('user.detail-akun', compact('user'));
     } 
+
     public function index()
     {
+        $search = request('search');
+        $status = request('status');
+
+        $query = Surat::with([
+            'detailPeminjaman.inventaris.user.organization'
+        ])
+        ->where('id_user', auth()->id());
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('acara', 'like', "%{$search}%")
+                ->orWhere('nomor', 'like', "%{$search}%");
+            });
+        }
+
+        $query->when($status, function ($q) use ($status) {
+            if ($status === 'aktif') {
+                $q->where('status_peminjaman', 1)
+                ->whereDate('tanggal_kembali', '>=', now());
+            }
+            elseif ($status === 'selesai') {
+                $q->where('status_peminjaman', 1)
+                ->whereDate('tanggal_kembali', '<', now());
+            }
+            elseif ($status === 'diterima') {
+                $q->where('status_peminjaman', 1);
+            }
+            elseif ($status === 'pending') {
+                $q->whereNull('status_peminjaman');
+            }
+            elseif ($status === 'ditolak') {
+                $q->where('status_peminjaman', 0);
+            }
+        });
+
+        $query->latest('tanggal_peminjaman');
+        
+        $peminjaman = $query
+            ->paginate(5)
+            ->withQueryString();
+
         // dd($suratMasuk->first()->detailPeminjaman->first()->inventaris->user);
 
         $suratKeluar = Surat::where('id_user', auth()->id())
@@ -55,19 +127,27 @@ class UserDashboardController extends Controller
         
         $suratReject = $suratKeluar->filter(
             fn($s) => $s->getRawOriginal('status_peminjaman') === 0
-        );
+        )->count();
 
         $suratAprove = $suratKeluar->filter(
             fn($s) => $s->getRawOriginal('status_peminjaman') === 1
-        );
+        )->count();
 
         $suratPending = $suratKeluar->filter(function ($surat) {
             return $surat->id_user === auth()->id()
                 && $surat->status_peminjaman === null;
-        });
+        })->count();
         // dd($totalSurat);
 
-        return view('user.peminjaman.index', compact('suratKeluar', 'suratReject', 'suratAprove', 'suratPending'));
+        $suratAktif = $suratKeluar->filter(
+            fn($s) => $s->status_peminjaman == 1 && $s->tanggal_kembali >= now()
+        )->count(); 
+
+        $suratSelesai = $suratKeluar->filter(
+            fn($s) => $s->status_peminjaman == 1 && $s->tanggal_kembali < now()
+        )->count();
+
+        return view('user.peminjaman.index', compact('peminjaman', 'suratKeluar', 'suratAktif', 'suratReject', 'suratAprove', 'suratPending', 'suratSelesai'));
     }
 
     public function create(Request $request)
@@ -129,6 +209,11 @@ class UserDashboardController extends Controller
 
     public function detailPeminjaman(Surat $surat)
     {
+         $surat->load([
+            'user.organization',
+            'detailPeminjaman.inventaris.category'
+        ]);
+        
         return view('user.peminjaman.detail-surat', compact('surat'));
     }
 

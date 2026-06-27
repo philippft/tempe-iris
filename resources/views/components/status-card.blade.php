@@ -1,19 +1,19 @@
 @props([
-    'status' => 0,
+    'status' => null,
 ])
 
 @php
-    $statusText = match((int) $status) {
-        NULL => 'Pending',
-        0 => 'Ditolak',
-        1 => 'Diterima',
+    $statusText = match ($status) {
+        null => 'Pending',
+        false => 'Ditolak',
+        true => 'Diterima',
         default => 'Unknown',
     };
 
-    $colorClasses = match((int) $status) {
-        NULL => 'bg-status-yellow',
-        0 => 'bg-status-red',
-        1 => 'bg-status-green',
+    $colorClasses = match ($status) {
+        null => 'bg-status-yellow',
+        false => 'bg-status-red',
+        true => 'bg-status-green',
         default => 'bg-gray-400 shadow-sm',
     };
 @endphp

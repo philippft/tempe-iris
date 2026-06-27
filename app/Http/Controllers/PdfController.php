@@ -74,4 +74,26 @@ class PdfController extends Controller
         $safeNomor = str_replace('/', '_', $surat->nomor);
         return $pdf->download('Surat_Permohonan_' . $safeNomor . '.pdf');
     }
+
+    public function previewSurat(Surat $surat)
+    {
+        $user = $surat->user;
+
+        $surat->load([
+            'user',
+            'detailPeminjaman.inventaris.user.organization',
+            'kegiatan'
+        ]);
+
+        $singkatanAcara = collect(explode(' ', $surat->acara))
+            ->map(fn($word) => strtoupper(substr($word,0,1)))
+            ->implode('');
+
+        $tujuan = $surat->detailPeminjaman
+            ->map(fn($detail) => $detail->inventaris->user->organization->name)
+            ->unique()
+            ->first();
+
+        return view('user.surat.preview-surat', compact('surat', 'user', 'tujuan', 'singkatanAcara'));
+    }
 }

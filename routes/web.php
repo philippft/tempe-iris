@@ -43,6 +43,7 @@ Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('user.')->group
         Route::get('/peminjaman/create/detail-kegiatan/{surat}', 'detailKegiatan')->name('peminjaman.detail.kegiatan');
         Route::put('/peminjaman/add-detail-kegiatan/{surat}', 'addDetailKegiatan')->name('peminjaman.store.kegiatan');
     });
+    Route::get('/surat/{surat}/preview',[PdfController::class,'previewSurat'])->name('preview.surat');
     Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 });
 
