@@ -177,16 +177,17 @@
                         <tbody class="divide-y divide-gray-100 bg-white font-medium text-slate-700">
                             @forelse($suratKeluar as $index => $row)
                             @php
-                            // 💡 LOGIKA STRICK WARNA DAN TEXT BADGE STATUS
-                            if ($row->tandatangan_pimpinan === 1 && $row->status_peminjaman == 1) {
+                            // 💡 KEMBALIKAN KE PERBANDINGAN LONGGAR (==) AGAR STRING O DAN INT 0 TETAP COCOK
+                            if ($row->tandatangan_pimpinan == 1 && $row->status_peminjaman == 1) {
                             $statusText = 'AKTIF';
                             $badgeBg = 'bg-[#22C55E]'; // Hijau
-                            } elseif ($row->status_peminjaman === 0) {
+                            } elseif ($row->status_peminjaman == 0 && $row->status_peminjaman !== null) {
+                            // Dipastikan nilainya 0 (Ditolak), dan bukan null (Pending)
                             $statusText = 'DITOLAK';
                             $badgeBg = 'bg-[#EF4444]'; // Merah
-                            } elseif ($row->status_peminjaman === null) {
-                                $statusText = 'PENDING';
-                                $badgeBg = 'bg-[#FDB022]';
+                            } else {
+                            $statusText = 'PENDING';
+                            $badgeBg = 'bg-[#FDB022]'; // Oranye
                             }
                             @endphp
 
@@ -222,7 +223,7 @@
                                 </td>
 
                                 <td class="px-6 py-4 font-bold text-[#0A5C66]">
-                                    {{ $row->detailPeminjaman->first()->inventaris->user->organization_name }}
+                                    {{ $row->detailPeminjaman->first()->inventaris->user->organization->name }}
                                 </td>
 
                                 <td class="whitespace-nowrap px-4 py-4 text-center">
@@ -239,7 +240,8 @@
                                             </svg>
                                         </a>
 
-                                        <form action="#" method="POST"
+                                        <form action="{{ route('user.peminjaman.destroy', $row->id) }}"
+                                            method="POST"
                                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan surat ini?')">
                                             @csrf
                                             @method('DELETE')

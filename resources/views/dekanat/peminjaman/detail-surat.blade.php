@@ -7,11 +7,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-    <a href="{{ route('admin.download.surat', $surat->id) }}"
+    <a href="{{ route('dekanat.download.surat', $surat->id) }}"
         class="inline-block px-3 py-1.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition text-xs shadow-sm">
         Cetak PDF
     </a>
-    <form action="{{ route('admin.peminjaman.verifikasi', $surat->id) }}" method="POST" onsubmit="disableButton(this)">
+    <form action="{{ route('dekanat.peminjaman.verifikasi', $surat->id) }}" method="POST" onsubmit="disableButton(this)">
         @csrf
         @method('PUT')
 

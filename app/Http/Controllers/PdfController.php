@@ -58,7 +58,7 @@ class PdfController extends Controller
             return $detail;
         });
 
-        // dd($inventaris);
+        // dd($surat->user->organization->name)
 
         $pdf = Pdf::loadView('pdf.surat', compact('surat', 'user', 'tujuan', 'kegiatan', 'inventaris'));
 

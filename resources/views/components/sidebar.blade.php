@@ -4,7 +4,10 @@ $user = auth()->user();
 if (!$user) return;
 
 $role = $user->role;
-$name = $user->username;
+$role_admin = str_replace('_', ' ', $user->role);
+$name = $user->name;
+$nim_nip = $user->nim_nip;
+$admin_name = str_replace('_', ' ', $user->username);
 $identifier = $user->NIM_NIP;
 
 $subtitle = match($role) {
@@ -17,15 +20,15 @@ $subtitle = match($role) {
 
 $menus = match($role) {
     'mahasiswa' => [
-        ['label'=>'Dashboard','route'=>'mahasiswa.dashboard','icon'=>'dashboard'],
-        ['label'=>'Peminjaman','route'=>'mahasiswa.peminjaman.index','icon'=>'transfer'],
+        ['label'=>'Dashboard','route'=>'user.dashboard','icon'=>'dashboard'],
+        ['label'=>'Peminjaman','route'=>'user.peminjaman.index','active'=>'user.peminjaman.*','icon'=>'transfer'],
     ],
 
     'admin_LM' => [
         ['label'=>'Dashboard','route'=>'admin.dashboard','icon'=>'dashboard'],
-        ['label'=>'Peminjaman','route'=>'admin.peminjaman.index','icon'=>'transfer'],
-        ['label'=>'Manajemen User','route'=>'admin.management.user','icon'=>'users'],
-        ['label'=>'Manajemen Inventaris','route'=>'admin.inventaris.index','icon'=>'archive'],
+        ['label'=>'Peminjaman','route'=>'admin.peminjaman.index','active'=>'admin.peminjaman.*','icon'=>'transfer'],
+        ['label'=>'Manajemen User','route'=>'admin.management.user','active'=>['admin.management.user','admin.user.*'],'icon'=>'users'],
+        ['label'=>'Manajemen Inventaris','route'=>'admin.inventaris.index','active'=>'admin.inventaris.*','icon'=>'archive'],
     ],
 
     'admin_dekanat' => [
@@ -47,29 +50,45 @@ $menus = match($role) {
 
     {{-- ===================== HEADER ===================== --}}
     <div class="flex items-center justify-between px-8.5 py-8">
-        <div class="flex items-center gap-3">
-            {{-- Nama & Subtitle --}}
-            <div class="flex flex-col justify-center">
-                <p class="font-bold text-[#051F20] text-[16px] leading-tight tracking-wide uppercase">
-                    {{ $name }}
-                </p>
-                <p class="text-[#64748B] text-[13px] font-medium mt-0.5 uppercase tracking-wide">
-                    {{ $subtitle }}
-                </p>
+        @if ($role === 'mahasiswa')
+            <div class="flex items-center gap-3">
+                {{-- Nama & Subtitle --}}
+                <div class="flex flex-col justify-center">
+                    <p class="font-bold text-[#051F20] text-[16px] leading-tight tracking-wide uppercase">
+                        {{ $name }}
+                    </p>
+                    <p class="text-[#64748B] text-[13px] font-medium mt-0.5 uppercase tracking-wide">
+                        {{ $nim_nip }}
+                    </p>
+                </div>
             </div>
-        </div>
+        @endif
+        
+        @if (in_array($role, ['admin_LM', 'admin_dekanat', 'petinggi_dekanat']))
+            <div class="flex items-center gap-3">
+                {{-- Nama & Subtitle --}}
+                <div class="flex flex-col justify-center">
+                    <p class="font-bold text-[#051F20] text-[16px] leading-tight tracking-wide uppercase">
+                        {{ $admin_name }}
+                    </p>
+                    <p class="text-[#64748B] text-[13px] font-medium mt-0.5 uppercase tracking-wide">
+                        {{ $role_admin }}
+                    </p>
+                </div>
+            </div>
+        @endif
 
         {{-- Tombol Settings --}}
         @if ($role === 'mahasiswa')
             <a
-                href="#" 
+                href="{{ route('user.detail-akun', ['user' => auth()->user()->id]) }}"
                 class="flex items-center justify-center w-9.5 h-9.5 bg-[#E2E8F0]/70 rounded-xl flex-shrink-0 hover:bg-gray-200 transition-colors ml-2"
                 title="Pengaturan"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#475569]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.61717 20.869L7.19979 17.5299C6.97371 17.443 6.76068 17.3386 6.56068 17.2169C6.36069 17.0952 6.16504 16.9647 5.97374 16.8256L2.86948 18.1299L0 13.1735L2.68688 11.1388C2.66949 11.0171 2.66079 10.8997 2.66079 10.7866C2.66079 10.6736 2.66079 10.5562 2.66079 10.4345C2.66079 10.3127 2.66079 10.1954 2.66079 10.0823C2.66079 9.96928 2.66949 9.85189 2.68688 9.73016L0 7.69543L2.86948 2.73905L5.97374 4.04336C6.16504 3.90424 6.36504 3.77381 6.57373 3.65207C6.78241 3.53033 6.9911 3.42599 7.19979 3.33904L7.61717 0H13.3561L13.7735 3.33904C13.9996 3.42599 14.2126 3.53033 14.4126 3.65207C14.6126 3.77381 14.8083 3.90424 14.9996 4.04336L18.1038 2.73905L20.9733 7.69543L18.2864 9.73016C18.3038 9.85189 18.3125 9.96928 18.3125 10.0823C18.3125 10.1954 18.3125 10.3127 18.3125 10.4345C18.3125 10.5562 18.3125 10.6736 18.3125 10.7866C18.3125 10.8997 18.2951 11.0171 18.2603 11.1388L20.9472 13.1735L18.0777 18.1299L14.9996 16.8256C14.8083 16.9647 14.6083 17.0952 14.3996 17.2169C14.1909 17.3386 13.9822 17.443 13.7735 17.5299L13.3561 20.869H7.61717ZM9.44321 18.7821H11.504L11.8692 16.0169C12.4083 15.8778 12.9083 15.6735 13.3692 15.4039C13.83 15.1343 14.2518 14.8083 14.6344 14.4257L17.2169 15.4952L18.2343 13.7213L15.9908 12.0257C16.0778 11.7823 16.1387 11.5258 16.1735 11.2562C16.2082 10.9866 16.2256 10.7127 16.2256 10.4345C16.2256 10.1562 16.2082 9.88233 16.1735 9.61277C16.1387 9.34321 16.0778 9.0867 15.9908 8.84323L18.2343 7.14762L17.2169 5.37376L14.6344 6.46938C14.2518 6.06939 13.83 5.73462 13.3692 5.46506C12.9083 5.1955 12.4083 4.99116 11.8692 4.85204L11.5301 2.0869H9.4693L9.10409 4.85204C8.56497 4.99116 8.06499 5.1955 7.60413 5.46506C7.14327 5.73462 6.72155 6.0607 6.33895 6.44329L3.75641 5.37376L2.73905 7.14762L4.98247 8.81714C4.89551 9.078 4.83464 9.33886 4.79986 9.59973C4.76508 9.86059 4.74769 10.1388 4.74769 10.4345C4.74769 10.7127 4.76508 10.9823 4.79986 11.2432C4.83464 11.504 4.89551 11.7649 4.98247 12.0257L2.73905 13.7213L3.75641 15.4952L6.33895 14.3996C6.72155 14.7996 7.14327 15.1343 7.60413 15.4039C8.06499 15.6735 8.56497 15.8778 9.10409 16.0169L9.44321 18.7821ZM10.5388 14.0866C11.5475 14.0866 12.4083 13.73 13.1214 13.017C13.8344 12.304 14.1909 11.4432 14.1909 10.4345C14.1909 9.42582 13.8344 8.56497 13.1214 7.85195C12.4083 7.13893 11.5475 6.78241 10.5388 6.78241C9.51277 6.78241 8.64758 7.13893 7.94325 7.85195C7.23892 8.56497 6.88676 9.42582 6.88676 10.4345C6.88676 11.4432 7.23892 12.304 7.94325 13.017C8.64758 13.73 9.51277 14.0866 10.5388 14.0866Z" fill="#40484B"/>
+            </svg>
+
             </a>
         @endif
     </div>
@@ -78,7 +97,7 @@ $menus = match($role) {
     <nav class="flex-1 mt-2 overflow-y-auto">
         @foreach ($menus as $menu)
             @php
-                $active = request()->routeIs($menu['route']);
+                $active = request()->routeIs($menu['active'] ?? $menu['route']);
             @endphp
             {{-- Tambahkan class 'group' untuk mentrigger perubahan pada elemen di dalamnya saat di-hover --}}
             <a
