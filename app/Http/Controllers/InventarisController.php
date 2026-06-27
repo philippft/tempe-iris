@@ -20,7 +20,6 @@ class InventarisController extends Controller
         $user = Auth::user();
 
         $inventaris = Inventaris::with('category')
-            ->where('id_user', $user->id)
             ->withCount([
                 'stocks as stok_aktif' => function ($query) {
                     $query->where('status', 1);
@@ -29,7 +28,7 @@ class InventarisController extends Controller
                     $query->where('status', 0);
                 }
             ])
-            ->paginate(1);
+            ->paginate(10);
         // dd($inventaris);
 
         $categories = Category::all();

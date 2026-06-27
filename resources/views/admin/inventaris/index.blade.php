@@ -156,7 +156,6 @@
                 <x-table-empty title="Tidak ada Inventaris" message="Saat ini belum ada data inventaris yang tersedia atau tidak ada inventaris yang cocok dengan pencarian Anda."/>
             @endforelse
             </x-table>
-        <x-pagination :data="$inventaris" />
     </x-container>
 </div>   
 @endsection

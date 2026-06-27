@@ -8,12 +8,13 @@
     @vite('resources/css/app.css')
 </head>
 
-<body class="bg-bg-light h-screen font-sans overflow-hidden">
-    <div class="flex h-full">
+<body class="bg-bg-light font-sans h-screen overflow-hidden">
+    <div class="flex h-screen min-h-0">
         {{-- Sidebar --}}
         <x-sidebar class="flex-shrink-0" />
+
         {{-- Content --}}
-        <main class="flex-1 overflow-y-auto">
+        <main class="flex-1 min-h-0 overflow-y-auto">
             @yield('content')
         </main>
     </div>
