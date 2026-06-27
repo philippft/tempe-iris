@@ -1,10 +1,34 @@
 @props([
-    'label1' => '',        // Teks utama
-    'label2' => '',        // Teks sekunder (opsional)
-    'variant' => '',  // Pilihan: 'green', 'yellow', 'red'
+    'status' => null,   // Properti baru untuk menerima data status
+    'label1' => '',     // Teks utama (fallback jika tidak pakai status)
+    'label2' => '',     // Teks sekunder (opsional)
+    'variant' => '',    // Pilihan: 'green', 'yellow', 'red' (fallback)
 ])
 
 @php
+    // Jika ada data status yang dikirim, otomatis tentukan variant dan teksnya
+    if ($status !== null) {
+        // Seragamkan menjadi huruf kecil semua untuk pengecekan
+        $cekStatus = strtolower(trim((string) $status));
+        
+        // Tentukan warna otomatis berdasarkan kata kunci status
+        $variant = match(true) {
+            in_array($cekStatus, ['aktif', '1', 'diterima', 'approved']) => 'green',
+            in_array($cekStatus, ['pending', 'menunggu', 'diproses']) => 'yellow',
+            in_array($cekStatus, ['tidak aktif', '0', 'ditolak', 'rejected']) => 'red',
+            default => 'default',
+        };
+
+        // Otomatis atur teks Label 1 berdasarkan status jika tidak diisi manual
+        if ($label1 === '') {
+            $label1 = match($cekStatus) {
+                '1' => 'Aktif',
+                '0' => 'Tidak Aktif',
+                default => ucfirst($status), // Huruf kapital di awal kata
+            };
+        }
+    }
+
     // Mengatur palet warna (Latar & Border, Titik, dan Teks)
     $colors = match($variant) {
         'red' => [

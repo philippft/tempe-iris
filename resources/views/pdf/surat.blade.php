@@ -192,7 +192,7 @@
             <tr>
                 <td colspan="2" class="text-center" style="padding-top: 60px;">
                     Mengetahui,<br>
-                    {{ $surat->prodi }} FMIPA UNUD 2026
+                    {{ $surat->user->organization->name }} FMIPA UNUD 2026
                     
                     {{-- @if($statusPeminjaman === 'Diterima' || $statusPeminjaman === 'Approved') --}}
                         <div class="stempel-container">
