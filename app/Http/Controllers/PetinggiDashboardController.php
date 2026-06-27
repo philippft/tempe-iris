@@ -41,7 +41,7 @@ class PetinggiDashboardController extends Controller
         $suratKeluar = Surat::where('id_user', auth()->id())->get();
         // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
         
-        return view('petinggi.surat.index', compact('surats', 'suratKeluar'));
+        return view('petinggi.peminjaman.index', compact('surats', 'suratKeluar'));
     }
 
     public function index()
@@ -128,17 +128,16 @@ class PetinggiDashboardController extends Controller
         ]);
 
         if ($request->status_peminjaman == '0' && empty($request->catatan_peminjaman)) {
-            return back()->withErrors(['catatan_peminjaman' => 'Wajib memberikan alasan jika menolak permohonan.'])->withInput();
+            return back()->withErrors(['catatan_peminjaman' => 'Wajib memberikan alasan jika menolak.'])->withInput();
         }
 
         DB::beginTransaction();
-
         try {
             $surat->update([
-                'tandatangan_pimpinan'  => $request->status_peminjaman,
-                'catatan_peminjaman' => $request->catatan_peminjaman,
+                'tandatangan_pimpinan' => $request->status_peminjaman,
+                'status_peminjaman'    => $request->status_peminjaman, // ← tambah ini
+                'catatan_peminjaman'   => $request->catatan_peminjaman,
             ]);
-
 
             if ($request->status_peminjaman == '0') {
                 $idInventarisList = DB::table('detail_peminjaman')
@@ -149,20 +148,17 @@ class PetinggiDashboardController extends Controller
                     DB::table('stocks')
                         ->whereIn('id_inventaris', $idInventarisList)
                         ->where('status', 0)
-                        ->update([
-                            'status'     => 1,
-                            'updated_at' => now(),
-                        ]);
+                        ->update(['status' => 1, 'updated_at' => now()]);
                 }
             }
 
             DB::commit();
-
-            $pesan = $request->status_peminjaman == '1' ? 'Peminjaman disetujui!' : 'Peminjaman ditolak dan stok dikembalikan.';
+            $pesan = $request->status_peminjaman == '1' ? 'Peminjaman disetujui!' : 'Peminjaman ditolak.';
             return redirect()->back()->with('success', $pesan);
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal memproses: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
 }
