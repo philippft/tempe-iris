@@ -94,6 +94,52 @@ class UserDashboardController extends Controller
         return view('user.peminjaman.create', compact('tujuan', 'categories', 'inventaris'));
     }
 
+    public function destroy(Surat $surat)
+    {
+        DB::beginTransaction();
+
+        try {
+            if ($surat->getRawOriginal('status_peminjaman') !== 0) {
+                $itemsDiSurat = DB::table('detail_peminjaman')
+                    ->where('id_surat', $surat->id)
+                    ->select('id_inventaris', 'qty_inventaris')
+                    ->get();
+
+                foreach ($itemsDiSurat as $item) {
+
+                    DB::table('stocks')
+                        ->where('id_inventaris', $item->id_inventaris)
+                        ->where('status', 0)
+                        ->limit($item->qty_inventaris)
+                        ->update([
+                            'status'     => 1,
+                            'updated_at' => now(),
+                        ]);
+                }
+            }
+
+            DB::table('kegiatans')->where('id_surat', $surat->id)->delete();
+
+            DB::table('detail_peminjaman')->where('id_surat', $surat->id)->delete();
+
+            DB::table('surat')->where('id', $surat->id)->delete();
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Permohonan peminjaman berhasil dihapus total dari sistem.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            dd([
+                'Pesan Error' => $e->getMessage(),
+                'File' => $e->getFile(),
+                'Baris' => $e->getLine()
+            ]);
+
+            // return redirect()->back()->with('error', 'Gagal menghapus surat: ' . $e->getMessage());
+        }
+    }
+
     public function detailPeminjaman(Surat $surat)
     {
         return view('user.peminjaman.detail-surat', compact('surat'));
