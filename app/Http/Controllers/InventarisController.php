@@ -8,6 +8,7 @@ use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class InventarisController extends Controller
@@ -221,6 +222,41 @@ class InventarisController extends Controller
      */
     public function destroy(Inventaris $inventaris)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $sedangDipinjam = DB::table('stocks')
+                ->where('id_inventaris', $inventaris->id)
+                ->where('status', 0)
+                ->exists();
+
+            if ($sedangDipinjam) {
+                return redirect()->back()->with('error', "Gagal menghapus! Beberapa kepingan unit {$inventaris->nama} saat ini sedang aktif dipinjam oleh organisasi.");
+            }
+
+            if ($inventaris->image) {
+                $imagePath = str_replace('storage/', '', $inventaris->image);
+                if (Storage::disk('public')->exists($imagePath)) {
+                    Storage::disk('public')->delete($imagePath);
+                }
+            }
+
+            DB::table('detail_peminjaman')->where('id_inventaris', $inventaris->id)->delete();
+
+            DB::table('stocks')->where('id_inventaris', $inventaris->id)->delete();
+
+
+            $inventaris->delete();
+
+            DB::commit();
+
+            $routeRedirect = auth()->user()->role === 'dekanat' ? 'dekanat.inventaris.index' : 'admin.inventaris.index';
+
+            return redirect()->route($routeRedirect)
+                ->with('success', "Inventaris {$inventaris->nama} beserta seluruh kepingan unit dan riwayatnya berhasil dihapus permanen.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal menghapus inventaris: ' . $e->getMessage());
+        }
     }
 }
