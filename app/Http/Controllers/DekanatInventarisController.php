@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class InventarisController extends Controller
+class DekanatInventarisController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -66,7 +66,7 @@ class InventarisController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.inventaris.create', compact('categories'));
+        return view('dekanat.inventaris.create', compact('categories'));
     }
 
     /**
@@ -107,7 +107,7 @@ class InventarisController extends Controller
         }
 
         return redirect()
-            ->route('admin.inventaris.index')
+            ->route('dekanat.inventaris.index')
             ->with('message', "{$inventaris->nama} berhasil ditambahkan!");
     }
 
@@ -131,14 +131,8 @@ class InventarisController extends Controller
             $statusStok = 'tidak aktif';
         }
         // dd($inventaris->stocks);
-        $inventaris->load(['detailPeminjaman.surat']);
 
-        $listPeminjam = $inventaris->detailPeminjaman
-            ->map(fn($detail) => $detail->surat?->user)
-            ->filter()
-            ->unique('id');
-
-        // dd($listPeminjam);
+        // dd($jumlahStok);
 
         if ($user) {
             if ($user->role === 'admin_LM') {
@@ -148,7 +142,7 @@ class InventarisController extends Controller
             }
         }
 
-        return view($viewPath, compact('inventaris', 'jumlahStok', 'statusStok', 'listPeminjam'));
+        return view($viewPath, compact('inventaris', 'jumlahStok', 'statusStok'));
     }
 
     /**
@@ -213,7 +207,7 @@ class InventarisController extends Controller
             }
         }
 
-        return redirect()->route('admin.inventaris.index')
+        return redirect()->route('dekanat.inventaris.index')
             ->with('success', "Data inventaris {$inventaris->nama} berhasil diperbarui!");
     }
 
@@ -244,7 +238,6 @@ class InventarisController extends Controller
             DB::table('detail_peminjaman')->where('id_inventaris', $inventaris->id)->delete();
 
             DB::table('stocks')->where('id_inventaris', $inventaris->id)->delete();
-
 
             $inventaris->delete();
 

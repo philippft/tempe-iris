@@ -3,27 +3,35 @@
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DekanatDashboardController;
+use App\Http\Controllers\DekanatInventarisController;
 use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PetinggiDashboardController;
 use App\Http\Controllers\UserDashboardController;
 use App\Mail\NotificationMail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', [AuthController::class, 'loginView'])->name('login');
-Route::post('/login', [AuthController::class, 'authenticate'])->name('login.authenticate');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::middleware('guest')->controller(AuthController::class)->group(function () {
+    // Login
+    Route::get('/login', 'loginView')->name('login');
+    Route::post('/login', 'authenticate')->name('login.authenticate');
 
-Route::get('/register', [AuthController::class, 'registerView'])->name('register');
-Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+    // Register
+    Route::get('/register', 'registerView')->name('register');
+    Route::post('/register', 'register')->name('register.post');
+});
 
+Route::middleware('auth')->controller(AuthController::class)->group(function () {
+    // Logout
+    Route::post('/logout', 'logout')->name('logout');
+});
 
 Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('user.')->group(function () {
     Route::controller(UserDashboardController::class)->group(function () {
@@ -51,7 +59,19 @@ Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('user.')->group
 });
 
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminDashboardController::class, 'adminDashboard'])->name('dashboard');
+    Route::controller(AdminDashboardController::class)->group(function () {
+        // Dashboard Admin
+        Route::get('/dashboard', 'adminDashboard')->name('dashboard');
+
+        // Manajemen Akun Mahasiswa / Users
+        Route::prefix('management-user')->name('management.')->group(function () {
+            Route::get('/', 'managementUser')->name('user');
+            Route::get('/detail/{user}', 'userDetail')->name('detail');
+        });
+
+        // Validasi (KTM)
+        Route::put('/user/approve/{user}', 'approveUser')->name('user.approve')->middleware('throttle:2,1');
+    });
 
     // Inventaris
     Route::resource('inventaris', InventarisController::class)->parameters([
@@ -76,11 +96,6 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
         Route::put('/peminjaman/verifikasi/{surat}', 'verifikasiSurat')->name('peminjaman.verifikasi');
     });
 
-    Route::get('/management-user', [AdminDashboardController::class, 'managementUser'])->name('management.user');
-    Route::get('/management-user/detail/{user}', [AdminDashboardController::class, 'userDetail'])->name('user.detail');
-
-    Route::put('/user/approve/{user}', [AdminDashboardController::class, 'approveUser'])->name('user.approve')->middleware('throttle:2,1');;
-
     Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 
 });
@@ -96,11 +111,14 @@ Route::middleware(['auth', 'isDekanat'])->prefix('dekanat')->name('dekanat.')->g
         Route::put('/peminjaman/verifikasi/{surat}', 'verifikasiSurat')->name('peminjaman.verifikasi');
     });
 
+    // Download Surat
     Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 
     // Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
 
-    Route::get('/inventaris', [InventarisController::class, 'index'])->name('inventaris.index');
+    Route::resource('inventaris', DekanatInventarisController::class)->parameters([
+        'inventaris' => 'inventaris'
+    ]);
 });
 
 Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')->group(function () {
