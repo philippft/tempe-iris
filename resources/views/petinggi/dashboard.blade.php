@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content')
-
+<div class="m-5">
 <x-header-dashboard/>
 
 <div class="grid grid-cols-4 gap-4 mb-10">
@@ -84,5 +84,5 @@
             @endforeach
     </x-table>
 </x-container>
-
+</div>
 @endsection
