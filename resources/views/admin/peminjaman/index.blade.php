@@ -251,7 +251,8 @@
                                             </svg>
                                         </a>
 
-                                        <form action="{{ route('admin.inventaris.destroy', $row->id) }}" method="POST"
+                                        <form action="{{ route('admin.peminjaman.destroy', $row->id) }}"
+                                            method="POST"
                                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan surat ini?')">
                                             @csrf
                                             @method('DELETE')
@@ -430,7 +431,8 @@
                                             </svg>
                                         </a>
 
-                                        <form action="{{ route('admin.inventaris.destroy', $row->id) }}" method="POST"
+                                        <form action="{{ route('admin.peminjaman.destroy', $row->id) }}"
+                                            method="POST"
                                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan surat ini?')">
                                             @csrf
                                             @method('DELETE')
