@@ -3,6 +3,8 @@
     'message' => 'Saat ini belum ada data yang tersedia atau tidak ada data yang cocok dengan pencarian Anda.'
 ])
 
+<!-- note: Pastikan menggunakan forelse ya, bukan foreach -->
+
 <div {{ $attributes->merge(['class' => 'w-full flex flex-col items-center justify-center py-16 px-4 text-center bg-white rounded-b-2xl']) }}>
     <div class="w-16 h-16 bg-bg-dark rounded-2xl flex items-center justify-center text-dark-grey/40 mb-4 border border-border-custom/20">
         @if(isset($icon))
