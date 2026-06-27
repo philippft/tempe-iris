@@ -35,14 +35,34 @@ class PetinggiDashboardController extends Controller
         return view('petinggi.dashboard', compact('surats', 'suratKeluar', 'suratDone', 'suratReject', 'suratAprove', 'suratPending'));
     }
 
-    public function suratDashboard () 
+    public function suratDashboard(Request $request)
     {
-        $surats = Surat::paginate(10);
-        $suratKeluar = Surat::where('id_user', auth()->id())->get();
-        // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
-        
-        return view('petinggi.peminjaman.index', compact('surats', 'suratKeluar'));
+        $query = Surat::query();
+
+        // Filter pencarian
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nomor', 'like', '%' . $request->search . '%')
+                ->orWhere('perihal_peminjaman', 'like', '%' . $request->search . '%')
+                ->orWhere('acara', 'like', '%' . $request->search . '%')
+                ->orWhere('nama_peminjam', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Filter status
+        if ($request->filled('status')) {
+            if ($request->status === 'pending') {
+                $query->whereNull('status_peminjaman');
+            } else {
+                $query->where('status_peminjaman', $request->status);
+            }
+        }
+
+        $surats = $query->latest()->paginate(10)->withQueryString();
+
+        return view('petinggi.peminjaman.index', compact('surats'));
     }
+
 
     public function index()
     {

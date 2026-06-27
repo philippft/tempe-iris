@@ -1,8 +1,14 @@
+@props([
+    'username' => auth()->user()->name,
+    'nim_nip' => auth()->user()->nim_nip,
+])
+
 @extends('layouts.app')
 
 @section('title', 'Detail Surat')
 
 @section('content')
+<div class="m-5">
 <x-header-dashboard />
 
 <x-container>
@@ -29,8 +35,8 @@
             </span>
         </div>
 
-        <a href="{{ route('petinggi.surat.show', $surat) }}?download=1"
-           class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm font-medium text-gray-700">
+        <a href="{{ route('petinggi.surat.download', $surat) }}"
+        class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition text-sm font-medium text-gray-700">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 17H17.01M17 12V17M12 3V12M12 12L9 9M12 12L15 9M5 21H19" />
             </svg>
@@ -70,93 +76,55 @@
     </div>
 
     {{-- ===== PREVIEW DOKUMEN ===== --}}
-    <div class="border border-gray-200 rounded-xl overflow-hidden mb-24 m-5">
+    <div class="border border-gray-200 rounded-xl overflow-hidden mb-6 m-5">
+
         {{-- Header bar --}}
         <div class="bg-primary flex items-center justify-between px-5 py-3">
             <h2 class="text-white font-semibold">Preview Dokumen</h2>
-            <button class="text-white hover:text-gray-200 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4H8M16 4H20V8M20 16V20H16M8 20H4V16" />
-                </svg>
-            </button>
-        </div>
-
-        {{-- Letter body --}}
-        <div class="bg-gray-100 p-8 flex justify-center">
-            <div class="bg-white w-full max-w-2xl shadow-md p-10 text-sm text-gray-800 font-serif">
-
-                {{-- Kop Surat --}}
-                <div class="text-center pb-3 mb-6 border-b-2 border-gray-800">
-                    <p class="font-bold text-base uppercase">Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi</p>
-                    <p class="font-bold text-base uppercase">Universitas Teknologi Campus</p>
-                    <p class="text-xs text-gray-600">Jl. Pendidikan No. 123, Kota Cerdas, Indonesia</p>
-                </div>
-
-                {{-- Nomor + Tanggal --}}
-                <div class="flex justify-between mb-5">
-                    <span>Nomor: {{ $surat->nomor }}</span>
-                    <span>{{ $surat->tanggal_peminjaman?->locale('id')->translatedFormat('d F Y') ?? '-' }}</span>
-                </div>
-
-                {{-- Tujuan --}}
-                <div class="mb-4">
-                    <p>Yth.</p>
-                    <p>{{ $tujuan ?? 'Kepala Laboratorium' }}</p>
-                </div>
-
-                {{-- Hal --}}
-                <div class="mb-5">
-                    <p class="underline font-semibold">Hal: {{ $surat->perihal_peminjaman }}</p>
-                </div>
-
-                {{-- Isi Surat --}}
-                <p class="mb-2">Dengan hormat,</p>
-                <p class="mb-4 leading-relaxed">
-                    Sehubungan dengan diadakannya <strong>{{ $surat->acara }}</strong>
-                    @if($kegiatan->isNotEmpty())
-                        pada tanggal {{ $kegiatan->first()['tanggal_kegiatan'] }}
-                    @endif
-                    , kami bermaksud mengajukan permohonan peminjaman aset inventaris berupa:
-                </p>
-
-                {{-- Daftar Inventaris --}}
-                <ul class="ml-8 mb-5 space-y-1">
-                    @forelse($inventaris as $item)
-                        <li>{{ $item['jumlah'] }} Unit {{ $item['nama_inventaris'] }}</li>
-                    @empty
-                        <li class="text-gray-400 italic">Tidak ada inventaris terdaftar.</li>
-                    @endforelse
-                </ul>
-
-                <p class="mb-10 leading-relaxed">
-                    Demikian permohonan ini kami sampaikan. Atas perhatian dan kerjasamanya, kami ucapkan terima kasih.
-                </p>
-
-                {{-- Tanda Tangan --}}
-                <div class="flex justify-end">
-                    <div class="text-center">
-                        <p class="mb-2">Mengetahui,</p>
-                        <div class="border border-dashed border-gray-400 px-8 py-5 mb-2 text-xs text-gray-400">
-                            @if($surat->getRawOriginal('tandatangan_pimpinan') == 1)
-                                Digital Signature Attached
-                            @else
-                                Menunggu TTD
-                            @endif
-                        </div>
-                        <p class="font-bold">{{ $surat->nama_peminjam }}</p>
-                        <p class="text-xs text-gray-600">NIM. {{ $surat->nim }}</p>
-                    </div>
-                </div>
-
+            <div class="flex items-center gap-2">
+                {{-- Toggle halaman --}}
+                <button onclick="togglePage()"
+                    id="btn-toggle-page"
+                    class="text-xs text-teal-100 hover:text-white border border-teal-400 rounded px-2 py-1 transition">
+                    Lihat Lampiran →
+                </button>
+                {{-- Fullscreen --}}
+                <button onclick="toggleFullscreen()"
+                    class="text-white hover:text-gray-200 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4H8M16 4H20V8M20 16V20H16M8 20H4V16" />
+                    </svg>
+                </button>
             </div>
         </div>
-    </div>
 
+    {{-- iframe preview --}}
+    <div id="preview-container" class="transition-all duration-300 m-15" 
+        style="height: 600px; overflow: hidden; position: relative;">        
+        <iframe
+            id="preview-iframe"
+            src="{{ route('petinggi.surat.preview', $surat) }}"
+            style="width: calc(100% + 17px); height: 100%; border: none;"
+            title="Preview Surat"
+            onload="hideIframeScrollbar(this)">
+        </iframe>
+    </div>
+    <script>
+        function hideIframeScrollbar(iframe) {
+            const style = iframe.contentDocument.createElement('style');
+            style.textContent = `
+                ::-webkit-scrollbar { display: none; }
+                html, body { scrollbar-width: none; -ms-overflow-style: none; }
+            `;
+            iframe.contentDocument.head.appendChild(style);
+        }
+    </script>
+</div>
 </x-container>
 
 {{-- ===== BOTTOM BAR VERIFIKASI (sticky) ===== --}}
 @if(is_null($surat->getRawOriginal('status_peminjaman')))
-<div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+<div class="fixed bottom-0 left-70 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
     <div class="max-w-screen-xl mx-auto px-6 py-3 flex items-center justify-between">
         <p class="text-sm text-gray-500">Pastikan data yang tercantum dalam surat sudah benar dan sesuai.</p>
         <button onclick="document.getElementById('modal-verifikasi').classList.remove('hidden')"
@@ -224,5 +192,38 @@
         </form>
     </div>
 </div>
+</div>
 
+<script>
+    // Toggle fullscreen preview
+    function toggleFullscreen() {
+        const container = document.getElementById('preview-container');
+        if (container.style.height === '700px') {
+            container.style.height = '90vh';
+        } else {
+            container.style.height = '700px';
+        }
+    }
+
+    // Toggle scroll ke halaman 2 (lampiran) di dalam iframe
+    let onLampiran = false;
+    function togglePage() {
+        const iframe  = document.getElementById('preview-iframe');
+        const btn     = document.getElementById('btn-toggle-page');
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+        if (!onLampiran) {
+            const lampiran = iframeDoc.querySelector('.page-break');
+            if (lampiran) {
+                lampiran.nextElementSibling?.scrollIntoView({ behavior: 'smooth' });
+            }
+            btn.textContent = '← Lihat Surat';
+            onLampiran = true;
+        } else {
+            iframeDoc.querySelector('body').scrollIntoView({ behavior: 'smooth' });
+            btn.textContent = 'Lihat Lampiran →';
+            onLampiran = false;
+        }
+    }
+</script>
 @endsection
