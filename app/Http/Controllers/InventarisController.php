@@ -130,8 +130,14 @@ class InventarisController extends Controller
             $statusStok = 'tidak aktif';
         }
         // dd($inventaris->stocks);
+        $inventaris->load(['detailPeminjaman.surat']);
 
-        // dd($jumlahStok);
+        $listPeminjam = $inventaris->detailPeminjaman
+            ->map(fn($detail) => $detail->surat?->user)
+            ->filter()
+            ->unique('id');
+
+        // dd($listPeminjam);
 
         if ($user) {
             if ($user->role === 'admin_LM') {
@@ -141,9 +147,7 @@ class InventarisController extends Controller
             }
         }
 
-        // akan ambil relasi user juga lewat surat untuk menampilkan nama user yang meminjamkan barang
-
-        return view($viewPath, compact('inventaris', 'jumlahStok', 'statusStok'));
+        return view($viewPath, compact('inventaris', 'jumlahStok', 'statusStok', 'listPeminjam'));
     }
 
     /**
@@ -151,7 +155,8 @@ class InventarisController extends Controller
      */
     public function edit(Inventaris $inventaris)
     {
-        //
+        $categories = Category::all();
+        return view('admin.inventaris.edit', compact('inventaris', 'categories'));
     }
 
     /**
@@ -159,7 +164,56 @@ class InventarisController extends Controller
      */
     public function update(Request $request, Inventaris $inventaris)
     {
-        //
+        $request->validate([
+            'nama'        => 'required|string|max:255',
+            'id_category' => 'required|exists:categories,id',
+            // 'stok_awal' => 'required|integer|min:1',
+            // 'status_stok' => 'required|in:0,1',
+            'deskripsi'   => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+        ]);
+
+        $updateData = $request->except([
+            '_token',
+            '_method',
+            'image',
+            // 'stok_awal',
+            // 'status_stok'
+        ]);
+
+        // MANAJEMEN FILE GAMBAR
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+
+            if ($inventaris->image) {
+                $oldPath = str_replace('storage/', '', $inventaris->image);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
+            Storage::disk('public')->putFileAs('images', $file, $fileName);
+            $updateData['image'] = 'storage/images/' . $fileName;
+        } else {
+            $updateData['image'] = $inventaris->image;
+        }
+
+        $inventaris->update($updateData);
+
+        if ($request->filled('stok_awal')) {
+            $tambahan = (int) $request->stok_awal;
+
+            for ($i = 1; $i <= $tambahan; $i++) {
+                Stock::create([
+                    'id_inventaris' => $inventaris->id,
+                    'status'        => 1,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.inventaris.index')
+            ->with('success', "Data inventaris {$inventaris->nama} berhasil diperbarui!");
     }
 
     /**
