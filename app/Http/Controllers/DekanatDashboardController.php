@@ -66,14 +66,17 @@ class DekanatDashboardController extends Controller
 
 
             if ($request->status_peminjaman == '0') {
-                $idInventarisList = DB::table('detail_peminjaman')
-                    ->where('id_surat', $surat->id)
-                    ->pluck('id_inventaris');
 
-                if ($idInventarisList->isNotEmpty()) {
+                $itemsDiSurat = DB::table('detail_peminjaman')
+                    ->where('id_surat', $surat->id)
+                    ->select('id_inventaris', 'qty_inventaris')
+                    ->get();
+
+                foreach ($itemsDiSurat as $item) {
                     DB::table('stocks')
-                        ->whereIn('id_inventaris', $idInventarisList)
+                        ->where('id_inventaris', $item->id_inventaris)
                         ->where('status', 0)
+                        ->limit($item->qty_inventaris)
                         ->update([
                             'status'     => 1,
                             'updated_at' => now(),
