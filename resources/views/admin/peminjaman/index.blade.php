@@ -90,7 +90,7 @@
             >
             @forelse($suratMasuk as $surat)
                 <x-table-row>
-                    <div>{{ sprintf('%02d', $loop->iteration) }}</div>
+                    <div>{{ sprintf('%02d', ($suratMasuk->currentPage() - 1) * $suratMasuk->perPage() + $loop->iteration) }}</div>
                     <div class="font-bold justify-center">
                         {{ $surat->acara }}
                     </div>
@@ -128,9 +128,10 @@
                     </div>
                 </x-table-row>
                 @empty
-                <x-table-empty/>
+                    <x-table-empty/>
             @endforelse            
             </x-table>
+            <x-pagination :data="$suratMasuk" />
         </x-container>
     </div>
 
@@ -146,21 +147,21 @@
         <x-container>
             <x-table
                 :headers="['NO', 'Nama kegiatan', 'id pinjam', 'tanggal pinjam', 'estimasi kembali', 'status', 'tujuan', 'aksi']"
-                :cols="['60px', '1fr', '1.3fr', '1fr', '1fr', '1fr', '1fr', '0.8fr']"
+                :cols="['60px', '1fr', '250px', '1fr', '1fr', '1fr', '1.5fr', '140px']"
                 data=""
                 headerBg="bg-primary-hover"
                 headerClass="text-white font-bold text-sm uppercase"
                 bg="bg-white overflow-hidden"
             >
-            @foreach($suratKeluar as $surat)
+            @forelse($suratKeluar as $surat)
                 <x-table-row>
-                    <div>{{ sprintf('%02d', $loop->iteration) }}</div>
-                    <div class="font-bold justify-center">
+                    <div>{{ sprintf('%02d', ($suratKeluar->currentPage() - 1) * $suratKeluar->perPage() + $loop->iteration) }}</div>
+                    <div class="font-bold break-words justify-center">
                         {{ $surat->acara }}
                     </div>
-                    <div class="font-bold  justify-center">
+                    <div class="justify-center">
                         <span
-                            class="text-wrap items-center rounded bg-primary-hover/20 px-2 py-0.5 font-bold text-primary-hover ">
+                            class="text-wrap justify-start break-all leading-tight items-center rounded bg-primary-hover/20 px-1 py-0.5 font-bold text-primary-hover ">
                             {{ $surat->nomor }}
                         </span>
                     </div>
@@ -175,24 +176,27 @@
                         <x-status-card :status="$surat->status_peminjaman"/>
                         <!-- guys ni status keknya ga work di aku deh, salah kode -->
                     </div>
-                    <div class="justify-center text-primary-hover font-bold">
-                        {{ $surat->detailPeminjaman->first()->inventaris->user->organization_name }}
+                    <div class="justify-center text-primary-hover break-words font-bold">
+                        {{ $surat->detailPeminjaman->first()->inventaris->user->organization_name ?? '-' }}
                     </div>
                     <div class="justify-center flex gap-2">
                         <x-action-button type="view" as="a" href="{{ route('admin.peminjaman.detail-surat', $surat->id) }}"></x-action-button>
                         <form action="{{ route('admin.inventaris.destroy', $surat->id) }}" method="POST"
-                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan surat ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    title="Hapus Data">
-                                                    <x-action-button type="delete" as="a" href=""></x-action-button>
-                                                </button>
-                                            </form>
+                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan surat ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                title="Hapus Data">
+                                <x-action-button type="delete" as="a" href=""></x-action-button>
+                            </button>
+                        </form>
                     </div>
-                </x-table-row>            
-            @endforeach
+                </x-table-row>
+                @empty
+                    <x-table-empty/>
+            @endforelse
             </x-table>
+            <x-pagination :data="$suratKeluar"/>
         </x-container>
     </div>
 
