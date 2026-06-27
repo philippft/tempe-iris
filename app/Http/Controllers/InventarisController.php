@@ -29,7 +29,7 @@ class InventarisController extends Controller
                     $query->where('status', 0);
                 }
             ])
-            ->get();
+            ->paginate(1);
         // dd($inventaris);
 
         $categories = Category::all();
