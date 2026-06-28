@@ -21,20 +21,35 @@ class PeminjamanController extends Controller
         $suratKeluar = Surat::where('id_user', auth()->id())->paginate(5, ['*'], 'surat_keluar_page');
         // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
 
-        $suratMasukReject = $suratMasuk->whereStrict('status_peminjaman', 0);
-        $suratKeluarReject = $suratKeluar->whereStrict('status_peminjaman', 0);
+        $suratMasukReject  = $suratMasuk->filter(
+            fn($s) => (int) $s->getRawOriginal('status_peminjaman') === 0
+                && $s->getRawOriginal('status_peminjaman') !== null
+        );
+        $suratKeluarReject = $suratKeluar->filter(
+            fn($s) => (int) $s->getRawOriginal('status_peminjaman') === 0
+                && $s->getRawOriginal('status_peminjaman') !== null
+        );
 
-        $suratMasukApprove = $suratMasuk->where('status_peminjaman', 1);
-        $suratKeluarApprove = $suratKeluar->where('status_peminjaman', 1);
+        $suratMasukApprove  = $suratMasuk->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 1
+        );
+        $suratKeluarApprove = $suratKeluar->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 1
+        );
 
-        $suratMasukPending = $suratMasuk->where('status_peminjaman', null);
-        $suratKeluarPending = $suratKeluar->where('status_peminjaman', null);
+        $suratMasukPending  = $suratMasuk->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === null
+        );
+        $suratKeluarPending = $suratKeluar->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === null
+        );
 
         $suratReject  = $suratMasukReject->merge($suratKeluarReject);
         $suratApprove = $suratMasukApprove->merge($suratKeluarApprove);
         $suratPending = $suratMasukPending->merge($suratKeluarPending);
 
         // dd($suratApprove, $suratPending, $suratReject);
+        // dd($suratMasuk->first()->detailPeminjaman->first()->inventaris->user->organization->name);
 
         return view('admin.peminjaman.index', compact(
             'suratMasuk',
