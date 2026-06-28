@@ -28,21 +28,19 @@ class AdminDashboardController extends Controller
         )->count();
 
         $suratApprove = $suratMasuk->filter(
-            fn($s) => $s->getRawOriginal('status_peminjaman') === 1
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 1 && $s->tandatangan_pimpinan == 1
         )->count();
 
         $suratPending = $suratMasuk->filter(function ($surat) {
-            return $surat->status_peminjaman === null;
+            return $surat->status_peminjaman === null || ($surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan != 1);
         })->count();
 
         $suratAktif = $suratMasuk->filter(function ($surat) {
-            return $surat->status_peminjaman == 1
-                && $surat->tanggal_kembali >= now();
+            return $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && $surat->tanggal_kembali >= now();
         })->count();
 
         $suratSelesai = $suratMasuk->filter(function ($surat) {
-            return $surat->status_peminjaman == 1
-                && $surat->tanggal_kembali < now();
+            return $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && $surat->tanggal_kembali < now();
         })->count();
 
         // statistik inventaris
@@ -94,6 +92,7 @@ class AdminDashboardController extends Controller
             'kegiatan'
         ])
         ->where('status_peminjaman', 1)
+        ->where('tandatangan_pimpinan', 1)
         ->whereDate('tanggal_kembali', '>=', now());
 
         if ($search) {

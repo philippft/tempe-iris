@@ -1,20 +1,23 @@
 @props([
     'status' => null,
+    'ttd' => null, // tandatangan_pimpinan
 ])
 
 @php
-    $statusText = match ($status) {
-        null => 'Pending',
-        false => 'Ditolak',
-        true => 'Diterima',
-        default => 'Unknown',
+    $statusText = match (true) {
+        is_null($status) => 'Pending',
+        $status == 0 => 'Ditolak',
+        $status == 1 && $ttd == 1 => 'Diterima',
+        $status == 1 && $ttd == null => 'Menunggu TTD',
+        default => 'Diproses',
     };
 
-    $colorClasses = match ($status) {
-        null => 'bg-status-yellow',
-        false => 'bg-status-red',
-        true => 'bg-status-green',
-        default => 'bg-gray-400 shadow-sm',
+    $colorClasses = match (true) {
+        is_null($status) => 'bg-status-yellow',
+        $status == 0 => 'bg-status-red',
+        $status == 1 && $ttd == 1 => 'bg-status-green',
+        $status == 1 && $ttd == null => 'bg-status-yellow',
+        default => 'bg-gray-400',
     };
 @endphp
 

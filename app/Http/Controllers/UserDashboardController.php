@@ -29,7 +29,7 @@ class UserDashboardController extends Controller
         )->count();
 
         $suratAprove = $suratKeluar->filter(
-            fn($s) => $s->getRawOriginal('status_peminjaman') === 1
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 1 && $s->tandatangan_pimpinan == 1
         )->count();
 
         $suratPending = $suratKeluar->filter(function ($surat) {
@@ -46,6 +46,7 @@ class UserDashboardController extends Controller
         ])
         ->where('id_user', auth()->id())
         ->where('status_peminjaman', 1)
+        ->where('tandatangan_pimpinan', 1)
 
         ->when($search, function ($query) use ($search) {
             $query->where(function ($query) use ($search) {

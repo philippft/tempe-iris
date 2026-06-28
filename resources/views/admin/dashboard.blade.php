@@ -7,7 +7,7 @@
 <div class="p-8">
 <x-header-dashboard />
 
-<div class="space-y-4 px-8">
+<div class="space-y-4">
     <h2 class="text-base font-bold text-dark-grey tracking-[1.5px]">STATISTIK PEMINJAMAN</h2>
     <div class="flex flex-wrap w-full justify-start gap-6">
     <x-statecard
@@ -48,7 +48,7 @@
         </x-statecard>
     </div>
 
-<div class="mt-8 space-y-4 px-8">
+<div class="mt-8 space-y-4">
     <h2 class="text-base font-bold text-dark-grey tracking-[1.5px]">MANAJEMEN ASET & USER</h2>
     <div class="flex flex-wrap w-full justify-start gap-6 items-center">
         <x-statecard class="flex-1"
@@ -78,7 +78,7 @@
             /> 
     </div>
 </div>
-<div class="p-8">
+<div>
     <div class="w-full flex justify-between items-center mb-5">
         <div class="space-y-1">
             <h3 class="text-xl font-extrabold text-judul tracking-tight">
@@ -109,7 +109,7 @@
     </div>
 </div>
 
-<div class="p-8">
+<div>
     <x-container>
         <div class="w-full flex justify-between items-center mb-5">
             <div class="space-y-1 pt-4 pl-8">
@@ -161,7 +161,7 @@
     </x-container>
 </div>
 
-<div class="p-8">
+<div>
     <x-container>
         <div class="space-y-1 pt-4 pl-8">
             <h3 class="text-xl font-extrabold text-judul tracking-tight">

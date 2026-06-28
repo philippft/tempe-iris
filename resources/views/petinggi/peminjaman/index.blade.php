@@ -109,7 +109,7 @@
                 <x-action-button
                     type="view"
                     as="a"
-                    :href="route('petinggi.surat.show', $surat)"
+                    :href="route('petinggi.peminjaman.detail-surat', $surat)"
                 />
                 <x-action-button
                     type="delete"

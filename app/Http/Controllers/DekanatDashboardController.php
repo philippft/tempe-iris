@@ -19,7 +19,7 @@ class DekanatDashboardController extends Controller
         ])->get();
 
         $suratPending = $surat->filter(fn ($s) =>
-            $s->getRawOriginal('status_peminjaman') === null
+            $s->getRawOriginal('status_peminjaman') === null || ($s->status_peminjaman == 1 && $s->tandatangan_pimpinan != 1)
         )->count();
 
         $suratReject = $surat->filter(fn ($s) =>
@@ -28,13 +28,11 @@ class DekanatDashboardController extends Controller
         )->count();
 
         $suratAktif = $surat->filter(fn ($s) =>
-            $s->status_peminjaman == 1 &&
-            now()->between($s->tanggal_peminjaman, $s->tanggal_kembali)
+            $s->status_peminjaman == 1 && $s->tandatangan_pimpinan == 1 && now()->between($s->tanggal_peminjaman, $s->tanggal_kembali)
         )->count();
 
         $suratSelesai = $surat->filter(fn ($s) =>
-            $s->status_peminjaman == 1 &&
-            now()->gt($s->tanggal_kembali)
+            $s->status_peminjaman == 1 && $s->tandatangan_pimpinan == 1 && now()->gt($s->tanggal_kembali)
         )->count();
 
         $totalInventaris = Inventaris::where('id_user', auth()->id())->count();
@@ -73,6 +71,25 @@ class DekanatDashboardController extends Controller
         // dd($suratMasuk->first()->detailPeminjaman->first()->inventaris->user);
         // dd($suratMasuk);
 
+        if ($status === 'diterima') {
+            $suratMasuk->where('status_peminjaman', 1)
+                ->where('tandatangan_pimpinan', 1)
+                ->whereDate('tanggal_peminjaman', '>', now());
+        }
+
+        elseif ($status === 'aktif') {
+            $suratMasuk->where('status_peminjaman', 1)
+                ->where('tandatangan_pimpinan', 1)
+                ->whereDate('tanggal_peminjaman', '<=', now())
+                ->whereDate('tanggal_kembali', '>=', now());
+        }
+
+        elseif ($status === 'selesai') {
+            $suratMasuk->where('status_peminjaman', 1)
+                ->where('tandatangan_pimpinan', 1)
+                ->whereDate('tanggal_kembali', '<', now());
+        }
+
         if ($search) {
             $suratMasuk->where(function ($q) use ($search) {
                 $q->where('acara', 'like', "%{$search}%")
@@ -105,9 +122,13 @@ class DekanatDashboardController extends Controller
             $q->where('id_user', auth()->id());
         })->get();
 
-        $suratReject  = $allSurat->whereStrict('status_peminjaman', 0);
-        $suratApprove = $allSurat->where('status_peminjaman', 1);
-        $suratPending = $allSurat->where('status_peminjaman', null);
+        $suratReject = $allSurat->filter(fn ($s) => $s->status_peminjaman == 0);
+        $suratApprove = $allSurat->filter(function ($s) {
+            return $s->status_peminjaman == 1 && $s->tandatangan_pimpinan == 1;
+        });
+        $suratPending = $allSurat->filter(function ($s) {
+            return is_null($s->status_peminjaman) || ($s->status_peminjaman == 1 && $s->tandatangan_pimpinan != 1);
+        });
 
         // dd($suratApprove, $suratPending, $suratReject);
 

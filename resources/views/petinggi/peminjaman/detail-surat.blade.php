@@ -147,9 +147,9 @@
     </x-container>
 
     {{-- VERIFIKASI PETINGGI --}}
-    @if(is_null($surat->status_peminjaman))
+    @if(is_null($surat->tandatangan_pimpinan))
         <x-container>
-            <form action="{{ route('petinggi.peminjaman.verifikasi', $surat) }}" method="POST">
+            <form action="{{ route('petinggi.surat.verifikasi', $surat) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -168,7 +168,7 @@
                         </textarea>
                     </div>
 
-                    <div class="flex gap-3">
+                    <div class="flex justify-end gap-3">
                         <button type="submit" name="status_peminjaman" value="0"
                             class="px-6 py-3 rounded-xl font-medium text-xl bg-white border border-red-500 text-red-500">
                             Tolak

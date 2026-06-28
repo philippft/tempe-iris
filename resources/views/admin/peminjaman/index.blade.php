@@ -114,7 +114,7 @@
                     </div>
                     <div class="font-bold justify-start">
                         <span
-                            class="text-wrap items-center rounded bg-primary-hover/20 px-2 py-0.5 font-bold text-primary-hover ">
+                            class="text-wrap items-center rounded bg-primary-hover/20 px-2 py-0.5 font-bold text-primary-hover break-all">
                             {{ $surat->nomor }}
                         </span>
                     </div>
@@ -128,15 +128,17 @@
                    <div class="justify-center">
                         @php
                             $label = match (true) {
-                                $surat->status_peminjaman === null => 'Pending',
-                                $surat->status_peminjaman === false => 'Ditolak',
-                                $surat->status_peminjaman === true && now()->lt($surat->tanggal_peminjaman) => 'Diterima',
-                                $surat->status_peminjaman === true && now()->between($surat->tanggal_peminjaman, $surat->tanggal_kembali) => 'Aktif',
-                                $surat->status_peminjaman === true && now()->gt($surat->tanggal_kembali) => 'Selesai',
-                                default => 'Unknown',
+                                is_null($surat->status_peminjaman) => 'Pending',
+                                $surat->status_peminjaman == 0 => 'Ditolak',
+                                $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan != 1 => 'Pending',
+                                $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && now()->lt($surat->tanggal_peminjaman) => 'Diterima',
+                                $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && now()->between($surat->tanggal_peminjaman, $surat->tanggal_kembali) => 'Aktif',
+                                $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && now()->gt($surat->tanggal_kembali) => 'Selesai',
+                                default => 'Pending',
                             };
                         @endphp
-                        <x-status-card :status="$surat->status_peminjaman">
+
+                        <x-status-card :status="$surat->status_peminjaman" :ttd="$surat->tandatangan_pimpinan">
                             {{ $label }}
                         </x-status-card>
                     </div>

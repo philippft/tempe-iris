@@ -66,23 +66,30 @@
                                 {{ $surat->tanggal_peminjaman->format('d M Y') }}
                             </div>
                             <div class="justify-center">
-                                @php
-                                    $label = match (true) {
-                                        $surat->status_peminjaman === NULL => 'Pending',
-                                        $surat->status_peminjaman === false => 'Ditolak',
-                                        $surat->status_peminjaman === true && now()->lt($surat->tanggal_peminjaman) => 'Diterima', // Belum mulai
-                                        $surat->status_peminjaman === true && now()->between($surat->tanggal_peminjaman, $surat->tanggal_kembali) => 'Aktif', // Sedang berlangsung
-                                        $surat->status_peminjaman === true && now()->gt($surat->tanggal_kembali) => 'Selesai', // Sudah lewat
-                                        default => 'Unknown',
-                                    };
-                                @endphp
+                                    @php
+                                        $label = match (true) {
+                                            is_null($surat->status_peminjaman) => 'Pending',
+                                            $surat->status_peminjaman == 0 => 'Ditolak',
+                                            $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan != 1 => 'Pending',
+                                            $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && now()->lt($surat->tanggal_peminjaman) => 'Diterima',
+                                            $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && now()->between($surat->tanggal_peminjaman, $surat->tanggal_kembali) => 'Aktif',
+                                            $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && now()->gt($surat->tanggal_kembali) => 'Selesai',
+                                            default => 'Pending',
+                                        };
+                                    @endphp
 
-                                <x-status-card :status="$surat->status_peminjaman">
+                                <x-status-card :status="$surat->status_peminjaman" :ttd="$surat->tandatangan_pimpinan">
                                     {{ $label }}
                                 </x-status-card>
                             </div>
                             <div class="justify-center">
-                                <x-take-action :showDelete="false"/>
+                                <div class="justify-center">
+                                    <x-action-button
+                                        type="view"
+                                        as="a"
+                                        :href="route('user.peminjaman.detail-surat', $surat)"
+                                    />
+                                </div>
                             </div>
                         </x-table-row>
                     @endforeach
@@ -141,7 +148,13 @@
                             {{$surat->detailPeminjaman->first()?->inventaris?->user?->organization?->name?? '-'}}
                         </div>
                         <div class="justify-center">
-                            <x-take-action :showDelete="false"/>
+                            <div class="justify-center">
+                                <x-action-button
+                                    type="view"
+                                    as="a"
+                                    :href="route('user.peminjaman.detail-surat', $surat)"
+                                />
+                            </div>
                         </div>
                     </x-table-row>
                 @endforeach
