@@ -173,8 +173,12 @@ class PetinggiDashboardController extends Controller
             }
 
             DB::commit();
-            $pesan = $request->status_peminjaman == '1' ? 'Peminjaman disetujui!' : 'Peminjaman ditolak.';
-            return redirect()->back()->with('success', $pesan);
+            $pesan1 = $request->status_peminjaman == '1' ? 'Peminjaman disetujui!' : 'Peminjaman ditolak.';
+            $pesan2 = $request->tandatangan_pimpinan == '1' ? 'Tanda tangan disetujui!' : 'Tanda tangan ditolak.';
+
+            return redirect()->back()
+                ->with('success', $pesan1)
+                ->with('info', $pesan2);
 
         } catch (\Exception $e) {
             DB::rollBack();
