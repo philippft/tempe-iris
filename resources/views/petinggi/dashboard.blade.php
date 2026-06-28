@@ -9,7 +9,7 @@
     <div class="grid grid-cols-4 gap-4 mb-10">
             <x-statecard
                 title="Total Aktif"
-                :value="$suratAprove"
+                :value="$suratApprove"
                 label="Peminjaman"
                 border="border-l-primary-hover"
                 iconBg="bg-primary-hover/10"
@@ -75,7 +75,7 @@
                             {{ $surat->tanggal_peminjaman->format('d M Y') }}
                         </div>
                         <div class="justify-center">
-                            <x-status-card :status="$surat->status_peminjaman"/>
+                            <x-status-card :status="$surat->tandatangan_pimpinan"/>
                         </div>
                         <div>
                             <x-take-action/>

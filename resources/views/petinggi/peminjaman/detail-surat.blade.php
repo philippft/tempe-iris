@@ -21,13 +21,15 @@
             </h1>
 
             @php
-                $raw = $surat->getRawOriginal('status_peminjaman');
-                $badge = match(true) {
-                    is_null($raw) => ['label' => 'TERKIRIM',  'class' => 'bg-teal-100 text-teal-700 border border-teal-300'],
-                    $raw == 1     => ['label' => 'DISETUJUI', 'class' => 'bg-green-100 text-green-700 border border-green-300'],
-                    $raw == 0     => ['label' => 'DITOLAK',   'class' => 'bg-red-100 text-red-700 border border-red-300'],
-                    default       => ['label' => 'PROSES',    'class' => 'bg-gray-100 text-gray-600 border border-gray-300'],
-                };
+            $raw = $surat->getRawOriginal('tandatangan_pimpinan');
+
+            $badge = match(true) {
+            is_null($raw) => ['label' => 'PENDING', 'class' => 'bg-amber-100 text-amber-700 border border-amber-300'],
+            // Jika null berarti pending
+            $raw == 1 => ['label' => 'DISETUJUI', 'class' => 'bg-green-100 text-green-700 border border-green-300'],
+            $raw == 0 => ['label' => 'DITOLAK', 'class' => 'bg-red-100 text-red-700 border border-red-300'],
+            default => ['label' => 'PENDING', 'class' => 'bg-amber-100 text-amber-700 border border-amber-300'],
+            };
             @endphp
 
             <span class="px-3 py-1 text-xs font-bold rounded-full {{ $badge['class'] }}">
@@ -123,7 +125,7 @@
 </x-container>
 
 {{-- ===== BOTTOM BAR VERIFIKASI (sticky) ===== --}}
-@if(is_null($surat->getRawOriginal('status_peminjaman')))
+@if(is_null($surat->getRawOriginal('tandatangan_pimpinan')))
 <div class="fixed bottom-0 left-70 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
     <div class="max-w-screen-xl mx-auto px-6 py-3 flex items-center justify-between">
         <p class="text-sm text-gray-500">Pastikan data yang tercantum dalam surat sudah benar dan sesuai.</p>

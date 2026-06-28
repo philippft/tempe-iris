@@ -34,28 +34,24 @@ class AuthController extends Controller
         return view('register', compact('organizations'));
     }
 
-    public function authenticate(Request $request) 
+    public function authenticate(Request $request)
     {
         $credentials = $request->validate([
             'username' => ['required'],
             'password' => ['required']
         ]);
 
+        // dd($credentials);
 
-        if(Auth::attempt($credentials)) {
-
-            if (is_null(Auth::user()->verify_at)) {
-                Auth::logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
-                $request->session()->regenerate();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
 
             if (is_null(Auth::user()->verify_at)) {
                 return redirect()->route('user.detail-akun', Auth::user()->id)
                     ->with('warning', 'Akun Anda sedang menunggu verifikasi admin.');
             }
 
-            if(Auth::user()->role) {
+            if (Auth::user()->role) {
                 return $this->redirectBasedOnRole(Auth::user()->role);
             }
         };
@@ -63,7 +59,7 @@ class AuthController extends Controller
         return back()->withErrors([
             'username' => 'Username atau Password salah!',
         ])->onlyInput('username');
-    }}
+    }
 
     public function register(Request $request) 
     {

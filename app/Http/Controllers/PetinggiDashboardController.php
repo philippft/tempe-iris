@@ -12,32 +12,64 @@ class PetinggiDashboardController extends Controller
 {
     public function petinggiDashboard () 
     {
-        $surats = Surat::paginate(10);
-        $suratKeluar = Surat::where('id_user', auth()->id())->get();
+        // $surats = Surat::paginate(10);
+        // $suratKeluar = Surat::where('id_user', auth()->id())->get();
         // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
-        
-        $suratDone = $suratKeluar->filter(
+
+        $surats = Surat::where('status_peminjaman', 1)
+            ->whereHas('detailPeminjaman.inventaris.user.organization', function ($query) {
+                $query->where('name', 'like', '%Dekanat%');
+            })
+            ->with(['user.organization', 'detailPeminjaman.inventaris'])
+            ->latest()
+            ->paginate(10);
+
+        // dd($surats);
+
+        $suratDone = $surats->filter(
             fn($s) => $s->getRawOriginal('tandatangan_pimpinan') === 1
         )->count();
 
-        $suratReject = $suratKeluar->filter(
-            fn($s) => $s->getRawOriginal('status_peminjaman') === 0
+        $suratReject = $surats->filter(
+            fn($s) => (int) $s->getRawOriginal('tandatangan_pimpinan') === 0
+                && $s->getRawOriginal('tandatangan_pimpinan') !== null
         )->count();
 
-        $suratAprove = $suratKeluar->filter(
-            fn($s) => $s->getRawOriginal('status_peminjaman') === 1
+        $suratApprove = $surats->filter(
+            fn($s) => (int) $s->getRawOriginal('tandatangan_pimpinan') === 1
         )->count();
 
-        $suratPending = $suratKeluar->filter(function ($surat) {
-            return $surat->id_user === auth()->id()
-                && $surat->status_peminjaman === null;
-        })->count();
-        return view('petinggi.dashboard', compact('surats', 'suratKeluar', 'suratDone', 'suratReject', 'suratAprove', 'suratPending'));
+        $suratPending = $surats->filter(
+            fn($s) => $s->getRawOriginal('tandatangan_pimpinan') === null
+        )->count();
+
+        // foreach ($surats as $surat) {
+        //     dump([
+        //         'id' => $surat->id,
+        //         'id_user' => $surat->id_user,
+        //         'auth' => auth()->id(),
+        //         'ttd' => $surat->tandatangan_pimpinan,
+        //         'raw' => $surat->getRawOriginal('tandatangan_pimpinan'),
+        //     ]);
+        // }
+        return view('petinggi.dashboard', 
+        compact(
+            'surats', 
+            'suratDone', 
+            'suratReject', 
+            'suratApprove', 
+            'suratPending'
+        ));
     }
 
     public function suratDashboard(Request $request)
     {
-        $query = Surat::query();
+        $query = Surat::query()
+            ->where('status_peminjaman', 1)
+            ->whereHas('detailPeminjaman.inventaris.user.organization', function ($q) {
+                $q->where('name', 'like', '%Dekanat%');
+            })
+            ->with(['user.organization', 'detailPeminjaman.inventaris']);
 
         // Filter pencarian
         if ($request->filled('search')) {
