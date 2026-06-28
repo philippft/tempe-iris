@@ -7,9 +7,8 @@
     'iconBg' => 'bg-gray-100',
 ])
 
-<div {{ $attributes->class(['flex-1 w-full h-fit', $bg, $border, 'border-l-8 rounded-4xl p-7 font-sans shadow-xl font-bold'])
-    }}>
-    <div class="flex justify-between gap-10 items-center mb-4.5">
+<div class="w-fit h-fit {{ $bg }} {{ $border }} border-l-8 rounded-4xl p-7 font-sans shadow-xl">
+    <div class="flex justify-between gap-20 items-center mb-4.5">
         <h2 class="text-base font-bold text-subtext">
             {{ $title }}
         </h2>

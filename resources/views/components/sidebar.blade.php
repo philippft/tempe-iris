@@ -1,9 +1,5 @@
 @php
-$user = auth()->user() ?? (object) [
-    'role' => 'mahasiswa',
-    'username' => 'Guest',
-    'NIM_NIP' => '00000000',
-];;
+$user = auth()->user();
 
 if (!$user) return;
 
@@ -25,7 +21,7 @@ $subtitle = match($role) {
 $menus = match($role) {
     'mahasiswa' => [
         ['label'=>'Dashboard','route'=>'user.dashboard','icon'=>'dashboard'],
-        ['label'=>'Peminjaman','route'=>'user.peminjaman.index','icon'=>'transfer'],
+        ['label'=>'Peminjaman','route'=>'user.peminjaman.index','active'=>'user.peminjaman.*','icon'=>'transfer'],
     ],
 
     'admin_LM' => [

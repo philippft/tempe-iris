@@ -87,7 +87,7 @@
                     <x-show id="nim" type="text" name="nim" label="NIM (Nomor Induk Mahasiswa)"
                         :value="$user->nim_nip" :isReadonly="true" />
 
-                    <x-show id="prodi" type="text" name="prodi" label="Program Studi" :value="$user->organization->name"
+                    <x-show id="prodi" type="text" name="prodi" label="Program Studi" :value="$user->id_organization"
                         :isReadonly="true" />
 
                     <x-show id="email" type="text" name="email" label="Email" :value="$user->email"
@@ -161,9 +161,8 @@
                             </option>
 
                             @foreach ($organizations as $org)
-                                <option value="{{ $org->id }}" @selected(old('id_organization', $user->id_organization)
-                                    == $org->id)>
-                                    {{ str_replace('Program Studi ', '', $org->name) }}
+                                <option value="{{ $org->id }}" @selected(old('id_organization') == $org->id)>
+                                    {{ str_replace('Himpunan Mahasiswa ', '', $org->name) }}
                                 </option>
                             @endforeach
                         </x-select>

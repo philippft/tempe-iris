@@ -3,10 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Surat;
-use App\Models\Category;
-use App\Models\Inventaris;
-use Illuminate\Support\Facades\DB;
 
 class PetinggiDashboardController extends Controller
 {

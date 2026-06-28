@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Models\Surat;
 use App\Models\Category;
 use App\Models\Inventaris;
-use App\Models\Surat;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Organization;
 use Carbon\Carbon;
@@ -302,7 +302,7 @@ class UserDashboardController extends Controller
                 'tandatangan_pimpinan' => null,
                 'penyelenggara'        => $userPengaju->organization_name ?? 'DRAF_ORGANISASI',
                 'acara'                => 'DRAF_ACARA',
-                'singkatan_acara'      => null,
+                'singkatan_acara'      => null,           // ← ada di migration, tambahkan
                 'prodi'                => 'DRAF_PRODI',
                 'nama_peminjam'        => $userPengaju->username ?? 'Anonim',
                 'nim'                  => $userPengaju->NIM_NIP ?? '0000000000',
@@ -364,7 +364,7 @@ class UserDashboardController extends Controller
             abort(403, 'Anda tidak memiliki akses ke halaman profil ini.');
         }
 
-        $organizations = Organization::where('name', 'like', 'Program Studi%')
+        $organizations = Organization::where('name', 'like', 'Himpunan Mahasiswa%')
         ->orderBy('id')
         ->get();
 
@@ -373,7 +373,6 @@ class UserDashboardController extends Controller
 
     public function detailAkunEdit(User $user, Request $request)
     {
-        // dd($request, $user);    
         if (auth()->id() !== $user->id) {
             abort(403, 'Anda tidak memiliki akses untuk mengedit profil ini.');
         }
@@ -400,9 +399,6 @@ class UserDashboardController extends Controller
             $validatedData['ktm'] = $path;
         }
 
-        $validatedData['verify_at'] = null;
-        $validatedData['note']      = null;
-
         // 4. Update Database
         $user->update($validatedData);
 
@@ -413,8 +409,6 @@ class UserDashboardController extends Controller
 
     public function kegiatan (Surat $surat) 
     {
-        $surat->load('detailPeminjaman.inventaris.user.organization');
-
         $detailBarang = DB::table('detail_peminjaman')
             ->join('inventaris', 'detail_peminjaman.id_inventaris', '=', 'inventaris.id')
             ->join('categories', 'inventaris.id_category', '=', 'categories.id')
@@ -459,7 +453,7 @@ class UserDashboardController extends Controller
                 'tanggal_peminjaman'  => $request->tanggal_peminjaman . ' 08:00:00',
                 'tanggal_kembali'     => $request->tanggal_kembali . ' 17:00:00',
                 'perihal_peminjaman'  => $request->perihal_peminjaman,
-                'status_peminjaman'   => null,
+                'status_peminjaman'   => 0,
             ]);
 
             return redirect()->route('user.peminjaman.detail.kegiatan', ['surat' => $surat->id])
@@ -517,9 +511,4 @@ class UserDashboardController extends Controller
             return redirect()->route('user.peminjaman.index')
                 ->with('success', 'Detail kegiatan berhasil disimpan.');
     }
-
-    // public function verifikasiSurat (Request $request, Surat $surat) 
-    // {
-    //     dd($surat, $request);
-    // }
 }

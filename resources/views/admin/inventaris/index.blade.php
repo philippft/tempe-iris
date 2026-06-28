@@ -62,7 +62,7 @@
                         <path d="M16.6 18L10.3 11.7C9.8 12.1 9.225 12.4167 8.575 12.65C7.925 12.8833 7.23333 13 6.5 13C4.68333 13 3.14583 12.3708 1.8875 11.1125C0.629167 9.85417 0 8.31667 0 6.5C0 4.68333 0.629167 3.14583 1.8875 1.8875C3.14583 0.629167 4.68333 0 6.5 0C8.31667 0 9.85417 0.629167 11.1125 1.8875C12.3708 3.14583 13 4.68333 13 6.5C13 7.23333 12.8833 7.925 12.65 8.575C12.4167 9.225 12.1 9.8 11.7 10.3L18 16.6L16.6 18ZM6.5 11C7.75 11 8.8125 10.5625 9.6875 9.6875C10.5625 8.8125 11 7.75 11 6.5C11 5.25 10.5625 4.1875 9.6875 3.3125C8.8125 2.4375 7.75 2 6.5 2C5.25 2 4.1875 2.4375 3.3125 3.3125C2.4375 4.1875 2 5.25 2 6.5C2 7.75 2.4375 8.8125 3.3125 9.6875C4.1875 10.5625 5.25 11 6.5 11Z" fill="#70787C"/>
                     </svg>
                 </div>
-                    <input type="text" name="search" value="{{ request('search') }}"
+                    <input type="text" name="search" value="{{ $search ?? '' }}"
                         class="block w-full rounded-xl border border-border-custom bg-bg-dark py-2.5 pl-10 pr-4 text-sm text-dark-grey focus:border-primary-hover focus:ring-primary-hover transition"
                         placeholder="Masukkan ID Barang atau Nama Barang...">
                 </div>
@@ -75,7 +75,7 @@
                     <option value="">Pilih Kategori</option>
                     @foreach($categories as $category)
                     <option value="{{ $category->id }}"
-                        {{ request('category') == $category->id ? 'selected' : '' }}>
+                        {{ $categoryId == $category->id ? 'selected' : '' }}>
                         {{ $category->name }}
                     </option>
                     @endforeach
@@ -84,78 +84,80 @@
         </form>
     </div>
     
-    <x-container>
-            <x-table
-                :headers="['NO', 'Gambar', 'Nama Barang', 'Kategori', 'aktif', 'tidak aktif', 'aksi']"
-                :cols="['60px', '120px', '1.5fr', '1fr', '1fr', '1fr', '140px']"
-                :data="$inventaris"
-                headerBg="bg-primary-hover"
-                headerClass="text-white font-bold text-sm uppercase"
-                bg="bg-white overflow-hidden"
-            >
-            @php 
-                $no = ($inventaris->currentPage() - 1) * $inventaris->perPage(); 
-                $status = null; 
-            @endphp
-
-            @forelse($inventaris as $item)
-                    <x-table-row>
-                        <div class="justify-center font-medium">
-                            {{ str_pad(++$no, 2, '0', STR_PAD_LEFT) }}
-                        </div>
-                        <div class="justify-center">
-                                <div class="h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center">
-                                    @if($item->image && file_exists(public_path($item->image)))
-                                        <img src="{{ asset('images/dashboard.png') }}" alt="{{ $item->nama }}" class="h-full w-full object-cover">
-                                    @else
-                                        <svg class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                                        </svg>
-                                    @endif
-                                </div>
-                        </div>
-                        
-                        <div class="justify-start font-bold text-judul wrap-break-words pr-2 text-base">
-                                {{ $item->nama }}
-                        </div>
-
-                        <div class="justify-start">
-                            <span class="inline-flex text-center items-center rounded-full bg-bg-dark px-3 py-1 text-sm font-semibold text-primary-hover ring-1 ring-inset ring-border-custom/10">
-                                {{ $item->category->name ?? 'Umum' }}
-                            </span>
-                        </div>
-                        
-                        <div class="justify-center font-medium text-dark-grey text-base">
-                                {{ $item->stok_aktif }} Barang
-                        </div>
-
-                        <div class="justify-center font-medium text-dark-grey text-base">
-                                {{ $item->stok_tidak_aktif }} Barang
-                        </div>
-
-                        <!-- <div class="justify-center">
-                            <div class="bg-status-green inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white uppercase rounded-full tracking-wider">
-                                Aktif
+    <form action="{{ route('admin.inventaris.index') }}" method="GET" class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <x-container>
+                <x-table
+                    :headers="['NO', 'Gambar', 'Nama Barang', 'Kategori', 'aktif', 'tidak aktif', 'aksi']"
+                    :cols="['60px', '120px', '1.5fr', '1fr', '1fr', '1fr', '140px']"
+                    :data="$inventaris"
+                    headerBg="bg-primary-hover"
+                    headerClass="text-white font-bold text-sm uppercase"
+                    bg="bg-white overflow-hidden"
+                >
+                @php 
+                    $no = ($inventaris->currentPage() - 1) * $inventaris->perPage(); 
+                    $status = null; 
+                @endphp
+    
+                @forelse($inventaris as $item)
+                        <x-table-row>
+                            <div class="justify-center font-medium">
+                                {{ str_pad(++$no, 2, '0', STR_PAD_LEFT) }}
                             </div>
-                        </div> -->
-
-                        <div class="justify-center flex gap-2">
-                            <x-action-button type="view" title="Lihat Data" as="a" href="{{ route('admin.inventaris.show', ['inventaris' => $item->id, 'status' => $status]) }}"></x-action-button>
-                            <form action="{{ route('admin.inventaris.destroy', $item->id) }}" method="POST"
-                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus barang ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    title="Hapus Data">
-                                    <x-action-button type="delete" as="a" href=""></x-action-button>
-                                </button>
-                            </form>
-                        </div>
-                    </x-table-row>
-                @empty
-                <x-table-empty title="Tidak ada Inventaris" message="Saat ini belum ada data inventaris yang tersedia atau tidak ada inventaris yang cocok dengan pencarian Anda."/>
-            @endforelse
-            </x-table>
-    </x-container>
+                            <div class="justify-center">
+                                    <div class="h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                        @if($item->image && file_exists(public_path($item->image)))
+                                            <img src="{{ asset($item->image) }}" alt="{{ $item->nama }}" class="h-full w-full object-cover">
+                                        @else
+                                            <svg class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                            </svg>
+                                        @endif
+                                    </div>
+                            </div>
+                            
+                            <div class="justify-start font-bold text-judul wrap-break-words pr-2 text-base">
+                                    {{ $item->nama }}
+                            </div>
+    
+                            <div class="justify-start">
+                                <span class="inline-flex text-center items-center rounded-full bg-bg-dark px-3 py-1 text-sm font-semibold text-primary-hover ring-1 ring-inset ring-border-custom/10">
+                                    {{ $item->category->name ?? 'Umum' }}
+                                </span>
+                            </div>
+                            
+                            <div class="justify-center font-medium text-dark-grey text-base">
+                                    {{ $item->stok_aktif }} Barang
+                            </div>
+    
+                            <div class="justify-center font-medium text-dark-grey text-base">
+                                    {{ $item->stok_tidak_aktif }} Barang
+                            </div>
+    
+                            <!-- <div class="justify-center">
+                                <div class="bg-status-green inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white uppercase rounded-full tracking-wider">
+                                    Aktif
+                                </div>
+                            </div> -->
+    
+                            <div class="justify-center flex gap-2">
+                                <x-action-button type="view" title="Lihat Data" as="a" href="{{ route('admin.inventaris.show', ['inventaris' => $item->id, 'status' => $status]) }}"></x-action-button>
+                                <form action="{{ route('admin.inventaris.destroy', $item->id) }}" method="POST"
+                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus barang ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        title="Hapus Data">
+                                        <x-action-button type="delete" as="a" href=""></x-action-button>
+                                    </button>
+                                </form>
+                            </div>
+                        </x-table-row>
+                    @empty
+                    <x-table-empty title="Tidak ada Inventaris" message="Saat ini belum ada data inventaris yang tersedia atau tidak ada inventaris yang cocok dengan pencarian Anda."/>
+                @endforelse
+                </x-table>
+        </x-container>
+    </form>
 </div>   
 @endsection

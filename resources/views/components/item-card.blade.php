@@ -17,7 +17,7 @@
 
     {{-- 2. Info Content --}}
     <div class="flex flex-col flex-1 justify-center gap-1.5">
-        <h3 class="text-base font-bold text-judul tracking-tight">{{ $title }}</h3>
+        <h3 class="text-3xl font-bold text-judul tracking-tight">{{ $title }}</h3>
         
         <div class="flex items-center gap-3">
             {{-- Badge Kepemilikan (Owner) --}}
@@ -26,7 +26,7 @@
             </span>
             
             {{-- Titik Pemisah & Kategori --}}
-            <div class="flex items-center gap-2 text-subtext font-medium text-sm tracking-wide">
+            <div class="flex items-center gap-2 text-subtext font-medium text-lg tracking-wide">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#94A3B8]"></span>
                 {{ $category }}
             </div>

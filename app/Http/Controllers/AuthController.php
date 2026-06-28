@@ -27,14 +27,14 @@ class AuthController extends Controller
             return $this->redirectBasedOnRole(Auth::user()->role);
         }
 
-        $organizations = Organization::where('name', 'like', 'Program Studi%')
+        $organizations = Organization::where('name', 'like', 'Himpunan Mahasiswa%')
         ->orderBy('id')
         ->get();
 
         return view('register', compact('organizations'));
     }
 
-    public function authenticate(Request $request)
+    public function authenticate(Request $request) 
     {
         $credentials = $request->validate([
             'username' => ['required'],
@@ -43,7 +43,7 @@ class AuthController extends Controller
 
         // dd($credentials);
 
-        if (Auth::attempt($credentials)) {
+        if(Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
             if (is_null(Auth::user()->verify_at)) {
@@ -51,7 +51,7 @@ class AuthController extends Controller
                     ->with('warning', 'Akun Anda sedang menunggu verifikasi admin.');
             }
 
-            if (Auth::user()->role) {
+            if(Auth::user()->role) {
                 return $this->redirectBasedOnRole(Auth::user()->role);
             }
         };
@@ -86,7 +86,7 @@ class AuthController extends Controller
             $ktmPath = 'storage/ktm/' . $fileName; 
         }
 
-        User::create([
+        $user = User::create([
             'name'      => $validated['nama_lengkap'], 
             'nim_nip'   => $validated['nim_nip'],
             'username'  => $validated['nim_nip'], 
@@ -95,7 +95,6 @@ class AuthController extends Controller
             'ktm'       => $ktmPath,
             'password'  => Hash::make($validated['password']), 
             'role'      => 'mahasiswa', 
-            'verify_at' => null,
         ]);
 
         return redirect()->route('login')
