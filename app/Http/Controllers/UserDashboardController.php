@@ -301,7 +301,7 @@ class UserDashboardController extends Controller
                 'tandatangan_pimpinan' => null,
                 'penyelenggara'        => $userPengaju->organization_name ?? 'DRAF_ORGANISASI',
                 'acara'                => 'DRAF_ACARA',
-                'singkatan_acara'      => null,           // ← ada di migration, tambahkan
+                'singkatan_acara'      => null,
                 'prodi'                => 'DRAF_PRODI',
                 'nama_peminjam'        => $userPengaju->username ?? 'Anonim',
                 'nim'                  => $userPengaju->NIM_NIP ?? '0000000000',

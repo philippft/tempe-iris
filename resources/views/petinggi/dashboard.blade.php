@@ -9,7 +9,7 @@
     <div class="grid grid-cols-4 gap-4 mb-10">
             <x-statecard
                 title="Total Aktif"
-                :value="$suratAprove"
+                :value="$suratApprove"
                 label="Peminjaman"
                 border="border-l-primary-hover"
                 iconBg="bg-primary-hover/10"

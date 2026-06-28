@@ -21,13 +21,15 @@
             </h1>
 
             @php
-                $raw = $surat->getRawOriginal('status_peminjaman');
-                $badge = match(true) {
-                    is_null($raw) => ['label' => 'TERKIRIM',  'class' => 'bg-teal-100 text-teal-700 border border-teal-300'],
-                    $raw == 1     => ['label' => 'DISETUJUI', 'class' => 'bg-green-100 text-green-700 border border-green-300'],
-                    $raw == 0     => ['label' => 'DITOLAK',   'class' => 'bg-red-100 text-red-700 border border-red-300'],
-                    default       => ['label' => 'PROSES',    'class' => 'bg-gray-100 text-gray-600 border border-gray-300'],
-                };
+            $raw = $surat->getRawOriginal('tandatangan_pimpinan');
+
+            $badge = match(true) {
+            is_null($raw) => ['label' => 'PENDING', 'class' => 'bg-amber-100 text-amber-700 border border-amber-300'],
+            // Jika null berarti pending
+            $raw == 1 => ['label' => 'DISETUJUI', 'class' => 'bg-green-100 text-green-700 border border-green-300'],
+            $raw == 0 => ['label' => 'DITOLAK', 'class' => 'bg-red-100 text-red-700 border border-red-300'],
+            default => ['label' => 'PENDING', 'class' => 'bg-amber-100 text-amber-700 border border-amber-300'],
+            };
             @endphp
 
             <span class="px-3 py-1 text-xs font-bold rounded-full {{ $badge['class'] }}">

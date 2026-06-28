@@ -77,20 +77,35 @@ class PeminjamanController extends Controller
         $suratKeluar = $queryKeluar->paginate(5, ['*'], 'surat_keluar_page')->withQueryString();
         // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
 
-        $suratMasukReject = $suratMasuk->whereStrict('status_peminjaman', 0);
-        $suratKeluarReject = $suratKeluar->whereStrict('status_peminjaman', 0);
+        $suratMasukReject  = $suratMasuk->filter(
+            fn($s) => (int) $s->getRawOriginal('status_peminjaman') === 0
+                && $s->getRawOriginal('status_peminjaman') !== null
+        );
+        $suratKeluarReject = $suratKeluar->filter(
+            fn($s) => (int) $s->getRawOriginal('status_peminjaman') === 0
+                && $s->getRawOriginal('status_peminjaman') !== null
+        );
 
-        $suratMasukApprove = $suratMasuk->where('status_peminjaman', 1);
-        $suratKeluarApprove = $suratKeluar->where('status_peminjaman', 1);
+        $suratMasukApprove  = $suratMasuk->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 1
+        );
+        $suratKeluarApprove = $suratKeluar->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 1
+        );
 
-        $suratMasukPending = $suratMasuk->where('status_peminjaman', null);
-        $suratKeluarPending = $suratKeluar->where('status_peminjaman', null);
+        $suratMasukPending  = $suratMasuk->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === null
+        );
+        $suratKeluarPending = $suratKeluar->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === null
+        );
 
         $suratReject  = $suratMasukReject->merge($suratKeluarReject);
         $suratApprove = $suratMasukApprove->merge($suratKeluarApprove);
         $suratPending = $suratMasukPending->merge($suratKeluarPending);
 
         // dd($suratApprove, $suratPending, $suratReject);
+        // dd($suratMasuk->first()->detailPeminjaman->first()->inventaris->user->organization->name);
 
         return view('admin.peminjaman.index', compact('suratMasuk', 'suratKeluar', 'suratReject', 'suratApprove', 'suratPending'));
     }
@@ -340,7 +355,7 @@ class PeminjamanController extends Controller
             'tanggal_peminjaman'  => $request->tanggal_peminjaman . ' 08:00:00',
             'tanggal_kembali'     => $request->tanggal_kembali . ' 17:00:00',
             'perihal_peminjaman'  => $request->perihal_peminjaman,
-            'status_peminjaman'   => NULL,
+            'status_peminjaman'   => null,
         ]);
 
         return redirect()->route('admin.peminjaman.detail.kegiatan', ['surat' => $surat->id])
