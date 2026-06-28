@@ -117,7 +117,7 @@ Route::middleware(['auth', 'isDekanat'])->prefix('dekanat')->name('dekanat.')->g
 
         Route::put('/peminjaman/verifikasi/{surat}', 'verifikasiSurat')->name('peminjaman.verifikasi');
     });
-
+    
     // Download Surat
     Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 
@@ -130,24 +130,14 @@ Route::middleware(['auth', 'isDekanat'])->prefix('dekanat')->name('dekanat.')->g
 
 Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')->group(function () {
     Route::get('/dashboard', [PetinggiDashboardController::class, 'petinggiDashboard'])->name('dashboard');
-
-    Route::get('/surat', [PetinggiDashboardController::class, 'suratIndex'])->name('surat.index');
+    Route::get('/surat', [PetinggiDashboardController::class, 'suratDashboard'])->name('surat.index');
+    Route::get('/surat/{surat}', [PetinggiDashboardController::class, 'detailPeminjaman'])->name('surat.show');
+    Route::post('/surat/{surat}/verifikasi', [PetinggiDashboardController::class, 'verifikasiSurat'])->name('surat.verifikasi');
+    Route::get('/surat/{surat}/download',  [PdfController::class, 'downloadSurat'])->name('surat.download'); 
+    Route::get('/surat/{surat}/preview', [PdfController::class, 'previewSurat'])->name('surat.preview');
+    Route::delete('/surat/{surat}', [PeminjamanController::class, 'destroy'])->name('surat.destroy');
 });
 
-
-// Fake Data Punya LEO
-// MULAI
-
-    Route::get('/preview', function () {
-        return view('preview');
-    });
-
-    // BELUM SELESAI
-    Route::get('/pilih-barang', function () {
-        return view('pilihbarang');
-    });
-
-// SELESAI
 
 // Route::get('/register', [AuthController::class, 'registerView'])->name('register');
 // Route::post('/register', [AuthController::class, 'register'])->name('register.post');

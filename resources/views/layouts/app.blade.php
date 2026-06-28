@@ -14,7 +14,7 @@
         <x-sidebar class="flex-shrink-0" />
 
         {{-- Content --}}
-        <main class="flex-1 min-h-0 overflow-y-auto">
+        <main class="flex-1 min-h-0 overflow-y-auto m-5">
             @yield('content')
         </main>
     </div>

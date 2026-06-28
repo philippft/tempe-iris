@@ -1,51 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Surat Masuk')
 
 @section('content')
 <div class="m-5">
-    <x-header-dashboard/>
+<x-header-dashboard />
 
-    <div class="grid grid-cols-4 gap-4 mb-10">
-            <x-statecard
-                title="Total Aktif"
-                :value="$suratAprove"
-                label="Peminjaman"
-                border="border-l-primary-hover"
-                iconBg="bg-primary-hover/10"
-            >
-                <x-icons.totalaktif/>
-            </x-statecard>
-            <x-statecard
-                title="Total Selesai"
-                :value="$suratDone"
-                label="Peminjaman"
-                border="border-l-status-green"
-                iconBg="bg-status-green/10"
-            >
-                <x-icons.totalaktif/>
-            </x-statecard>
-            <x-statecard
-                title="Total Pending"
-                :value="$suratPending"
-                label="Peminjaman"
-                border="border-l-status-yellow"
-                iconBg="bg-status-yellow/10"
-            >
-                <x-icons.totalpending/>
-            </x-statecard>
-            <x-statecard
-                title="Total Ditolak"
-                :value="$suratReject"
-                label="Peminjaman"
-                border="border-l-status-red"
-                iconBg="bg-status-red/10"
-            >
-                <x-icons.totaltolak/>
-            </x-statecard>
-    </div>
-
-    <x-container>
+<x-container>
     {{-- ===== HEADER ===== --}}
     <div class="grid grid-cols-2 gap-4 mb-6">
         <div>
@@ -202,6 +163,6 @@
         @endif
     </div>
 
-    </x-container>
+</x-container>
 </div>
 @endsection

@@ -75,83 +75,42 @@ class PdfController extends Controller
         $safeNomor = str_replace('/', '_', $surat->nomor);
         return $pdf->download('Surat_Permohonan_' . $safeNomor . '.pdf');
     }
-
     public function previewSurat(Surat $surat)
     {
         $user = $surat->user;
+        $surat->load(['user', 'detailPeminjaman.inventaris.user', 'kegiatan']);
 
-        $surat->load([
-            'user',
-            'detailPeminjaman.inventaris.user.organization',
-            'kegiatan'
-        ]);
+        $tujuan = $surat->detailPeminjaman->map(function ($detail) {
+            return $detail->inventaris->user->organization->name;
+        })->unique()->values()->first();
 
-        $singkatanAcara = collect(explode(' ', $surat->acara))
-            ->map(fn($word) => strtoupper(substr($word, 0, 1)))
-            ->implode('');
-
-        $tujuan = $surat->detailPeminjaman
-            ->map(fn($detail) => $detail->inventaris->user->organization->name)
-            ->unique()
-            ->first();
-
-        $detail_kegiatan = $surat->kegiatan->map(function ($item) {
-            $item['nama_kegiatan'] = $item->nama;
-            $item['hari_mulai'] = $item->hari_mulai;
-
-            $item['tanggal_kegiatan'] = $item->tanggal_mulai
-                ? $item->tanggal_mulai->locale('id')->translatedFormat('d F Y')
-                : '-';
-
-            $item['waktu_mulai'] = $item->waktu_mulai
-                ? \Carbon\Carbon::parse($item->waktu_mulai)->format('H.i')
-                : '-';
-
-            $item['waktu_selesai'] = $item->waktu_selesai
-                ? \Carbon\Carbon::parse($item->waktu_selesai)->format('H.i')
-                : '-';
-
+        $kegiatan = $surat->kegiatan->map(function ($item) {
+            $item['nama_kegiatan'] = $item['nama'];
+            $item['hari_mulai']    = $item['hari_mulai'];
+            $item['tanggal_kegiatan'] = $item['tanggal_mulai']
+                ?->locale('id')->translatedFormat('d F Y') ?? '-';
+            $item['waktu_mulai']   = $item['waktu_mulai']
+                ? date('H:i', strtotime($item['waktu_mulai'])) : '-';
+            $item['waktu_selesai'] = $item['waktu_selesai']
+                ? date('H:i', strtotime($item['waktu_selesai'])) : '-';
             return $item;
         });
 
         $inventaris = $surat->detailPeminjaman->map(function ($detail) {
-            $detail['nama_inventaris'] = $detail->inventaris->nama;
-            $detail['jumlah'] = $detail->qty_inventaris;
+            $detail['nama_inventaris']    = $detail->inventaris->nama;
+            $detail['jumlah']             = $detail->qty_inventaris;
             $detail['tanggal_peminjaman'] = $detail->surat->tanggal_peminjaman
-                ?->locale('id')
-                ?->translatedFormat('d F Y') ?? '-';
-            $detail['waktu_peminjaman'] = $detail->surat->tanggal_peminjaman
+                ?->locale('id')->translatedFormat('d F Y') ?? '-';
+            $detail['waktu_peminjaman']   = $detail->surat->tanggal_peminjaman
                 ?->format('H:i') ?? '-';
-            $detail['tanggal_kembali'] = $detail->surat->tanggal_kembali
-                ?->locale('id')
-                ?->translatedFormat('d F Y') ?? '-';
-            $detail['waktu_kembali'] = $detail->surat->tanggal_kembali
+            $detail['tanggal_kembali']    = $detail->surat->tanggal_kembali
+                ?->locale('id')->translatedFormat('d F Y') ?? '-';
+            $detail['waktu_kembali']      = $detail->surat->tanggal_kembali
                 ?->format('H:i') ?? '-';
-
             return $detail;
         });
 
-        $data = compact(
-            'surat',
-            'user',
-            'tujuan',
-            'singkatanAcara',
-            'detail_kegiatan',
-            'inventaris'
-        );
-
-        switch (auth()->user()->role) {
-            case 'admin_LM':
-                return view('admin.surat.preview-surat', $data);
-
-            case 'admin_dekanat':
-                return view('dekanat.surat.preview-surat', $data);
-
-            case 'mahasiswa':
-                return view('user.surat.preview-surat', $data);
-
-            default:
-                abort(403);
-        }
+        // Return sebagai HTML biasa, bukan PDF
+        return view('pdf.surat', compact('surat', 'user', 'tujuan', 'kegiatan', 'inventaris'));
     }
 }

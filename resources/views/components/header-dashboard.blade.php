@@ -25,7 +25,7 @@
                 {{ auth()->user()->name }}
             </h3>
             <p class="text-dark-grey text-base uppercase tracking-wide">
-                {{ auth()->user()->prodi }}
+                {{ auth()->user()->prodi ?? 'Informatika' }}
             </p>
         </div>
     </div>

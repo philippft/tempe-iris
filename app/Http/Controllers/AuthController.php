@@ -41,10 +41,14 @@ class AuthController extends Controller
             'password' => ['required']
         ]);
 
-        // dd($credentials);
 
         if(Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+
+            if (is_null(Auth::user()->verify_at)) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                $request->session()->regenerate();
 
             if (is_null(Auth::user()->verify_at)) {
                 return redirect()->route('user.detail-akun', Auth::user()->id)
@@ -59,7 +63,7 @@ class AuthController extends Controller
         return back()->withErrors([
             'username' => 'Username atau Password salah!',
         ])->onlyInput('username');
-    }
+    }}
 
     public function register(Request $request) 
     {
