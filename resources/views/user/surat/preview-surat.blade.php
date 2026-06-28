@@ -98,14 +98,13 @@
                     </div>
 
                     <div class="mt-8">
-                        <p>Yth.</p>
-                        <p class="font-bold">{{ $tujuan }}</p>
+                        <p>Yth. <span class="font-bold">{{ $tujuan }}</span> </p>
                         <p>Universitas Udayana</p>
                         <p>di Jimbaran</p>
                     </div>
 
                     <div class="mt-6 text-justify">
-                        <p>Dengan Hormat,</p>
+                        <p class="underline">Dengan Hormat,</p>
                         <p class="mt-4">
                             Dalam rangka melaksanakan kegiatan <b>{{ $surat->acara }}</b>,
                             yang diselenggarakan oleh {{ $surat->user->organization->name }},
@@ -125,12 +124,8 @@
                         </td>
 
                         <td>
-                            {{ $kegiatan->waktu_mulai
-                                ? \Carbon\Carbon::parse($kegiatan->waktu_mulai)->format('H.i')
-                                : '-' }}
-                            {{ $kegiatan->waktu_selesai
-                                ? \Carbon\Carbon::parse($kegiatan->waktu_selesai)->format('H.i')
-                                : '-' }}
+                            {{ $kegiatan->waktu_mulai }}
+                            {{ $kegiatan->waktu_selesai }}
                         </td>
                     </tr>
                     @endforeach

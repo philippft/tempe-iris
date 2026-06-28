@@ -41,14 +41,19 @@ class DatabaseSeeder extends Seeder
         $organizationsData = [
             'DPM' => ['name' => 'Dewan Perwakilan Mahasiswa FMIPA'],
             'BEM' => ['name' => 'Badan Eksekutif Mahasiswa FMIPA'],
-            'MAT' => ['name' => 'Himpunan Mahasiswa Matematika'],
-            'FIS' => ['name' => 'Himpunan Mahasiswa Fisika'],
-            'KIM' => ['name' => 'Himpunan Mahasiswa Kimia'],
-            'BIO' => ['name' => 'Himpunan Mahasiswa Biologi'],
-            'FAR' => ['name' => 'Himpunan Mahasiswa Farmasi'],
-            'INF' => ['name' => 'Himpunan Mahasiswa Informatika'],
+            'HMAT' => ['name' => 'Himpunan Mahasiswa Matematika'],
+            'HFIS' => ['name' => 'Himpunan Mahasiswa Fisika'],
+            'HKIM' => ['name' => 'Himpunan Mahasiswa Kimia'],
+            'HBIO' => ['name' => 'Himpunan Mahasiswa Biologi'],
+            'HFAR' => ['name' => 'Himpunan Mahasiswa Farmasi'],
+            'HINF' => ['name' => 'Himpunan Mahasiswa Informatika'],
             'DEK' => ['name' => 'Dekanat FMIPA'],
-            'NON' => ['name' => 'Non-Organisasi / Umum'],
+            'MAT' => ['name' => 'Program Studi Matematika'],
+            'FIS' => ['name' => 'Program Studi Fisika'],
+            'KIM' => ['name' => 'Program Studi Kimia'],
+            'BIO' => ['name' => 'Program Studi Biologi'],
+            'FAR' => ['name' => 'Program Studi Farmasi'],
+            'INF' => ['name' => 'Program Studi Informatika'],
         ];
 
         // Simpan instance ID ke dalam array penampung untuk memudahkan asosiasi FK
@@ -99,12 +104,12 @@ class DatabaseSeeder extends Seeder
         // 4. SEED USER HIMA PRODI
         // ==========================================
         $himaProdi = [
-            ['slug' => 'himatika',  'org_key' => 'MAT', 'nama' => 'Ketua Himatika',  'nim' => '2408511001'],
-            ['slug' => 'himafi',     'org_key' => 'FIS', 'nama' => 'Ketua Himafi',     'nim' => '2408521001'],
-            ['slug' => 'himaki',     'org_key' => 'KIM', 'nama' => 'Ketua Himaki',     'nim' => '2408531001'],
-            ['slug' => 'himabio',    'org_key' => 'BIO', 'nama' => 'Ketua Himabio',    'nim' => '2408541001'],
-            ['slug' => 'himafarma',  'org_key' => 'FAR', 'nama' => 'Ketua Himafarma',  'nim' => '2408551001'],
-            ['slug' => 'himaif',     'org_key' => 'INF', 'nama' => 'Ketua HimaIF',     'nim' => '2408561081'],
+            ['slug' => 'himatika',  'org_key' => 'HMAT', 'nama' => 'Ketua Himatika',  'nim' => '2408511001'],
+            ['slug' => 'himafi',     'org_key' => 'HFIS', 'nama' => 'Ketua Himafi',     'nim' => '2408521001'],
+            ['slug' => 'himaki',     'org_key' => 'HKIM', 'nama' => 'Ketua Himaki',     'nim' => '2408531001'],
+            ['slug' => 'himabio',    'org_key' => 'HBIO', 'nama' => 'Ketua Himabio',    'nim' => '2408541001'],
+            ['slug' => 'himafarma',  'org_key' => 'HFAR', 'nama' => 'Ketua Himafarma',  'nim' => '2408551001'],
+            ['slug' => 'himaif',     'org_key' => 'HINF', 'nama' => 'Ketua HimaIF',     'nim' => '2408561081'],
         ];
 
         foreach ($himaProdi as $hima) {
@@ -146,15 +151,19 @@ class DatabaseSeeder extends Seeder
         // ==========================================
         // 6. SEED MAHASISWA UMUM (Menggunakan Variabel Nama Konstan)
         // ==========================================
+        $prodiKeys = ['MAT', 'FIS', 'KIM', 'BIO', 'FAR', 'INF'];
+
         foreach ($namaKonstan as $index => $nama) {
+            $prodiAcak = $prodiKeys[array_rand($prodiKeys)];
+
             User::factory()->create([
-                'id_organization' => $orgId['NON'], // Terikat ke entitas Non-Organisasi
+                'id_organization' => $orgId[$prodiAcak],
                 'username'        => 'mahasiswa_' . ($index + 1),
-                'name'            => $nama, // 💡 Diambil dari array konstan atas
+                'name'            => $nama,
                 'role'            => 'mahasiswa',
                 'nim_nip'         => '24085610' . str_pad($index + 10, 2, '0', STR_PAD_LEFT),
                 'ktm'             => 'uploads/ktm/ktm_dummy_' . ($index + 1) . '.jpg',
-                'verify_at'       => null, // Variasi 70% aktif, 30% pending (null)
+                'verify_at'       => null,
             ]);
         }
 
@@ -212,6 +221,50 @@ class DatabaseSeeder extends Seeder
                         'status' => fake()->boolean(80) ? 1 : 0,
                         'created_at' => now(),
                         'updated_at' => now(),
+                    ]);
+                }
+            }
+        }
+
+        $dekanatUsers = User::where('role', 'admin_dekanat')->get();
+
+        // 2. List barang dummy khusus aset dekanat / fakultas (biar lebih realistis)
+        $barangDekanatDummy = [
+            'Proyektor EPSON Laser',
+            'Kursi Lipat Kuliah',
+            'Meja IBM Seminar',
+            'Laser Pointer Presentasi',
+            'Sound System Aula Gedung',
+            'AC Portable 2 PK',
+            'Podium Kayu Jati',
+            'Papan Tulis Kaca (Glassboard)',
+            'Genset Portable 5000W'
+        ];
+
+        foreach ($dekanatUsers as $user) {
+
+            for ($i = 1; $i <= 4; $i++) {
+                $randomCategory = $categories->random();
+                $namaBarang = fake()->randomElement($barangDekanatDummy) . ' ' . $user->username . ' ' . $i;
+
+                $inventaris = Inventaris::create([
+                    'id_user'       => $user->id,
+                    'id_category'   => $randomCategory->id,
+                    'nama'          => $namaBarang,
+                    'status_pinjam' => fake()->boolean(10), // Lebih jarang dipinjam secara random
+                    'deskripsi'     => fake()->paragraph(2),
+                    'image'         => 'uploads/inventaris/' . fake()->uuid() . '.jpg',
+                    'created_at'    => now(),
+                    'updated_at'    => now(),
+                ]);
+
+                for ($j = 1; $j <= 10; $j++) {
+                    \App\Models\Stock::create([
+                        'id_inventaris' => $inventaris->id,
+                        // Set 95% bernilai 1 (Tersedia), karena barang fakultas biasanya selalu ready di awal
+                        'status'        => fake()->boolean(95) ? 1 : 0,
+                        'created_at'    => now(),
+                        'updated_at'    => now(),
                     ]);
                 }
             }
