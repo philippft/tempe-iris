@@ -129,8 +129,14 @@ class InventarisController extends Controller
             $statusStok = 'tidak aktif';
         }
         // dd($inventaris->stocks);
+        $inventaris->load(['detailPeminjaman.surat']);
 
-        // dd($jumlahStok);
+        $listPeminjam = $inventaris->detailPeminjaman
+            ->map(fn($detail) => $detail->surat?->user)
+            ->filter()
+            ->unique('id');
+
+        // dd($listPeminjam);
 
         if ($user) {
             if ($user->role === 'admin_LM') {
@@ -140,9 +146,7 @@ class InventarisController extends Controller
             }
         }
 
-        // akan ambil relasi user juga lewat surat untuk menampilkan nama user yang meminjamkan barang
-
-        return view($viewPath, compact('inventaris', 'jumlahStok', 'statusStok'));
+        return view($viewPath, compact('inventaris', 'jumlahStok', 'listPeminjam'));
     }
 
     /**
