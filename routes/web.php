@@ -24,8 +24,8 @@ Route::middleware('guest')->controller(AuthController::class)->group(function ()
     Route::post('/login', 'authenticate')->name('login.authenticate');
 
     // Register
-    Route::get('/register', 'registerView')->name('register');
-    Route::post('/register', 'register')->name('register.post');
+    Route::get('/register', [AuthController::class, 'registerView'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 });
 
 Route::middleware('auth')->controller(AuthController::class)->group(function () {

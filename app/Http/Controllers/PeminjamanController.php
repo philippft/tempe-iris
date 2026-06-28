@@ -15,10 +15,11 @@ class PeminjamanController extends Controller
     {
         $suratMasuk = Surat::whereHas('detailPeminjaman.inventaris', function ($q) {
             $q->where('id_user', auth()->id());
-        })->get();
+        })->paginate(5);
         // dd($suratMasuk->first()->detailPeminjaman->first()->inventaris->user);
 
-        $suratKeluar = Surat::where('id_user', auth()->id())->get();
+        $suratKeluar = Surat::where('id_user', auth()->id()
+        )->paginate(5, ['*'], 'surat_keluar_page');
         // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
 
         $suratMasukReject = $suratMasuk->whereStrict('status_peminjaman', 0);

@@ -9,11 +9,12 @@
 </head>
 
 <body class="bg-bg-light h-screen font-sans overflow-x-auto">
-    <div class="flex h-full">
+    <div class="flex h-screen min-h-0">
         {{-- Sidebar --}}
         <x-sidebar class="flex-shrink-0" />
+
         {{-- Content --}}
-        <main class="flex-1 overflow-y-auto">
+        <main class="flex-1 min-h-0 overflow-y-auto">
             @yield('content')
         </main>
     </div>
