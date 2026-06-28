@@ -120,7 +120,7 @@
 
         {{-- KOLOM 7: AKSI --}}
         <div class="justify-center">
-            <a href="{{ route('admin.user.detail', $data->id) }}"
+            <a href="{{ route('admin.management.detail', $data->id) }}"
                class="inline-block px-4 py-1.5 rounded-xl border border-slate-300 text-slate-700 font-bold hover:bg-slate-50 transition text-xs shadow-sm">
                 Detail
             </a>
@@ -290,7 +290,7 @@
                                 </td>
     
                                 <td class="px-6 py-5 text-center">
-                                    <a href="{{ route('admin.user.detail', $data->id) }}"
+                                    <a href="{{ route('admin.management.detail', $data->id) }}"
                                         class="inline-block px-4 py-1.5 rounded-xl border border-slate-300 text-slate-700 font-bold hover:bg-slate-50 transition text-xs shadow-sm">
                                         Detail
                                     </a>

@@ -42,7 +42,7 @@
             </x-statecard>
             <x-statecard
                 title="Total Selesai"
-                :value="$suratAprove->count()"
+                :value="$suratApprove->count()"
                 label="Peminjaman"
                 border="border-l-status-green"
                 iconBg="bg-status-green/10"
