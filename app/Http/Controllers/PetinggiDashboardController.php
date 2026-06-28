@@ -175,6 +175,23 @@ class PetinggiDashboardController extends Controller
         return view('petinggi.peminjaman.detail-surat', compact('surat', 'user', 'tujuan', 'kegiatan', 'inventaris'));
     }
 
+    public function show(Surat $surat)
+    {
+        $surat->load([
+            'user.organization',
+            'detailPeminjaman.inventaris.category',
+            'kegiatan'
+        ]);
+
+        $tujuan = $surat->detailPeminjaman
+            ->map(fn($d) => $d->inventaris->user->organization->name ?? null)
+            ->filter()
+            ->unique()
+            ->first();
+
+        return view('petinggi.peminjaman.detail-surat', compact('surat', 'tujuan'));
+    }
+
     public function verifikasiSurat(Request $request, Surat $surat)
     {
         $request->validate([

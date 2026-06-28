@@ -116,8 +116,9 @@ Route::middleware(['auth', 'isDekanat'])->prefix('dekanat')->name('dekanat.')->g
         Route::get('/peminjaman/detail/{surat}', 'detailPeminjaman')->name('peminjaman.detail-surat');
 
         Route::put('/peminjaman/verifikasi/{surat}', 'verifikasiSurat')->name('peminjaman.verifikasi');
+        Route::delete('/peminjaman/delete/{surat}', 'destroy')->name('peminjaman.destroy');
     });
-    
+    Route::get('/surat/{surat}/preview', [PdfController::class, 'previewSurat'])->name('preview.surat');
     // Download Surat
     Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 
@@ -131,10 +132,11 @@ Route::middleware(['auth', 'isDekanat'])->prefix('dekanat')->name('dekanat.')->g
 Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')->group(function () {
     Route::get('/dashboard', [PetinggiDashboardController::class, 'petinggiDashboard'])->name('dashboard');
     Route::get('/surat', [PetinggiDashboardController::class, 'suratDashboard'])->name('surat.index');
-    Route::get('/surat/{surat}', [PetinggiDashboardController::class, 'detailPeminjaman'])->name('surat.show');
+    Route::get('/peminjaman/{surat}', [PetinggiDashboardController::class, 'show'])->name('peminjaman.detail-surat');
+    // Route::get('/peminjaman/{surat}', [PetinggiDashboardController::class, 'detailPeminjaman'])->name('surat.show');
     Route::post('/surat/{surat}/verifikasi', [PetinggiDashboardController::class, 'verifikasiSurat'])->name('surat.verifikasi');
     Route::get('/surat/{surat}/download',  [PdfController::class, 'downloadSurat'])->name('surat.download'); 
-    Route::get('/surat/{surat}/preview', [PdfController::class, 'previewSurat'])->name('surat.preview');
+    Route::get('/surat/{surat}/preview', [PdfController::class, 'previewSurat'])->name('preview.surat');
     Route::delete('/surat/{surat}', [PeminjamanController::class, 'destroy'])->name('surat.destroy');
 });
 

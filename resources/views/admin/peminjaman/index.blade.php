@@ -202,12 +202,12 @@
             @forelse($suratKeluar as $surat)
                 <x-table-row>
                     <div>{{ sprintf('%02d', ($suratKeluar->currentPage() - 1) * $suratKeluar->perPage() + $loop->iteration) }}</div>
-                    <div class="font-bold break-all justify-center">
+                    <div class="font-bold break-word justify-center">
                         {{ $surat->acara }}
                     </div>
-                    <div class="justify-center">
+                    <div class="justify-start">
                         <span
-                            class="text-wrap justify-start break-all leading-tight items-center rounded bg-primary-hover/20 px-1 py-0.5 font-bold text-primary-hover ">
+                            class="text-wrap justify-start break-word leading-tight items-center rounded bg-primary-hover/20 px-1 py-0.5 font-bold text-primary-hover ">
                             {{ $surat->nomor }}
                         </span>
                     </div>
@@ -233,7 +233,7 @@
                             {{ $label }}
                         </x-status-card>
                     </div>
-                    <div class="justify-center text-primary-hover break-all font-bold">
+                    <div class="justify-start text-primary-hover break-word font-bold">
                        {{ $surat->detailPeminjaman->first()->inventaris->user->organization->name }}
                     </div>
                     <div class="justify-center flex gap-2">

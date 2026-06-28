@@ -4,10 +4,8 @@
 
 @section('content')
 
+<x-header-page title="Peminjaman" :href="route('admin.peminjaman.detail-surat')" />
 <div class="p-8 space-y-8">
-    <a href="{{ route('admin.peminjaman.detail-surat', $surat) }}" class="font-extrabold text-primary-hover hover:underline transition text-4xl space-y-0!">
-        ←
-    </a>
     {{-- Header --}}
     <div class="flex justify-between items-center">
         <div class="flex items-center gap-5">
