@@ -26,22 +26,22 @@ class PetinggiDashboardController extends Controller
 
         // dd($surats);
 
-        $suratDone = $surats->filter(
-            fn($s) => $s->getRawOriginal('tandatangan_pimpinan') === 1
-        )->count();
+            $suratDone = $surats->filter(
+                fn($s) => $s->getRawOriginal('tandatangan_pimpinan') === 1
+            )->count();
 
-        $suratReject = $surats->filter(
-            fn($s) => (int) $s->getRawOriginal('tandatangan_pimpinan') === 0
-                && $s->getRawOriginal('tandatangan_pimpinan') !== null
-        )->count();
+            $suratReject = $surats->filter(
+                fn($s) => (int) $s->getRawOriginal('tandatangan_pimpinan') === 0
+                    && $s->getRawOriginal('tandatangan_pimpinan') !== null
+            )->count();
 
-        $suratApprove = $surats->filter(
-            fn($s) => (int) $s->getRawOriginal('tandatangan_pimpinan') === 1
-        )->count();
+            $suratApprove = $surats->filter(
+                fn($s) => (int) $s->getRawOriginal('tandatangan_pimpinan') === 1
+            )->count();
 
-        $suratPending = $surats->filter(
-            fn($s) => $s->getRawOriginal('tandatangan_pimpinan') === null
-        )->count();
+            $suratPending = $surats->filter(
+                fn($s) => $s->getRawOriginal('tandatangan_pimpinan') === null
+            )->count();
 
         // foreach ($surats as $surat) {
         //     dump([
