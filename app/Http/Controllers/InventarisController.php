@@ -168,7 +168,7 @@ class InventarisController extends Controller
             }
         }
 
-        return view($viewPath, compact('inventaris', 'jumlahStok', 'statusStok', 'listPeminjam'));
+        return view($viewPath, compact('inventaris', 'jumlahStok', 'listPeminjam'));
     }
 
     /**
