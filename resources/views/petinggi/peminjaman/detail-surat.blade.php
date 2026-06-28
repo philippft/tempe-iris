@@ -123,7 +123,7 @@
 </x-container>
 
 {{-- ===== BOTTOM BAR VERIFIKASI (sticky) ===== --}}
-@if(is_null($surat->getRawOriginal('status_peminjaman')))
+@if(is_null($surat->getRawOriginal('tandatangan_pimpinan')) && $surat->getRawOriginal('status_peminjaman') === 1)
 <div class="fixed bottom-0 left-70 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
     <div class="max-w-screen-xl mx-auto px-6 py-3 flex items-center justify-between">
         <p class="text-sm text-gray-500">Pastikan data yang tercantum dalam surat sudah benar dan sesuai.</p>

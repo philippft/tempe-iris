@@ -52,9 +52,12 @@ class PetinggiDashboardController extends Controller
         // Filter status
         if ($request->filled('status')) {
             if ($request->status === 'pending') {
-                $query->whereNull('status_peminjaman');
+                $query->whereNull('tandatangan_pimpinan');
+            } elseif ($request->status === 'perludiproses') {
+                $query->whereNull('tandatangan_pimpinan')
+                    ->where('status_peminjaman', 1);
             } else {
-                $query->where('status_peminjaman', $request->status);
+                $query->where('tandatangan_pimpinan', $request->status);
             }
         }
 
@@ -155,7 +158,6 @@ class PetinggiDashboardController extends Controller
         try {
             $surat->update([
                 'tandatangan_pimpinan' => $request->status_peminjaman,
-                'status_peminjaman'    => $request->status_peminjaman, // ← tambah ini
                 'catatan_peminjaman'   => $request->catatan_peminjaman,
             ]);
 
@@ -173,11 +175,9 @@ class PetinggiDashboardController extends Controller
             }
 
             DB::commit();
-            $pesan1 = $request->status_peminjaman == '1' ? 'Peminjaman disetujui!' : 'Peminjaman ditolak.';
             $pesan2 = $request->tandatangan_pimpinan == '1' ? 'Tanda tangan disetujui!' : 'Tanda tangan ditolak.';
 
             return redirect()->back()
-                ->with('success', $pesan1)
                 ->with('info', $pesan2);
 
         } catch (\Exception $e) {

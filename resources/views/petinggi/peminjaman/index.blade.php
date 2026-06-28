@@ -47,6 +47,7 @@
                 <option value="">Semua Status</option>
                 <option value="1"       {{ request('status') === '1'       ? 'selected' : '' }}>Diterima</option>
                 <option value="pending" {{ request('status') === 'pending'  ? 'selected' : '' }}>Pending</option>
+                <option value="perludiproses" {{ request('status') === 'perludiproses'  ? 'selected' : '' }}>Perlu Diproses</option>
                 <option value="0"       {{ request('status') === '0'       ? 'selected' : '' }}>Ditolak</option>
             </select>
 
@@ -69,8 +70,15 @@
     {{-- ===== TABEL ===== --}}
     <div class="m-5">
         <x-table
-            :headers="['No', 'Nomor Surat', 'Perihal', 'Nama Kegiatan', 'Tanggal Kirim', 'Status', 'Aksi']"
-            :cols="['60px', '0.5fr', '0.5fr', '0.5fr', '0.5fr', '0.5fr', '180px']"
+            :headers="['No', 'Nomor Surat', 'Perihal', 'Nama Kegiatan', 'Tanggal Kirim', 'Peminjaman', 'TTD', 'Aksi']"
+            :cols="['60px',
+                    '1.5fr',
+                    '1fr',
+                    '1fr',
+                    '1fr',
+                    '120px',
+                    '120px',
+                    '120px']"
             :data="$surats"
             headerBg="bg-primary-hover/10"
             headerClass="text-primary font-bold text-sm uppercase"
@@ -82,7 +90,7 @@
             <div class="font-bold justify-start">
                 {{ $surat->nomor }}
             </div>
-            <div class="justify-start">
+            <div class="justify-center">
                 {{ $surat->perihal_peminjaman }}
             </div>
             <div class="justify-center">
@@ -93,6 +101,9 @@
             </div>
             <div class="justify-center">
                 <x-status-card :status="$surat->getRawOriginal('status_peminjaman')" />
+            </div>
+            <div class="justify-center">
+                <x-status-card :status="$surat->getRawOriginal('tandatangan_pimpinan')" />
             </div>
             <div class="flex justify-center items-center gap-3">
                 <x-action-button
