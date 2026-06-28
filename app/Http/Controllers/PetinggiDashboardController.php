@@ -2,21 +2,67 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Surat;
 use Illuminate\Http\Request;
+use App\Models\Surat;
+use App\Models\Category;
+use App\Models\Inventaris;
 use Illuminate\Support\Facades\DB;
 
 class PetinggiDashboardController extends Controller
 {
     public function petinggiDashboard () 
     {
-        $suratMasuk = Surat::whereHas('detailPeminjaman.inventaris', function ($q) {
-            $q->where('id_user', auth()->id());
-        })->get();
+        $surats = Surat::paginate(10);
+        $suratKeluar = Surat::where('id_user', auth()->id())->get();
+        // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
+        
+        $suratDone = $suratKeluar->filter(
+            fn($s) => $s->getRawOriginal('tandatangan_pimpinan') === 1
+        )->count();
 
+        $suratReject = $suratKeluar->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 0
+        )->count();
 
-        return view('petinggi.dashboard');
+        $suratAprove = $suratKeluar->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 1
+        )->count();
+
+        $suratPending = $suratKeluar->filter(function ($surat) {
+            return $surat->id_user === auth()->id()
+                && $surat->status_peminjaman === null;
+        })->count();
+        return view('petinggi.dashboard', compact('surats', 'suratKeluar', 'suratDone', 'suratReject', 'suratAprove', 'suratPending'));
     }
+
+    public function suratDashboard(Request $request)
+    {
+        $query = Surat::query();
+
+        // Filter pencarian
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nomor', 'like', '%' . $request->search . '%')
+                ->orWhere('perihal_peminjaman', 'like', '%' . $request->search . '%')
+                ->orWhere('acara', 'like', '%' . $request->search . '%')
+                ->orWhere('nama_peminjam', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Filter status
+        if ($request->filled('status')) {
+            if ($request->status === 'pending') {
+                $query->whereNull('status_peminjaman');
+            } else {
+                $query->where('status_peminjaman', $request->status);
+            }
+        }
+
+        $surats = $query->latest()->paginate(10)->withQueryString();
+
+        return view('petinggi.peminjaman.index', compact('surats'));
+    }
+
 
     public function index()
     {
@@ -102,17 +148,16 @@ class PetinggiDashboardController extends Controller
         ]);
 
         if ($request->status_peminjaman == '0' && empty($request->catatan_peminjaman)) {
-            return back()->withErrors(['catatan_peminjaman' => 'Wajib memberikan alasan jika menolak permohonan.'])->withInput();
+            return back()->withErrors(['catatan_peminjaman' => 'Wajib memberikan alasan jika menolak.'])->withInput();
         }
 
         DB::beginTransaction();
-
         try {
             $surat->update([
-                'tandatangan_pimpinan'  => $request->status_peminjaman,
-                'catatan_peminjaman' => $request->catatan_peminjaman,
+                'tandatangan_pimpinan' => $request->status_peminjaman,
+                'status_peminjaman'    => $request->status_peminjaman, // ← tambah ini
+                'catatan_peminjaman'   => $request->catatan_peminjaman,
             ]);
-
 
             if ($request->status_peminjaman == '0') {
                 $idInventarisList = DB::table('detail_peminjaman')
@@ -123,20 +168,17 @@ class PetinggiDashboardController extends Controller
                     DB::table('stocks')
                         ->whereIn('id_inventaris', $idInventarisList)
                         ->where('status', 0)
-                        ->update([
-                            'status'     => 1,
-                            'updated_at' => now(),
-                        ]);
+                        ->update(['status' => 1, 'updated_at' => now()]);
                 }
             }
 
             DB::commit();
-
-            $pesan = $request->status_peminjaman == '1' ? 'Peminjaman disetujui!' : 'Peminjaman ditolak dan stok dikembalikan.';
+            $pesan = $request->status_peminjaman == '1' ? 'Peminjaman disetujui!' : 'Peminjaman ditolak.';
             return redirect()->back()->with('success', $pesan);
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal memproses: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
 }

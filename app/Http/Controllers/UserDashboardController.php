@@ -15,11 +15,26 @@ class UserDashboardController extends Controller
 {
     public function userDashboard()
     {
-        $surats = Surat::paginate(1);
-        $totalAktif = Surat::where('status_peminjaman', 1)->count();
-        $totalPending = Surat::where('status_peminjaman', 0)->count();
+        $surats = Surat::paginate(10);
+        $suratKeluar = Surat::where('id_user', auth()->id())
+        ->get();
+        // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
+        
+        $suratReject = $suratKeluar->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 0
+        )->count();
 
-        return view('user.dashboard', compact('surats', 'totalAktif', 'totalPending'));
+        $suratAprove = $suratKeluar->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 1
+        )->count();
+
+        $suratPending = $suratKeluar->filter(function ($surat) {
+            return $surat->id_user === auth()->id()
+                && $surat->status_peminjaman === null;
+        })->count();
+        // dd($totalSurat);
+
+        return view('user.dashboard', compact('surats', 'suratKeluar', 'suratReject', 'suratAprove', 'suratPending'));
     }
 
     public function detail(User $user)

@@ -20,7 +20,6 @@
 </head>
 
 <body class="flex bg-gray-100 h-screen">
-    @include('partials.sidebar')
     <main class="flex-1 p-8">
 
         {{--Card Statistik --}}
@@ -39,20 +38,6 @@
                     @include('partials.card-product')
                 @endfor
             </div>
-        </div>
-
-        <br>
-        <hr>
-        <br>
-
-        {{--Popup Delete --}}
-        <div>
-            <button
-                type="button"
-                onclick="openDeleteModal('#')"
-                class="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700">
-                Hapus
-            </button>
         </div>
 
         <br>
@@ -191,7 +176,6 @@
         </div>
 
     </main>
-    @include('partials.popup-del')
 </body>
 
 <script>

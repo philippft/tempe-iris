@@ -197,7 +197,7 @@
                     {{-- @if($statusPeminjaman === 'Diterima' || $statusPeminjaman === 'Approved') --}}
                         <div class="stempel-container">
                             {{-- Ganti URL src dengan path gambar cap Anda (bisa pakai asset() atau base64 untuk PDF) --}}
-                            <img src="{{ public_path('images/cap_panpel.png') }}" alt="Cap PANPEL" class="stempel-img">
+                            <img src="{{ asset('images/cap_panpel.png'); }}" alt="Cap PANPEL" class="stempel-img">
                         </div>
                     {{-- @else --}}
                         {{-- <div class="stempel-container" style="height: 140px;"></div> --}}
