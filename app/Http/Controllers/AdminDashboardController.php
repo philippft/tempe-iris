@@ -16,10 +16,17 @@ class AdminDashboardController extends Controller
 
     public function managementUser() 
     {
-        $user = User::where('role', 'mahasiswa')->get();
+        $user = User::where('role', 'mahasiswa')->paginate(5);
         // dd($user);
 
-        return view('admin.user.index', compact('user'));
+        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+        
+        $totalPending = User::where('role', 'mahasiswa')
+            ->whereNull('verify_at')
+            ->whereNull('note')
+            ->count();
+
+        return view('admin.user.index', compact('user', 'totalMahasiswa', 'totalPending'));
     }
 
     public function userDetail(User $user) {
