@@ -149,16 +149,15 @@
                             'surat' => $surat->id,
                             'type' => 'masuk'
                         ])"/>
-                        <form action="{{ route('admin.inventaris.destroy', $surat->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan surat ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <x-action-button type="delete" as="a" href=""></x-action-button>
-                        </form>
+                        <x-action-button
+                            type="delete"
+                            onclick="openDeleteModal('{{ route('admin.peminjaman.destroy', $surat) }}')"
+                        />
                     </div>
                 </x-table-row>
                 @empty
                     <x-table-empty/>
-            @endforelse            
+            @endforelse          
             </x-table>
             <x-pagination :data="$suratMasuk" />
         </x-container>
@@ -243,15 +242,10 @@
                             'surat' => $surat->id,
                             'type' => 'keluar'
                         ])"/>
-                        <form action="{{ route('admin.inventaris.destroy', $surat->id) }}" method="POST"
-                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan surat ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                title="Hapus Data">
-                                <x-action-button type="delete" as="a" href=""></x-action-button>
-                            </button>
-                        </form>
+                        <x-action-button
+                            type="delete"
+                            onclick="openDeleteModal('{{ route('admin.peminjaman.destroy', $surat) }}')"
+                        />
                     </div>
                 </x-table-row>
                 @empty
@@ -261,7 +255,26 @@
             <x-pagination :data="$suratKeluar"/>
         </x-container>
     </div>
-
 </div>
+<x-popup-del id="deleteModal"/>
 
+@push('scripts')
+<script>
+function openDeleteModal(action)
+{
+    document.getElementById('deleteForm').action = action;
+
+    const modal = document.getElementById('deleteModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeDeleteModal()
+{
+    const modal = document.getElementById('deleteModal');
+    modal.classList.remove('flex');
+    modal.classList.add('hidden');
+}
+</script>
+@endpush
 @endsection

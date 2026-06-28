@@ -4,7 +4,7 @@
 
 @section('content')
 
-<x-header-page class="m-0" title="Form Pengajuan Peminjaman"/>
+<x-header-page class="p-0" title="Form Pengajuan Peminjaman"/>
 
 <div class="flex flex-col gap-6 px-10 py-6">
 

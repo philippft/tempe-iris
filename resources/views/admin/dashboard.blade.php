@@ -220,7 +220,7 @@
                                 <x-action-button
                                     type="view"
                                     as="a"
-                                    :href="route('admin.surat.detail', $surat)"
+                                    :href="route('admin.peminjaman.detail', $surat)"
                                 />
                             </div>
                         </x-table-row>
