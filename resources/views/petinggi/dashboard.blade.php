@@ -78,9 +78,25 @@
                             <x-status-card :status="$surat->status_peminjaman"/>
                         </div>
                         <div>
-                            <x-take-action/>
+                            <x-action-button
+                                type="view"
+                                as="a"
+                                :href="route('petinggi.surat.show', $surat)"
+                            />
+                            <x-action-button
+                                type="delete"
+                                as="button"
+                                onclick="openModal('deleteModal-{{ $surat->id }}')"
+                            />
                         </div>
                     </x-table-row>
+                    {{-- Modal delete per baris --}}
+                    <x-popup-del
+                        id="deleteModal-{{ $surat->id }}"
+                        :action="route('petinggi.surat.destroy', $surat)"
+                        title="Konfirmasi Hapus Surat"
+                        message="Apakah Anda yakin ingin menghapus surat <strong>{{ $surat->nomor }}</strong>?<br>Tindakan ini tidak dapat dibatalkan."
+                    />
                 @endforeach
         </x-table>
     </x-container>
