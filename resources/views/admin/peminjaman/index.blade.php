@@ -112,7 +112,7 @@
                         <!-- guys ni status keknya ga work di aku deh, salah kode -->
                     </div>
                     <div class="justify-center text-primary-hover font-bold">
-                        {{ $surat->detailPeminjaman->first()->inventaris->user->organization_name }}
+                        {{ $surat->detailPeminjaman->first()->inventaris->user->organization->name }}
                     </div>
                     <div class="justify-center flex gap-2">
                         <x-action-button type="view" as="a" href="{{ route('admin.peminjaman.detail-surat', $surat->id) }}"></x-action-button>
@@ -177,7 +177,7 @@
                         <!-- guys ni status keknya ga work di aku deh, salah kode -->
                     </div>
                     <div class="justify-center text-primary-hover break-words font-bold">
-                        {{ $surat->detailPeminjaman->first()->inventaris->user->organization_name ?? '-' }}
+                        {{ $surat->detailPeminjaman->first()->inventaris->user->organization->name ?? '-' }}
                     </div>
                     <div class="justify-center flex gap-2">
                         <x-action-button type="view" as="a" href="{{ route('admin.peminjaman.detail-surat', $surat->id) }}"></x-action-button>
