@@ -4,10 +4,8 @@
 
 @section('content')
 
+<x-header-page title="Peminjaman" :href="routeroute('user.peminjaman.index')" />
 <div class="p-8 space-y-8">
-     <a href="{{ route('user.peminjaman.index') }}" class="font-extrabold text-primary-hover hover:underline transition text-4xl space-y-0!">
-        ←
-    </a>
     {{-- Header --}}
     <div class="flex justify-between items-center">
         <div>
@@ -15,7 +13,7 @@
                 <h1 class="text-4xl font-extrabold text-primary-hover">
                     Detail Peminjaman Masuk
                 </h1>
-                <x-badge :status="$surat->status_peminjaman ? 'aktif' : 'pending'"/>
+                <x-badge :status="is_null($surat->status_peminjaman) ? 'pending' : ($surat->status_peminjaman == 1 ? 'aktif' : 'ditolak')"/>
             </div>
             <p class="text-dark-grey">
                 ID Peminjaman :

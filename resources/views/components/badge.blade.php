@@ -22,6 +22,7 @@
         // Otomatis atur teks Label 1 berdasarkan status jika tidak diisi manual
         if ($label1 === '') {
             $label1 = match($cekStatus) {
+                NULL => 'Pending',
                 '1' => 'Aktif',
                 '0' => 'Tidak Aktif',
                 default => ucfirst($status), // Huruf kapital di awal kata

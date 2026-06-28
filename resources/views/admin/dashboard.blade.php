@@ -6,12 +6,12 @@
 
 <x-header-dashboard />
 
-<div class="space-y-4">
+<div class="space-y-4 px-8">
     <h2 class="text-base font-bold text-dark-grey tracking-[1.5px]">STATISTIK PEMINJAMAN</h2>
     <div class="flex flex-wrap w-full justify-start gap-6">
     <x-statecard
             title="Total Aktif"
-            value="21"
+            :value="$suratAktif"
             label="Peminjaman"
             border="border-l-primary-hover"
             iconBg="bg-primary/10"
@@ -20,7 +20,7 @@
         </x-statecard>
         <x-statecard
             title="Total Selesai"
-            value="21"
+            :value="$suratSelesai"
             label="Peminjaman"
             border="border-l-status-green"
             iconBg="bg-status-green/10"
@@ -29,7 +29,7 @@
         </x-statecard>
         <x-statecard
             title="Total Diproses"
-            value="21"
+            :value="$suratPending"
             label="Peminjaman"
             border="border-l-status-yellow"
             iconBg="bg-status-yellow/10"
@@ -38,7 +38,7 @@
         </x-statecard>
         <x-statecard
             title="Total Ditolak"
-            value="21"
+            :value="$suratReject"
             label="Peminjaman"
             border="border-l-status-red"
             iconBg="bg-status-red/10"
@@ -48,12 +48,12 @@
     </div>
 </div>
 
-<div class="mt-8 space-y-4">
+<div class="mt-8 space-y-4 px-8">
     <h2 class="text-base font-bold text-dark-grey tracking-[1.5px]">MANAJEMEN ASET & USER</h2>
     <div class="flex flex-wrap w-full justify-start gap-6 items-center">
         <x-statecard class="flex-1"
             title="Total Inventaris"
-            value="21"
+            :value="$totalInventaris"
             label="Barang"
             border="border-l-judul"
             iconBg="bg-primary/10"
@@ -65,20 +65,18 @@
         <x-stat-card class="flex-1"
             variant="green" 
             label="User Aktif" 
-            number="21" 
+            :number="$userAktif" 
             unit="Mahasiswa"
-            > 
-        </x-stat-card>
+            /> 
         <x-stat-card class="flex-1"
             variant="yellow" 
             label="User Pending" 
-            number="21" 
+            :number="$userPending" 
             unit="Mahasiswa"
-            > 
-        </x-stat-card>
+            /> 
     </div>
 </div>
-<div class="mt-8 mb-8">
+<div class="p-8">
     <div class="w-full flex justify-between items-center mb-5">
         <div class="space-y-1">
             <h3 class="text-xl font-extrabold text-judul tracking-tight">
@@ -88,113 +86,164 @@
         </div>
         <div class="px-4 py-1.5 bg-primary/10 rounded-full border border-primary/5 flex items-center justify-center">
             <span class="text-sm font-bold text-primary whitespace-nowrap">
-                21 unit
+                {{ $inventarisDipinjam->count() }} Unit
             </span>
         </div>
     </div>
 
     <div class="space-y-3">
-        <x-item-card 
-            title="Sound MX100 System"
-            owner="Himaif"
-            category="Elektronik"
-            status="Dipinjam"
-        ></x-item-card>
-        <x-item-card 
-            title="Sound MX100 System"
-            owner="Himaif"
-            category="Elektronik"
-            status="Dipinjam"
-        ></x-item-card>
-        <x-item-card 
-           title="Sound MX100 System"
-            owner="Himaif"
-            category="Elektronik"
-            status="Dipinjam"
-        ></x-item-card>
+        @forelse($inventarisDipinjam as $barang)
+            <x-item-card 
+                :title="$barang->nama"
+                :owner="$barang->user?->organization?->name ?? '-'"
+                :category="$barang->category?->name ?? '-'"
+                status="Dipinjam"
+            />
+        @empty
+            <div class="bg-white rounded-xl p-6 text-center text-gray-500">
+                Tidak ada inventaris yang sedang dipinjam.
+            </div>
+        @endforelse
     </div>
 </div>
 
-<div class="bg bg-white rounded-2xl p-6">
-    <div class="w-full flex justify-between items-center mb-5">
-        <div class="space-y-1">
-            <h3 class="text-xl font-extrabold text-judul tracking-tight">
-                User Pending
-            </h3>
-            <p class="text-sm font-medium text-dark-grey">Mahasiswa menunggu aktivasi akun</p>
-        </div>
-        <div class="text-sm font-bold mr-6 text-primary-hover hover:underline">
-            <a href="" ">Lihat semua</a>
-        </div>
-        <!-- el tolong hrefnya kemana kalo mau liat semua? -->
-    </div>
+<div class="p-8">
     <x-container>
-        <x-table
-            :headers="['NO', 'NAMA MAHASISWA', 'NIM', 'DOKUMEN MAHASISWA']"
-            :cols="['60px', '1fr', '1fr', '1fr']"
-            data=""
-            headerBg="bg-primary-hover/10"
-            headerClass="text-primary font-bold text-sm uppercase"
-            bg="bg-white overflow-hidden"
-        >
-            <x-table-row>
-                <div class="font-bold">1</div>
-                <div class="font-bold justify-center">
-                    anak agung mas mayuriii iiiiiiiiiiiiiiiiiiiiii iiiiiiiiii
-                </div>
-                <div class="font-bold justify-center">
-                    2408561077
-                </div>
-                <div class="justify-center">
-                    <x-action-button type="view" as="a" href="#"></x-action-button>
-                </div>
-            </x-table-row>
-        </x-table>
+        <div class="w-full flex justify-between items-center mb-5">
+            <div class="space-y-1 pt-4 pl-8">
+                <h3 class="text-xl font-extrabold text-judul tracking-tight ">
+                    User Pending
+                </h3>
+                <p class="text-sm font-medium text-dark-grey">Mahasiswa menunggu aktivasi akun</p>
+            </div>
+            <div class="text-base font-bold mr-6 text-primary-hover hover:underline py-2 pl-4">
+                <a href="{{ route('admin.management.user') }}">
+                    Lihat semua
+                </a>
+            </div>
+        </div>
+        <div>
+            <x-table
+                :headers="['NO', 'NAMA MAHASISWA', 'NIM', 'DOKUMEN MAHASISWA']"
+                :cols="['60px', '1fr', '1fr', '1fr']"
+                :data="$pendingUsers"
+                headerBg="bg-primary-hover/10"
+                headerClass="text-primary font-bold text-sm uppercase"
+                bg="bg-white overflow-hidden"
+            >
+            @forelse ($pendingUsers as $index => $user )
+                <x-table-row>
+                    <div class="font-bold justify-center">{{ $index }}</div>
+                    <div class="font-bold justify-left">
+                        {{ $user->name }}
+                    </div>
+                    <div class="font-bold justify-center">
+                        {{ $user->nim_nip }}
+                    </div>
+                    <div class="justify-center">
+                        <x-action-button type="view" as="a" :href="route('admin.user.detail', $user)"/>
+                    </div>
+                </x-table-row>
+            @empty
+                <x-table-row>
+                    <div class="justify-center font-bold"> - </div>
+                    <div class="justify-center text-gray-500">
+                        Tidak ada user pending
+                    </div>
+                    <div></div>
+                        <div></div>
+                </x-table-row>
+            @endforelse
+            </x-table>
+        </div>
     </x-container>
 </div>
 
-<div class="bg bg-white rounded-2xl p-6 mt-8">
-    <div class="space-y-1">
+<div class="p-8">
+    <x-container>
+        <div class="space-y-1 pt-4 pl-8">
             <h3 class="text-xl font-extrabold text-judul tracking-tight">
                 Peminjaman Aktif
             </h3>
             <p class="text-sm font-medium text-dark-grey">Daftar barang yang sedang dalam masa peminjaman</p>
-    </div>
-    <div class="my-8">
-        <x-search-bar filterOptions=""></x-search-bar>
-        <!-- gimana cara pakainya ini bro -->
-    </div>
-    <x-container>
-        <x-table
-            :headers="['NO', 'NAMA KEGIATAN', 'ID PINJAM', 'TANGGAL PINJAM', 'ESTIMASI KEMBALI', 'TUJUAN', 'AKSI']"
-            :cols="['60px', '1fr', '1fr', '1fr', '1fr', '1fr', '1fr']"
-            data=""
-            headerBg="bg-primary-hover/10"
-            headerClass="text-primary font-bold text-sm uppercase"
-            bg="bg-white overflow-hidden"
-        >
-            <x-table-row>
-                <div>1</div>
-                <div class="font-bold justify-center">
-                    Ini nama kegiatann
+        </div>
+        <div class="m-8">
+            <form method="GET">
+                <x-search-bar
+                    name="search"
+                    :filterOptions="[
+                        'terbaru' => 'Terbaru',
+                        'terlama' => 'Terlama'
+                    ]"
+                />
+            </form>
+        </div>
+        <div>
+            @if($peminjamanAktif->count())
+                <x-table
+                    :headers="['NO', 'NAMA KEGIATAN', 'ID PINJAM', 'TANGGAL PINJAM', 'ESTIMASI KEMBALI', 'TUJUAN', 'AKSI']"
+                    :cols="['60px', '1fr', '1fr', '1fr', '1fr', '1fr', '1fr']"
+                    :data="$peminjamanAktif"
+                    headerBg="bg-primary-hover/10"
+                    headerClass="text-primary font-bold text-sm uppercase"
+                    bg="bg-white overflow-hidden"
+                >
+                    @foreach($peminjamanAktif as $surat)
+                        <x-table-row>
+                            <div>{{ $loop->iteration + ($peminjamanAktif->currentPage()-1) * $peminjamanAktif->perPage() }}</div>
+
+                            <div class="font-bold justify-center break-all">
+                                {{ $surat->acara }}
+                            </div>
+
+                            <div class="font-bold justify-center break-all">
+                                <span class="bg-[#EEF0FF] px-4 py-2 rounded-xl font-bold text-primary-hover">
+                                    {{ $surat->nomor }}
+                                </span>
+                            </div>
+
+                            <div class="justify-center">
+                                {{ $surat->tanggal_peminjaman->format('d M Y') }}
+                            </div>
+
+                            <div class="justify-center">
+                                {{ $surat->tanggal_kembali->format('d M Y') }}
+                            </div>
+
+                            <div class="font-bold text-primary-hover justify-center">
+                                {{ $surat->detailPeminjaman->first()?->inventaris?->user?->organization?->name ?? '-' }}
+                            </div>
+
+                            <div class="justify-center">
+                                <x-action-button
+                                    type="view"
+                                    as="a"
+                                    :href="route('admin.surat.detail', $surat)"
+                                />
+                            </div>
+                        </x-table-row>
+                    @endforeach
+                </x-table>
+
+                <div class="mt-6">
+                    {{ $peminjamanAktif->links() }}
                 </div>
-                <div class="font-bold justify-center">
-                    id pinjam ini
-                </div>
-                <div class="justify-center">
-                    tanggal minjem
-                </div>
-                <div class="justify-center">
-                    tanggal balik
-                </div>
-                <div class="font-bold text-primary-hover justify-center">
-                    tujuannya ke dekanat
-                </div>
-                <div class="justify-center">
-                    <x-action-button type="view" as="a" href="#"></x-action-button>
-                </div>
-            </x-table-row>
-        </x-table>
+            @else
+                <x-table
+                    :headers="['NO', 'NAMA KEGIATAN', 'ID PINJAM', 'TANGGAL PINJAM', 'ESTIMASI KEMBALI', 'TUJUAN', 'AKSI']"
+                    :cols="['60px', '1fr', '1fr', '1fr', '1fr', '1fr', '1fr']"
+                    :data="collect()"
+                    headerBg="bg-primary-hover/10"
+                    headerClass="text-primary font-bold text-sm uppercase"
+                    bg="bg-white overflow-hidden"
+                />
+
+                <x-table-empty
+                    title="Belum Ada Peminjaman Aktif"
+                    message="Saat ini tidak ada peminjaman yang sedang berlangsung."
+                />
+            @endif
+        </div>
     </x-container>
 </div>
 @endsection
