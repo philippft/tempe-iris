@@ -131,16 +131,9 @@ Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')
     Route::post('/surat/{surat}/verifikasi', [PetinggiDashboardController::class, 'verifikasiSurat'])->name('surat.verifikasi');
     Route::get('/surat/{surat}/download',  [PdfController::class, 'downloadSurat'])->name('surat.download'); 
     Route::get('/surat/{surat}/preview', [PdfController::class, 'previewSurat'])->name('surat.preview');
+    Route::delete('/surat/{surat}', [PeminjamanController::class, 'destroy'])->name('surat.destroy');
 });
 
-
-// MULAI
-
-    Route::get('/preview', function () {
-        return view('preview');
-    });
-
-// SELESAI
 
 // Route::get('/register', [AuthController::class, 'registerView'])->name('register');
 // Route::post('/register', [AuthController::class, 'register'])->name('register.post');

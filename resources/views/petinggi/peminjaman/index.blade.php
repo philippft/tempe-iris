@@ -76,37 +76,46 @@
             headerClass="text-primary font-bold text-sm uppercase"
             bg="bg-white overflow-hidden">
 
-            @forelse($surats as $surat)
-            <x-table-row>
-                <div>{{ $loop->iteration }}</div>
-                <div class="font-bold justify-start">
-                    {{ $surat->nomor }}
-                </div>
-                <div class="justify-start">
-                    {{ $surat->perihal_peminjaman }}
-                </div>
-                <div class="justify-center">
-                    {{ $surat->acara }}
-                </div>
-                <div class="justify-center">
-                    {{ $surat->tanggal_peminjaman->format('d M Y') }}
-                </div>
-                <div class="justify-center">
-                    <x-status-card :status="$surat->getRawOriginal('status_peminjaman')" />
-                </div>
-                <div class="flex justify-center items-center gap-3">
-                    <x-action-button
-                        type="view"
-                        as="a"
-                        :href="route('petinggi.surat.show', $surat)"
-                    />
-                    <x-action-button
-                        type="delete"
-                        as="a"
-                        :href="route('petinggi.surat.show', $surat)"
-                    />
-                </div>
-            </x-table-row>
+        @forelse($surats as $surat)
+        <x-table-row>
+            <div>{{ $loop->iteration }}</div>
+            <div class="font-bold justify-start">
+                {{ $surat->nomor }}
+            </div>
+            <div class="justify-start">
+                {{ $surat->perihal_peminjaman }}
+            </div>
+            <div class="justify-center">
+                {{ $surat->acara }}
+            </div>
+            <div class="justify-center">
+                {{ $surat->tanggal_peminjaman->format('d M Y') }}
+            </div>
+            <div class="justify-center">
+                <x-status-card :status="$surat->getRawOriginal('status_peminjaman')" />
+            </div>
+            <div class="flex justify-center items-center gap-3">
+                <x-action-button
+                    type="view"
+                    as="a"
+                    :href="route('petinggi.surat.show', $surat)"
+                />
+                <x-action-button
+                    type="delete"
+                    as="button"
+                    onclick="openModal('deleteModal-{{ $surat->id }}')"
+                />
+            </div>
+        </x-table-row>
+
+        {{-- Modal delete per baris --}}
+        <x-popup-del
+            id="deleteModal-{{ $surat->id }}"
+            :action="route('petinggi.surat.destroy', $surat)"
+            title="Konfirmasi Hapus Surat"
+            message="Apakah Anda yakin ingin menghapus surat <strong>{{ $surat->nomor }}</strong>?<br>Tindakan ini tidak dapat dibatalkan."
+        />
+
 
             @empty
             {{-- ===== EMPTY STATE ===== --}}

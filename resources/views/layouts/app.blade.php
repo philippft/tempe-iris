@@ -6,6 +6,7 @@
     <title>@yield('title', 'SIMPRAK')</title>
 
     @vite('resources/css/app.css')
+    @vite('resources/js/app.js')
 </head>
 
 <body class="bg-bg-light font-sans h-screen overflow-hidden">
