@@ -192,7 +192,7 @@ class UserDashboardController extends Controller
                 'tandatangan_pimpinan' => null,
                 'penyelenggara'        => $userPengaju->organization_name ?? 'DRAF_ORGANISASI',
                 'acara'                => 'DRAF_ACARA',
-                'singkatan_acara'      => null,           // ← ada di migration, tambahkan
+                'singkatan_acara'      => null,
                 'prodi'                => 'DRAF_PRODI',
                 'nama_peminjam'        => $userPengaju->username ?? 'Anonim',
                 'nim'                  => $userPengaju->NIM_NIP ?? '0000000000',
@@ -349,7 +349,7 @@ class UserDashboardController extends Controller
                 'tanggal_peminjaman'  => $request->tanggal_peminjaman . ' 08:00:00',
                 'tanggal_kembali'     => $request->tanggal_kembali . ' 17:00:00',
                 'perihal_peminjaman'  => $request->perihal_peminjaman,
-                'status_peminjaman'   => 0,
+                'status_peminjaman'   => null,
             ]);
 
             return redirect()->route('user.peminjaman.detail.kegiatan', ['surat' => $surat->id])
