@@ -19,8 +19,8 @@ class IsUser
         if(Auth::check() && Auth::user()->role == 'mahasiswa') {
 
             if (is_null(Auth::user()->verify_at)) {
-
-                if ($request->routeIs('user.detail-akun') || $request->routeIs('user.detail-akun.update') || $request->routeIs('logout')) {
+                
+                if ($request->routeIs('user.detail-akun') || $request->routeIs('logout')) {
                     return $next($request);
                 }
 

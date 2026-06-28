@@ -1,90 +1,198 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body>
-    <a href="{{ route('admin.download.surat', $surat->id) }}"
-        class="inline-block px-3 py-1.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition text-xs shadow-sm">
-        Cetak PDF
-    </a>
-    <form action="{{ route('admin.peminjaman.verifikasi', $surat->id) }}" method="POST" onsubmit="disableButton(this)">
-        @csrf
-        @method('PUT')
+@extends('layouts.app')
 
-        {{-- 1. Input Catatan Verifikator --}}
-        <div class="border border-slate-200 rounded-xl mb-4 bg-[#F8FAFC] shadow-sm p-5">
-            <label for="catatan_peminjaman" class="block font-semibold text-sm text-[#1e293b] mb-2">
-                Catatan Verifikator (Opsional)
-            </label>
-            <textarea name="catatan_peminjaman" id="catatan_peminjaman" rows="3"
-                placeholder="Tambahkan alasan jika menolak peminjaman..."
-                class="block w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-xs text-gray-700 focus:border-[#0A5C66] focus:ring-[#0A5C66] transition resize-none outline-none"></textarea>
-            @error('catatan_peminjaman')
-            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-            @enderror
+@section('title','Detail Peminjaman Inventaris')
+
+@section('content')
+
+<x-header-page title="Peminjaman" :href="route('admin.peminjaman.index')" />
+
+<div class="p-8 space-y-8">
+    {{-- HEADER --}}
+    <div class="flex justify-between items-center">
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <h1 class="text-4xl font-extrabold text-primary-hover">
+                    Detail Peminjaman
+                </h1>
+
+                <x-badge
+                    :status="is_null($surat->status_peminjaman)
+                        ? 'pending'
+                        : ($surat->status_peminjaman == 1 ? 'aktif' : 'ditolak')" />
+            </div>
+
+            <p class="text-dark-grey">
+                ID Peminjaman : #{{ $surat->nomor }}
+            </p>
         </div>
 
-        {{-- 2. Bar Tombol Aksi --}}
-        <div
-            class="border border-slate-200 rounded-xl bg-white shadow-sm p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p class="text-xs text-gray-500 italic">
-                Pastikan barang yang ingin dipinjam tersedia, jika tidak mohon diberikan pesan ditolak
-            </p>
+        <x-button
+            href="{{ route('admin.preview.surat', $surat) }}"
+            variant="tersier"
+            class="flex items-center gap-2">
 
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-                {{-- Tombol Tolak (status = 0) --}}
-                <button type="submit" name="status_peminjaman" value="0"
-                    class="btn-action w-full sm:w-auto px-5 py-2.5 rounded-lg border border-red-500 text-red-500 hover:bg-red-50 font-semibold text-xs flex items-center justify-center gap-2 transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                        </svg>
-                    Tolak
-                </button>
+            <svg width="20" height="18" viewBox="0 0 20 18" fill="none">
+                <path d="M14 5V2H6V5H4V0H16V5H14Z" fill="#095769"/>
+            </svg>
 
-                {{-- Tombol Setujui (status = 1) --}}
-                <button type="submit" name="status_peminjaman" value="1"
-                    class="btn-action w-full sm:w-auto px-5 py-2.5 rounded-lg bg-[#00B67A] text-white hover:bg-[#009E6A] font-semibold text-xs flex items-center justify-center gap-2 transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    Setujui
-                </button>
+            Lihat Surat
+        </x-button>
+    </div>
+
+    {{-- INFORMASI PEMINJAM --}}
+    <x-container>
+        <div class="p-8">
+            <h3 class="font-bold text-primary-hover mb-6">
+                Informasi Peminjam
+            </h3>
+
+            <div class="grid grid-cols-3 gap-10">
+                <div>
+                    <p class="text-xs uppercase text-dark-grey">Nama Lengkap</p>
+                    <h4 class="font-bold">{{ $surat->user->name }}</h4>
+                </div>
+
+                <div>
+                    <p class="text-xs uppercase text-dark-grey">NIM</p>
+                    <h4 class="font-bold">{{ $surat->user->nim_nip }}</h4>
+                </div>
+
+                <div>
+                    <p class="text-xs uppercase text-dark-grey">Program Studi</p>
+                    <h4 class="font-bold">
+                        {{ $surat->user->organization?->name ?? '-' }}
+                    </h4>
+                </div>
+
+                <div>
+                    <p class="text-xs uppercase text-dark-grey">Nama Acara</p>
+                    <h4 class="font-bold">{{ $surat->acara }}</h4>
+                </div>
             </div>
         </div>
-    </form>
+    </x-container>
 
-    {{-- Script pencegah double click --}}
-    <script>
-        function disableButton(form) {
-            // 1. Ambil tombol yang memicu submit (tombol yang aktif diklik oleh admin)
-            const activeButton = document.activeElement;
+    {{-- INFORMASI DOKUMEN --}}
+    <x-container>
+        <div class="p-8">
+            <h3 class="font-bold text-primary-hover mb-6">
+                Informasi Dokumen
+            </h3>
 
-            if (activeButton && activeButton.name === 'status_peminjaman') {
-                // 2. Buat input hidden darurat untuk mengamankan nilainya (0 atau 1)
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'status_peminjaman';
-                hiddenInput.value = activeButton.value;
+            <div class="grid grid-cols-1 gap-5">
 
-                // Tempelkan input hidden ini ke dalam form
-                form.appendChild(hiddenInput);
-            }
+                <div>
+                    <p class="text-xs uppercase text-dark-grey">Nomor Surat</p>
+                    <h4 class="font-bold">{{ $surat->nomor }}</h4>
+                </div>
 
-            // 3. Baru setelah nilainya aman di input hidden, matikan semua tombol aksi
-            // Gunakan setTimeout agar browser sempat mendaftarkan input hidden tadi ke request
-            setTimeout(() => {
-                const buttons = form.querySelectorAll('.btn-action');
-                buttons.forEach(btn => {
-                    // btn.disabled = true;
-                    btn.classList.add('opacity-50', 'cursor-not-allowed');
-                });
-            }, 1);
-        }
-    </script>
-</body>
-</html>
+                <div>
+                    <p class="text-xs uppercase text-dark-grey">Tanggal Terbit</p>
+                    <h4 class="font-bold">
+                        {{ optional($surat->created_at)->format('d F Y') }}
+                    </h4>
+                </div>
+
+                <div>
+                    <p class="text-xs uppercase text-dark-grey">Perihal</p>
+                    <h4 class="font-bold">{{ $surat->perihal_peminjaman }}</h4>
+                </div>
+
+            </div>
+        </div>
+    </x-container>
+
+    {{-- JADWAL --}}
+    <x-container>
+        <div class="p-8">
+            <h3 class="font-bold text-primary-hover mb-6">
+                Jadwal Peminjaman
+            </h3>
+
+            <div class="grid grid-cols-2 gap-10">
+
+                <div>
+                    <p class="text-xs uppercase text-dark-grey">Tanggal Peminjaman</p>
+                    <h4 class="font-bold text-2xl">
+                        {{ optional($surat->tanggal_peminjaman)?->translatedFormat('l, d F Y') ?? '-' }}
+                    </h4>
+                </div>
+
+                <div>
+                    <p class="text-xs uppercase text-dark-grey">Tanggal Pengembalian</p>
+                    <h4 class="font-bold text-2xl">
+                        {{ optional($surat->tanggal_kembali)?->translatedFormat('l, d F Y') ?? '-' }}
+                    </h4>
+                </div>
+
+            </div>
+        </div>
+    </x-container>
+
+    {{-- DETAIL BARANG --}}
+    <x-container>
+        <div class="p-8">
+            <h3 class="font-bold text-primary-hover mb-6">
+                Detail Barang
+            </h3>
+
+            @foreach($surat->detailPeminjaman as $detail)
+                <x-detail-item
+                    :image="$detail->inventaris->gambar"
+                    :name="$detail->inventaris->nama"
+                    :category="$detail->inventaris->category->name"
+                    :quantity="$detail->qty_inventaris"
+                />
+            @endforeach
+        </div>
+    </x-container>
+
+    {{-- VERIFIKASI --}}
+    @if($type === 'masuk' && is_null($surat->status_peminjaman))
+        <x-container>
+            <form action="{{ route('admin.peminjaman.verifikasi', $surat) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="p-8 space-y-6">
+
+                    <div>
+                        <label class="block font-bold text-dark-grey mb-3">
+                            Catatan Verifikator (Opsional)
+                        </label>
+
+                        <textarea
+                            name="catatan_peminjaman"
+                            rows="4"
+                            class="w-full rounded-xl border border-border-custom bg-[#F5F6FF] p-4"
+                        >{{ old('catatan_peminjaman') }}</textarea>
+                    </div>
+
+                    <div class="flex justify-between items-center border rounded-2xl p-3">
+
+                        <p class="italic text-dark-grey">
+                            Pastikan barang yang ingin dipinjam tersedia.
+                        </p>
+
+                        <div class="flex gap-3">
+
+                            <button type="submit" name="status_peminjaman" value="0"
+                                class="px-6 py-3 rounded-xl font-medium text-xl bg-white border border-red-500 text-red-500">
+                                Tolak
+                            </button>
+
+                            <button type="submit" name="status_peminjaman" value="1"
+                                class="px-6 py-3 rounded-xl font-medium text-xl bg-status-green text-white">
+                                Setujui
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </form>
+        </x-container>
+    @endif
+
+</div>
+@endsection

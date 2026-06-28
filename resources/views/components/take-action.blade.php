@@ -1,19 +1,23 @@
 @props([
-    'viewUrl' => '#',       
-    'deleteAction' => null  
+    'viewUrl' => '#',
+    'showView' => true,
+    'showDelete' => true,
 ])
 
 <div class="flex items-center gap-4">
-    
-    <x-action-button
-        type="view" 
-        as="a" 
-        href="{{ $viewUrl }}" 
-    />
 
-    <x-action-button
-        type="delete"  
-        {{ $attributes }} 
-    />
+    @if($showView)
+        <x-action-button
+            type="view"
+            as="a"
+            href="{{ $viewUrl }}"
+        />
+    @endif
 
+    @if($showDelete)
+        <x-action-button
+            type="delete"
+            {{ $attributes }}
+        />
+    @endif
 </div>

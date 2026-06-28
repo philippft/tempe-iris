@@ -5,7 +5,8 @@
     
     $variants = [
         'primary' => 'bg-primary hover:bg-primary-hover text-white',
-        'secondary' => 'bg-bg-light border border-border-custom hover:bg-bg-dark text-gray-700'
+        'secondary' => 'bg-bg-light border border-border-custom hover:bg-bg-dark text-gray-700',
+        'tersier' => 'bg-bg-light border border-primary-hover hover:shadow-md text-primary-hover',
     ];
 
     $classes = $baseClass . ' ' . ($variants[$variant] ?? $variants['primary']);

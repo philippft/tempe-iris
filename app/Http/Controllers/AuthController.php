@@ -27,7 +27,7 @@ class AuthController extends Controller
             return $this->redirectBasedOnRole(Auth::user()->role);
         }
 
-        $organizations = Organization::where('name', 'like', 'Program Studi%')
+        $organizations = Organization::where('name', 'like', 'Himpunan Mahasiswa%')
         ->orderBy('id')
         ->get();
 
@@ -86,7 +86,7 @@ class AuthController extends Controller
             $ktmPath = 'storage/ktm/' . $fileName; 
         }
 
-        User::create([
+        $user = User::create([
             'name'      => $validated['nama_lengkap'], 
             'nim_nip'   => $validated['nim_nip'],
             'username'  => $validated['nim_nip'], 
@@ -95,7 +95,6 @@ class AuthController extends Controller
             'ktm'       => $ktmPath,
             'password'  => Hash::make($validated['password']), 
             'role'      => 'mahasiswa', 
-            'verify_at' => null,
         ]);
 
         return redirect()->route('login')

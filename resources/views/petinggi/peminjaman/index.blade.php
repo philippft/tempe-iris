@@ -1,21 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Surat Masuk')
 
 @section('content')
+<div class="m-5">
+<x-header-dashboard />
 
-<x-header-dashboard/>
-
-<div class="space-y-8">
-
-<form action="{{ route('logout') }}" method="POST">
-    @csrf
-    <button type="submit" class="text-red-500 hover:text-red-700 font-bold">
-        Logout
-    </button>
-</form>
-
-    <x-container>
+<x-container>
     {{-- ===== HEADER ===== --}}
     <div class="grid grid-cols-2 gap-4 mb-6">
         <div>
@@ -172,6 +163,6 @@
         @endif
     </div>
 
-    </x-container>
+</x-container>
 </div>
 @endsection

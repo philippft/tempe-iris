@@ -65,7 +65,7 @@
         .ttd-container td {
             vertical-align: top;
         }
-        
+
         .text-center {
             text-align: center;
         }
@@ -76,13 +76,15 @@
         }
 
         .stempel-img {
-            width: 140px; /* Sesuaikan ukuran cap dengan kebutuhan */
+            width: 140px;
+            /* Sesuaikan ukuran cap dengan kebutuhan */
             height: auto;
-            opacity: 0.9; /* Sedikit transparan agar terlihat seperti cap asli */
+            opacity: 0.9;
+            /* Sedikit transparan agar terlihat seperti cap asli */
         }
 
         /* ----- STYLING HALAMAN 2 (LAMPIRAN) ----- */
-        
+
         /* Memaksa elemen setelah class ini untuk pindah ke halaman baru saat di-print/PDF */
         .page-break {
             page-break-before: always;
@@ -91,18 +93,21 @@
         .table-lampiran {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px; /* Sedikit dikecilkan agar pas di tabel */
+            font-size: 13px;
+            /* Sedikit dikecilkan agar pas di tabel */
         }
 
         .table-lampiran th,
         .table-lampiran td {
-            border: 1px solid #cbd5e1; /* Warna border abu-abu muda */
+            border: 1px solid #cbd5e1;
+            /* Warna border abu-abu muda */
             padding: 12px 10px;
             vertical-align: middle;
         }
 
         .table-lampiran th {
-            background-color: #e2e8f0; /* Warna biru muda keabuan mirip di gambar */
+            background-color: #e2e8f0;
+            /* Warna biru muda keabuan mirip di gambar */
             font-weight: bold;
             color: #1e293b;
         }
@@ -113,7 +118,7 @@
         .table-lampiran th:nth-child(5) {
             text-align: center;
         }
-        
+
         .table-lampiran th:nth-child(2) {
             text-align: left;
         }
@@ -128,7 +133,8 @@
                 <td style="width: 12%;">Nomor</td>
                 <td style="width: 3%;">:</td>
                 <td style="width: 50%;">{{ $surat->nomor }}</td>
-                <td style="text-align: right; width: 35%;">{{ $surat->created_at->locale('id')->translatedFormat('d F Y') }}</td>
+                <td style="text-align: right; width: 35%;">
+                    {{ $surat->created_at->locale('id')->translatedFormat('d F Y') }}</td>
             </tr>
             <tr>
                 <td>Lampiran</td>
@@ -153,10 +159,12 @@
         </div>
 
         <div class="isi-surat">
-            Dalam rangka melaksanakan kegiatan {{ $surat->acara }}, yang diselenggarakan oleh {{ $surat->penyelenggara }} Fakultas MIPA Universitas Udayana, maka kami bermaksud untuk mengajukan Permohonan Peminjaman Inventaris (terlampir). Adapun kegiatan tersebut akan diselenggarakan pada:
+            Dalam rangka melaksanakan kegiatan {{ $surat->acara }}, yang diselenggarakan oleh
+            {{ $surat->penyelenggara }} Fakultas MIPA Universitas Udayana, maka kami bermaksud untuk mengajukan
+            Permohonan Peminjaman Inventaris (terlampir). Adapun kegiatan tersebut akan diselenggarakan pada:
         </div>
 
-        @foreach ($kegiatan as $k)
+        @foreach ($detail_kegiatan as $k)
             <div class="jadwal-container">
                 <div class="jadwal-title">{{ $k['nama_kegiatan'] }}</div>
                 <div class="jadwal-detail">
@@ -177,7 +185,8 @@
         @endforeach
 
         <div class="isi-surat">
-            Demikian surat peminjaman ini kami sampaikan. Atas kerja sama dan dukungan yang diberikan, kami ucapkan terima kasih.
+            Demikian surat peminjaman ini kami sampaikan. Atas kerja sama dan dukungan yang diberikan, kami ucapkan
+            terima kasih.
         </div>
 
         <table class="ttd-container">
@@ -185,23 +194,23 @@
                 <td style="width: 60%;"></td>
                 <td style="width: 40%;" class="text-center">
                     Panitia Pelaksana<br>
-                    {{ $surat->acara }} ({{ $surat->singkatan_acara }})<br>
+                    {{ $surat->acara }} ({{ $singkatanAcara }})<br>
                     Universitas Udayana
                 </td>
             </tr>
             <tr>
                 <td colspan="2" class="text-center" style="padding-top: 60px;">
                     Mengetahui,<br>
-                    {{ $surat->user->organization->name }} FMIPA UNUD 2026
-                    
-                    {{-- @if($statusPeminjaman === 'Diterima' || $statusPeminjaman === 'Approved') --}}
+                    {{ $surat->prodi }} FMIPA UNUD 2026
+
+                    @if ($surat->status_peminjaman === '1' || $surat->status_peminjaman === 'Approved')
                         <div class="stempel-container">
                             {{-- Ganti URL src dengan path gambar cap Anda (bisa pakai asset() atau base64 untuk PDF) --}}
                             <img src="{{ public_path('images/cap_panpel.png') }}" alt="Cap PANPEL" class="stempel-img">
                         </div>
-                    {{-- @else --}}
-                        {{-- <div class="stempel-container" style="height: 140px;"></div> --}}
-                    {{-- @endif --}}
+                    @else
+                        <div class="stempel-container" style="height: 140px;"></div>
+                    @endif
 
                 </td>
             </tr>
@@ -227,8 +236,10 @@
                         <td class="text-center">{{ $loop->iteration }}</td>
                         <td>{{ $inv['nama_inventaris'] }}</td>
                         <td class="text-center">{{ $inv['jumlah'] }}</td>
-                        <td class="text-center">{{ $inv['waktu_peminjaman'] }} WITA <br>{{ $inv['tanggal_peminjaman'] }}</td>
-                        <td class="text-center">{{ $inv['waktu_kembali'] }} WITA <br>{{ $inv['tanggal_kembali'] }}</td>
+                        <td class="text-center">{{ $inv['waktu_peminjaman'] }} WITA
+                            <br>{{ $inv['tanggal_peminjaman'] }}</td>
+                        <td class="text-center">{{ $inv['waktu_kembali'] }} WITA <br>{{ $inv['tanggal_kembali'] }}
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
@@ -236,4 +247,5 @@
     </div>
 
 </body>
+
 </html>

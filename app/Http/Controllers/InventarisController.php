@@ -16,12 +16,30 @@ class InventarisController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index() 
     {
         $user = Auth::user();
 
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        $search     = request('search');
+        $categoryId = request('category');
+
         $inventaris = Inventaris::with('category')
             ->where('id_user', $user->id)
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama', 'like', "%{$search}%");
+                    if (is_numeric($search)) {
+                        $q->orWhere('id', $search);
+                    }
+                });
+            })
+            ->when($categoryId, function ($query, $categoryId) {
+                $query->where('id_category', $categoryId);
+            })
             ->withCount([
                 'stocks as stok_aktif' => function ($query) {
                     $query->where('status', 1);
@@ -30,7 +48,7 @@ class InventarisController extends Controller
                     $query->where('status', 0);
                 }
             ])
-            ->get();
+            ->paginate(10);
         // dd($inventaris);
 
         $categories = Category::all();
@@ -56,7 +74,9 @@ class InventarisController extends Controller
             'totalBarang',
             'totalStok',
             'stokAktif',
-            'stokTidakAktif'
+            'stokTidakAktif',
+            'search',
+            'categoryId'
         ));
     }
 
@@ -148,7 +168,7 @@ class InventarisController extends Controller
             }
         }
 
-        return view($viewPath, compact('inventaris', 'jumlahStok', 'statusStok', 'listPeminjam'));
+        return view($viewPath, compact('inventaris', 'jumlahStok', 'listPeminjam'));
     }
 
     /**
