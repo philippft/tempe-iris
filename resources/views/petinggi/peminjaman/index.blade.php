@@ -92,7 +92,7 @@
                     {{ $surat->tanggal_peminjaman->format('d M Y') }}
                 </div>
                 <div class="justify-center">
-                    <x-status-card :status="$surat->getRawOriginal('status_peminjaman')" />
+                    <x-status-card :status="$surat->getRawOriginal('tandatangan_pimpinan')" />
                 </div>
                 <div class="flex justify-center items-center gap-3">
                     <x-action-button
