@@ -289,7 +289,7 @@ class PeminjamanController extends Controller
             'tanggal_peminjaman'  => $request->tanggal_peminjaman . ' 08:00:00',
             'tanggal_kembali'     => $request->tanggal_kembali . ' 17:00:00',
             'perihal_peminjaman'  => $request->perihal_peminjaman,
-            'status_peminjaman'   => 0,
+            'status_peminjaman'   => null,
         ]);
 
         return redirect()->route('admin.peminjaman.detail.kegiatan', ['surat' => $surat->id])
