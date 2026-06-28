@@ -117,14 +117,14 @@
                     <div class="justify-center flex gap-2">
                         <x-action-button type="view" as="a" href="{{ route('admin.peminjaman.detail-surat', $surat->id) }}"></x-action-button>
                         <form action="{{ route('admin.inventaris.destroy', $surat->id) }}" method="POST"
-                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan surat ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    title="Hapus Data">
-                                                    <x-action-button type="delete" as="a" href=""></x-action-button>
-                                                </button>
-                                            </form>
+                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus permohonan surat ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    title="Hapus Data">
+                                    <x-action-button type="delete" as="a" href=""></x-action-button>
+                                </button>
+                            </form>
                     </div>
                 </x-table-row>
                 @empty
