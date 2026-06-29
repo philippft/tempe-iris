@@ -6,10 +6,79 @@
 
 <x-header-page title="Daftar Inventaris" :href="route('admin.inventaris.index')"></x-header-page>
 
-<div class="p-8 sm:px-6 space-y-8">
-    <div class="flex items-center gap-4 mb-6">
-        <h1 class="text-xl font-bold text-[#0B5C66]">Form Tambah Inventaris</h1>
-    </div>
+    <form action="{{ route('admin.inventaris.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+
+        <div class="bg-white rounded-[24px] m-6 border border-border-custom shadow-sm overflow-hidden flex flex-col">
+            
+            <div class="bg-[#F8FAFC] px-8 py-6 border-b border-border-custom">
+                <h2 class="text-xl font-bold text-bg-primary-dark text-judul">Tambah Barang Inventaris</h2>
+                <p class="text-sm font-medium text-subtext mt-1">Lengkapi formulir di bawah ini untuk melakukan penambahan barang inventaris.</p>
+            </div>    
+
+            <div class="p-8 space-y-6">
+                
+                <x-input id="nama" name="nama" label="Nama Barang" placeholder="Nama Barang" />
+                @error('nama')
+                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                @enderror
+
+                <x-select id="id_category" name="id_category" label="Kategori Barang" required>
+                    <option value="" disabled selected>Pilih Kategori</option>
+                    @foreach($categories as $kategori)
+                        <option value="{{ $kategori->id }}">{{ $kategori->name }}</option>
+                    @endforeach
+                </x-select>
+                @error('id_category')
+                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                @enderror
+
+
+                <x-input id="stok" name="stok_awal" type="number" label="Stok Barang" placeholder="Masukkan jumlah barang" required />
+                @error('stok_awal')
+                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                @enderror
+
+                <x-select id="status" name="status_stok" label="Status Barang" required>
+                    <option value="" disabled selected>Pilih Status Barang</option>
+                    <option value="1">Tersedia</option>
+                    <option value="0">Tidak Tersedia</option>
+                </x-select>
+                @error('status_stok')
+                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                @enderror
+
+                <div>
+                    <label for="deskripsi" class="block text-xs font-bold text-judul uppercase tracking-wider mb-2">
+                        Deskripsi Barang
+                    </label>
+                    <textarea 
+                        id="deskripsi" 
+                        name="deskripsi" 
+                        rows="4" 
+                        placeholder="Jelaskan kondisi fisik atau catatan tambahan lainnya." 
+                        class="w-full px-4 py-3 bg-bg-dark/50 border border-border-custom rounded-lg text-sm text-subtext placeholder-subtext/60 focus:outline-none focus:border-primary focus:bg-white transition duration-200 resize-none"
+                    ></textarea>
+                </div>
+                @error('deskripsi')
+                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                @enderror
+
+                <div x-data="{ 
+                    imageUrl: null, 
+                    fileChosen(event) { 
+                        const file = event.target.files[0]; 
+                        if (file) { 
+                            this.imageUrl = URL.createObjectURL(file); 
+                        } 
+                    } 
+                }">
+                    <label class="block text-xs font-bold text-judul uppercase tracking-wider mb-2">
+                        Media Atau Foto Barang
+                    </label>
+                    
+                    <div class="border-2 border-dashed border-border-custom rounded-xl p-8 flex flex-col items-center justify-center text-center bg-white/50 hover:bg-bg-dark/20 transition-colors relative overflow-hidden">
+                        
     
     <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm max-w-4xl">
         <div class="mb-6 border-b border-gray-100 pb-4">

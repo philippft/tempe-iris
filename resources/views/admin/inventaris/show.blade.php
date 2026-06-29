@@ -3,7 +3,7 @@
 @section('title', 'Detail Inventaris') 
 
 @section('content')
-<x-header-page title="Detail Inventaris" :href="route('dekanat.inventaris.index')"/>
+<x-header-page title="Detail Inventaris" :href="route('admin.inventaris.index')"/>
 
 <div class="p-8 sm:px-6 space-y-9">
     <div class="flex gap-4 flex-row items-center justify-between">
