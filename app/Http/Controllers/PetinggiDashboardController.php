@@ -16,32 +16,23 @@ class PetinggiDashboardController extends Controller
         // $suratKeluar = Surat::where('id_user', auth()->id())->get();
         // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
 
-        $surats = Surat::where('status_peminjaman', 1)
+        $query = Surat::where('status_peminjaman', 1)
             ->whereHas('detailPeminjaman.inventaris.user.organization', function ($query) {
                 $query->where('name', 'like', '%Dekanat%');
             })
-            ->with(['user.organization', 'detailPeminjaman.inventaris'])
+            ->with(['user.organization', 'detailPeminjaman.inventaris']);
+        // dd($surats);
+
+        $surats = (clone $query)
             ->latest()
             ->paginate(10);
 
-        // dd($surats);
+        $allSurats = (clone $query)->get();
 
-            $suratDone = $surats->filter(
-                fn($s) => $s->getRawOriginal('tandatangan_pimpinan') === 1
-            )->count();
-
-            $suratReject = $surats->filter(
-                fn($s) => (int) $s->getRawOriginal('tandatangan_pimpinan') === 0
-                    && $s->getRawOriginal('tandatangan_pimpinan') !== null
-            )->count();
-
-            $suratApprove = $surats->filter(
-                fn($s) => (int) $s->getRawOriginal('tandatangan_pimpinan') === 1
-            )->count();
-
-            $suratPending = $surats->filter(
-                fn($s) => $s->getRawOriginal('tandatangan_pimpinan') === null
-            )->count();
+        $suratDone = $allSurats->where('tandatangan_pimpinan', 1)->count();
+        $suratReject = $allSurats->where('tandatangan_pimpinan', 0)->count();
+        $suratApprove = $allSurats->where('tandatangan_pimpinan', 1)->count();
+        $suratPending = $allSurats->whereNull('tandatangan_pimpinan')->count();
 
         // foreach ($surats as $surat) {
         //     dump([
@@ -224,14 +215,16 @@ class PetinggiDashboardController extends Controller
             }
 
             DB::commit();
-            $pesan2 = $request->tandatangan_pimpinan == '1' ? 'Tanda tangan disetujui!' : 'Tanda tangan ditolak.';
-
-            return redirect()->back()
-                ->with('info', $pesan2);
+            return redirect()
+                ->route('petinggi.surat.index')
+                ->with('info', $request->status_peminjaman == 1
+                    ? 'Tanda tangan disetujui!'
+                    : 'Tanda tangan ditolak.'
+                );
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+            return back()->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
 }

@@ -111,13 +111,10 @@
                         </div>
                         
                         {{-- Aksi --}}
-                        <div class="px-4 py-3">
-                            <button type="button" class="p-1.5 text-red-500 hover:bg-red-50 rounded-md transition-colors group">
-                                <svg class="w-4 h-4 group-hover:scale-105 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                            </button>
-                        </div>
+                        <x-action-button
+                            type="delete"
+                            onclick="openDeleteModal('{{ route('admin.peminjaman.detail.destroy', $item->detail_id) }}')"
+                        />
                     </x-table-row>
                 @empty
                     <div class="p-6 text-center text-xs text-subtext font-medium">
@@ -139,4 +136,27 @@
         </div> --}}
     </form>
 </div>
+<x-popup-del
+    id="deleteModal"
+    title="Hapus Barang"
+    message="Apakah Anda yakin ingin menghapus barang ini dari daftar peminjaman?<br><strong>Tindakan ini tidak dapat dibatalkan.</strong>"
+/>
+
+@push('scripts')
+<script>
+function openDeleteModal(action) {
+    document.getElementById('deleteForm').action = action;
+
+    const modal = document.getElementById('deleteModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    modal.classList.remove('flex');
+    modal.classList.add('hidden');
+}
+</script>
+@endpush
 @endsection

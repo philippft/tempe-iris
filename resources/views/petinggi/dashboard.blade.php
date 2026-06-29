@@ -142,7 +142,7 @@
                 <x-status-card :status="$surat->getRawOriginal('status_peminjaman')" />
             </div>
             <div class="justify-center">
-                <x-status-card :status="$surat->getRawOriginal('tandatangan_pimpinan')" />
+                <x-status-card :status="$surat->tandatangan_pimpinan" />
             </div>
             <div class="flex justify-center items-center gap-3">
                 <x-action-button

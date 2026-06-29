@@ -293,17 +293,51 @@ class PeminjamanController extends Controller
             // rollback jika gagal
             DB::rollBack();
             //return redirect()->back()->with('error', 'Gagal memproses draf: ' . $e->getMessage());
-            dd([
-                'Pesan Error' => $e->getMessage(),
-                'File Bermasalah' => $e->getFile(),
-                'Baris Kode' => $e->getLine()
-            ]);
+            // dd([
+            //     'Pesan Error' => $e->getMessage(),
+            //     'File Bermasalah' => $e->getFile(),
+            //     'Baris Kode' => $e->getLine()
+            // ]);
         }
     }
 
-    public function destroyDetailPeminjaman ()
+    public function destroyDetailPeminjaman($detail)
     {
-        
+        DB::beginTransaction();
+
+        try {
+
+            $detailPeminjaman = DB::table('detail_peminjaman')
+                ->where('id', $detail)
+                ->first();
+
+            if (!$detailPeminjaman) {
+                return back()->with('error', 'Data tidak ditemukan.');
+            }
+
+            // kembalikan stok
+            DB::table('stocks')
+                ->where('id_inventaris', $detailPeminjaman->id_inventaris)
+                ->where('status', 0)
+                ->limit($detailPeminjaman->qty_inventaris)
+                ->update([
+                    'status' => 1,
+                    'updated_at' => now(),
+                ]);
+
+            DB::table('detail_peminjaman')
+                ->where('id', $detail)
+                ->delete();
+
+            DB::commit();
+
+            return back()->with('success', 'Barang berhasil dihapus.');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     public function kegiatan(Surat $surat)
@@ -315,6 +349,7 @@ class PeminjamanController extends Controller
             ->join('categories', 'inventaris.id_category', '=', 'categories.id')
             ->where('detail_peminjaman.id_surat', $surat->id)
             ->select(
+                'detail_peminjaman.id as detail_id',
                 'inventaris.nama as nama_barang',
                 'inventaris.id',
                 'detail_peminjaman.qty_inventaris',

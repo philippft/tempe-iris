@@ -34,14 +34,20 @@
 
                 if (index >= 0) {
                     this.barangPinjaman[index].jumlah = parseInt(dataBarang.jumlah);
-                    alert('Jumlah ' + dataBarang.nama + ' diperbarui menjadi ' + dataBarang.jumlah);
+                    showModal(
+                        'Jumlah Inventaris Diperbarui',
+                        'Jumlah ' + dataBarang.nama + ' berhasil diubah menjadi ' + dataBarang.jumlah + '.'
+                    );
                 } else {
                     this.barangPinjaman.push({
                         id: dataBarang.id,
                         nama: dataBarang.nama,
                         jumlah: parseInt(dataBarang.jumlah)
                     });
-                    alert(dataBarang.nama + ' berhasil ditambahkan!');
+                    showModal(
+                        'Inventaris Berhasil Ditambahkan',
+                        dataBarang.nama + ' berhasil dimasukkan ke daftar peminjaman.'
+                    );
                 }
             },
 
@@ -52,12 +58,18 @@
             submitForm(event) {
                 if (!this.idTujuan) {
                     event.preventDefault();
-                    alert('Silakan pilih tujuan peminjaman terlebih dahulu.');
+                    showModal(
+                        'Peringatan',
+                        'Silakan pilih tujuan peminjaman terlebih dahulu.'
+                    );
                     return;
                 }
                 if (this.barangPinjaman.length === 0) {
                     event.preventDefault();
-                    alert('Silakan pilih minimal satu barang sebelum melanjutkan peminjaman.');
+                    showModal(
+                        'Peringatan',
+                        'Silakan pilih tujuan peminjaman terlebih dahulu.'
+                    );
                     return;
                 }
                 // Hapus localStorage hanya saat submit berhasil
@@ -213,4 +225,28 @@
 
     </form>
 </div>
+<x-modal id="successModal"/>
+
+<script>
+function showModal(title, message) {
+    document.getElementById('successModalTitle').innerText = title;
+    document.getElementById('successModalMessage').innerText = message;
+
+    const modal = document.getElementById('successModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeModal(id) {
+    const modal = document.getElementById(id);
+    modal.classList.remove('flex');
+    modal.classList.add('hidden');
+}
+
+document.getElementById('successModal').addEventListener('click', function(e){
+    if(e.target === this){
+        closeModal('successModal');
+    }
+});
+</script>
 @endsection
