@@ -195,10 +195,9 @@ class InventarisController extends Controller
         $request->validate([
             'nama'        => 'required|string|max:255',
             'id_category' => 'required|exists:categories,id',
-            // 'stok_awal' => 'required|integer|min:1',
-            // 'status_stok' => 'required|in:0,1',
             'deskripsi'   => 'nullable|string',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'stok_awal'   => 'nullable|integer|min:0',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
         $updateData = $request->except([
@@ -240,7 +239,7 @@ class InventarisController extends Controller
             }
         }
 
-        return redirect()->route('admin.inventaris.index')
+        return redirect()->route('admin.inventaris.show', $inventaris)
             ->with('success', "Data inventaris {$inventaris->nama} berhasil diperbarui!");
     }
 
