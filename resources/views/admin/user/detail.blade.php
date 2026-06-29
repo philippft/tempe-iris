@@ -28,9 +28,21 @@
                 <h1 class="font-semibold text-2xl">
                     Foto KTM (Kartu Tanda Mahasiswa)
                 </h1>
-                <div class="bg-bg-dark rounded-2xl border border-border-custom border-dashed justify-center items-center flex p-16 space-y-6">
-                     <img src="{{ asset('images/dashboard.png') }}" alt="KTM" class="w-full h-auto rounded-xl shadow-md object-cover">        
-                </div>
+                <div
+                        class="bg-[#f0f4ff] border-2 border-dashed border-[#c7d2fe] rounded-xl p-6 flex justify-center items-center">
+                        @if ($user->ktm)
+                            <img src="{{ asset($user->ktm) }}" alt="Foto KTM {{ $user->name }}"
+                                class="w-full max-w-[500px] rounded-md shadow-md object-cover h-[300px]">
+                        @else
+                            {{-- Placeholder jika file gambar kosong --}}
+                            <div class="text-center p-10 text-slate-400 italic text-sm">
+                                Belum ada foto KTM yang diunggah.
+                            </div>
+                        @endif
+                    </div>
+                <!-- <div class="bg-bg-dark rounded-2xl border border-border-custom border-dashed justify-center items-center flex p-16 space-y-6">
+                        <img src="{{ asset($user->ktm) }}" alt="KTM" class="w-full h-auto rounded-xl shadow-md object-cover">        
+                    </div> -->
             </div>
         
             <div class="bg bg-white rounded-2xl  border border-border-custom/50 p-6 space-y-6">
