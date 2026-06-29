@@ -27,7 +27,7 @@ class AuthController extends Controller
             return $this->redirectBasedOnRole(Auth::user()->role);
         }
 
-        $organizations = Organization::where('name', 'like', 'Program Studi%')
+        $organizations = Organization::where('name', 'like', 'Himpunan Mahasiswa%')
         ->orderBy('id')
         ->get();
 
