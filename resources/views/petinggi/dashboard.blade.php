@@ -138,11 +138,41 @@
             <div class="justify-center">
                 {{ $surat->tanggal_peminjaman->format('d M Y') }}
             </div>
-            <div class="justify-center">
-                <x-status-card :status="$surat->getRawOriginal('status_peminjaman')" />
+           <div class="justify-center">
+                 @php
+                    $label = match (true) {
+                        is_null($surat->status_peminjaman) => 'Pending',
+                        $surat->status_peminjaman == 0 => 'Ditolak',
+                        $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan != 1 => 'Pending',
+                        $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && now()->lt($surat->tanggal_peminjaman) => 'Diterima',
+                        $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && now()->between($surat->tanggal_peminjaman, $surat->tanggal_kembali) => 'Aktif',
+                        $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && now()->gt($surat->tanggal_kembali) => 'Selesai',
+                        default => 'Pending',
+                    };
+                @endphp
+
+                <x-status-card :status="$surat->status_peminjaman" :ttd="$surat->tandatangan_pimpinan">
+                    {{ $label }}
+                </x-status-card>
             </div>
             <div class="justify-center">
-                <x-status-card :status="$surat->tandatangan_pimpinan" />
+                @php
+                    $ttdLabel = match ($surat->tandatangan_pimpinan) {
+                        null => 'Menunggu TTD',
+                        false => 'Ditolak',
+                        true => 'Disetujui',
+                    };
+
+                    $ttdColor = match ($surat->tandatangan_pimpinan) {
+                        null => 'bg-status-yellow',
+                        false => 'bg-status-red',
+                        true => 'bg-status-green',
+                    };
+                @endphp
+
+                <span class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white uppercase rounded-full tracking-wider {{ $ttdColor }}">
+                    {{ $ttdLabel }}
+                </span>
             </div>
             <div class="flex justify-center items-center gap-3">
                 <x-action-button
