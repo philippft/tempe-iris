@@ -55,7 +55,10 @@
                 <select name="category" onchange="this.form.submit()"
                     class="block w-full rounded-xl border border-border-custom bg-bg-dark px-4 py-2.5 text-sm text-dark-grey focus:border-primary-hover focus:ring-primary-hover transition">
                     <option value="">Semua Status</option>
-<!-- tambah opsinyaaaaaaa -->
+                    <option value="">Semua Status</option>
+                    <option value="aktif" {{ ($status ?? '') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                    <option value="pending" {{ ($status ?? '') == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="ditolak" {{ ($status ?? '') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                 </select>
             </div>
         </form>

@@ -118,19 +118,45 @@ class AdminDashboardController extends Controller
         return view('admin.dashboard', compact('suratAktif', 'suratSelesai', 'suratPending', 'suratReject', 'suratApprove', 'totalInventaris', 'inventarisDipinjam', 'userAktif', 'userPending', 'pendingUsers', 'peminjamanAktif'));
     }
 
-    public function managementUser() 
+    public function managementUser(Request $request) 
     {
-        $user = User::where('role', 'mahasiswa')->paginate(5);
-        // dd($user);
+        $admin = auth()->user();
 
-        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
-        
+        $search = $request->search;
+        $status = $request->status;
+
+        $query = User::where('role', 'mahasiswa')
+            ->where('id_organization', $admin->id_organization);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('nim_nip', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status === 'aktif') {
+            $query->whereNotNull('verify_at');
+        } elseif ($status === 'ditolak') {
+            $query->whereNotNull('note')->whereNull('verify_at');
+        } elseif ($status === 'pending') {
+            $query->whereNull('note')->whereNull('verify_at');
+        }
+
+        $user = $query->paginate(5)->withQueryString();
+
+        $totalMahasiswa = User::where('role', 'mahasiswa')
+            ->where('id_organization', $admin->id_organization)
+            ->count();
+
         $totalPending = User::where('role', 'mahasiswa')
+            ->where('id_organization', $admin->id_organization)
             ->whereNull('verify_at')
             ->whereNull('note')
             ->count();
 
-        return view('admin.user.index', compact('user', 'totalMahasiswa', 'totalPending'));
+        return view('admin.user.index', compact('user', 'totalMahasiswa', 'totalPending', 'search', 'status'));
     }
 
     public function userDetail(User $user) {
