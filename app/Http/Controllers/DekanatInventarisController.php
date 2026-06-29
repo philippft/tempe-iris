@@ -16,11 +16,14 @@ class DekanatInventarisController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
-        $inventaris = Inventaris::with('category')
+        $search = $request->search;
+        $categoryId = $request->category;
+
+        $query = Inventaris::with('category')
             ->where('id_user', $user->id)
             ->withCount([
                 'stocks as stok_aktif' => function ($query) {
@@ -29,16 +32,34 @@ class DekanatInventarisController extends Controller
                 'stocks as stok_tidak_aktif' => function ($query) {
                     $query->where('status', 0);
                 }
-            ])
-            ->get();
+            ]);
         // dd($inventaris);
 
-        $categories = Category::all();
-        $totalBarang = $inventaris->count();
+        if ($search) {
+            $query->where('nama', 'like', "%{$search}%");
+        }
 
-        $stokAktif = $inventaris->sum('stok_aktif');
-        $stokTidakAktif = $inventaris->sum('stok_tidak_aktif');
+        if ($categoryId) {
+            $query->where('id_category', $categoryId);
+        }
+
+        $categories = Category::all();
+        $statInventaris = (clone $query)->get();
+
+        $totalBarang = $statInventaris->count();
+        $stokAktif = $statInventaris->sum('stok_aktif');
+        $stokTidakAktif = $statInventaris->sum('stok_tidak_aktif');
         $totalStok = $stokAktif + $stokTidakAktif;
+
+        $inventaris = $query
+        ->latest()
+        ->paginate(2)
+        ->withQueryString();
+        // $totalBarang = $inventaris->count();
+
+        // $stokAktif = $inventaris->sum('stok_aktif');
+        // $stokTidakAktif = $inventaris->sum('stok_tidak_aktif');
+        // $totalStok = $stokAktif + $stokTidakAktif;
 
         $viewPath = 'inventaris.index';
 
@@ -56,7 +77,8 @@ class DekanatInventarisController extends Controller
             'totalBarang',
             'totalStok',
             'stokAktif',
-            'stokTidakAktif'
+            'stokTidakAktif',
+            'categoryId'
         ));
     }
 
@@ -123,6 +145,7 @@ class DekanatInventarisController extends Controller
         // dd($statusTampilan);
 
         $jumlahStok = 0;
+        $statusStok = null;
         if ($statusTampilan === '1') {
             $jumlahStok = $inventaris->stocks()->where('status', 1)->count();
             $statusStok = 'aktif';
@@ -151,7 +174,7 @@ class DekanatInventarisController extends Controller
     public function edit(Inventaris $inventaris)
     {
         $categories = Category::all();
-        return view('admin.inventaris.edit', compact('inventaris', 'categories'));
+        return view('dekanat.inventaris.edit', compact('inventaris', 'categories'));
     }
 
     /**
@@ -243,7 +266,7 @@ class DekanatInventarisController extends Controller
 
             DB::commit();
 
-            $routeRedirect = auth()->user()->role === 'dekanat' ? 'dekanat.inventaris.index' : 'admin.inventaris.index';
+            $routeRedirect = auth()->user()->role === 'admin_dekanat' ? 'dekanat.inventaris.index' : 'admin.inventaris.index';
 
             return redirect()->route($routeRedirect)
                 ->with('success', "Inventaris {$inventaris->nama} beserta seluruh kepingan unit dan riwayatnya berhasil dihapus permanen.");

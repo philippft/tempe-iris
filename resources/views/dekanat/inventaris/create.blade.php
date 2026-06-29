@@ -4,7 +4,7 @@
 
 @section('content')
 
-<x-header-page title="Daftar Inventaris" :href="route('admin.inventaris.index')"></x-header-page>
+<x-header-page title="Daftar Inventaris" :href="route('dekanat.inventaris.index')"></x-header-page>
 
 <div class="p-8 sm:px-6 space-y-8">
     <div class="flex items-center gap-4 mb-6">
@@ -18,7 +18,7 @@
                 inventaris.</p>
         </div>
     
-        <form action="{{ route('admin.inventaris.store') }}" method="POST" enctype="multipart/form-data"
+        <form action="{{ route('dekanat.inventaris.store') }}" method="POST" enctype="multipart/form-data"
             class="space-y-5">
             @csrf
     
