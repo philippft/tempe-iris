@@ -358,6 +358,48 @@ class UserDashboardController extends Controller
         }
     }
 
+    public function destroyDetailPeminjaman($detail)
+{
+    DB::beginTransaction();
+
+    try {
+            $detailPeminjaman = DB::table('detail_peminjaman')
+                ->join('surat', 'detail_peminjaman.id_surat', '=', 'surat.id')
+                ->where('detail_peminjaman.id', $detail)
+                ->where('surat.id_user', auth()->id())
+                ->select('detail_peminjaman.*')
+                ->first();
+
+            if (!$detailPeminjaman) {
+                return back()->with('error', 'Data tidak ditemukan.');
+            }
+
+            // kembalikan stok
+            DB::table('stocks')
+                ->where('id_inventaris', $detailPeminjaman->id_inventaris)
+                ->where('status', 0)
+                ->limit($detailPeminjaman->qty_inventaris)
+                ->update([
+                    'status' => 1,
+                    'updated_at' => now(),
+                ]);
+
+            // hapus detail
+            DB::table('detail_peminjaman')
+                ->where('id', $detail)
+                ->delete();
+
+            DB::commit();
+
+            return back()->with('success', 'Barang berhasil dihapus.');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
     public function detailAkun(User $user)
     {
         if (auth()->user()->id !== $user->id) {
@@ -420,6 +462,7 @@ class UserDashboardController extends Controller
             ->join('categories', 'inventaris.id_category', '=', 'categories.id')
             ->where('detail_peminjaman.id_surat', $surat->id)
             ->select(
+                'detail_peminjaman.id as detail_id',
                 'inventaris.nama as nama_barang',
                 'inventaris.id',
                 'detail_peminjaman.qty_inventaris',
@@ -468,7 +511,15 @@ class UserDashboardController extends Controller
 
     public function detailKegiatan (Surat $surat) 
     {
-        return view('user.peminjaman.detail-kegiatan', compact('surat'));
+        $prodis = [
+            'Informatika',
+            'Farmasi',
+            'Matematika',
+            'Fisika',
+            'Biologi',
+            'Kimia',
+        ];
+        return view('user.peminjaman.detail-kegiatan', compact('surat', 'prodis'));
     }
 
     public function addDetailKegiatan (Surat $surat, Request $request) 
@@ -483,8 +534,8 @@ class UserDashboardController extends Controller
                 'kegiatan.*.nama_kegiatan'      => 'required|string|max:50',
                 'kegiatan.*.hari'               => 'required|string|max:25',
                 'kegiatan.*.tanggal'            => 'required|date',
-                'kegiatan.*.waktu_mulai'        => 'required|string',
-                'kegiatan.*.waktu_selesai'      => 'required|string',
+                'kegiatan.*.waktu_mulai' => 'required|date_format:H:i',
+                'kegiatan.*.waktu_selesai' => 'required|date_format:H:i',
             ]);
 
             $surat->update([
@@ -496,23 +547,16 @@ class UserDashboardController extends Controller
             ]);
 
             foreach ($request->kegiatan as $item) {
-                $waktuMulaiRaw = str_replace('.', ':', $item['waktu_mulai']);
-                $waktuSelesaiRaw = str_replace('.', ':', $item['waktu_selesai']);
-                
-                $waktuMulaiFormatted = Carbon::parse($waktuMulaiRaw)->format('H:i');
-                $waktuSelesaiFormatted = Carbon::parse($waktuSelesaiRaw)->format('H:i');
-                
 
                 $surat->kegiatan()->create([
                     'nama'          => $item['nama_kegiatan'],
                     'hari_mulai'    => $item['hari'],
                     'tanggal_mulai' => $item['tanggal'],
-                    'waktu_mulai'   => $item['waktu_mulai'], // waktu mulai perlu di benarkan 
-                    'waktu_selesai' => $item['waktu_selesai'], //waktu selesai perlu di benarkan 
+                    'waktu_mulai'   => $item['waktu_mulai'],
+                    'waktu_selesai' => $item['waktu_selesai'],
                 ]);
-
-                
             }
+            
 
             return redirect()->route('user.peminjaman.index')
                 ->with('success', 'Detail kegiatan berhasil disimpan.');

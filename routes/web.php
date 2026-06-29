@@ -52,6 +52,7 @@ Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('user.')->group
 
         Route::get('/peminjaman/create/detail-kegiatan/{surat}', 'detailKegiatan')->name('peminjaman.detail.kegiatan');
         Route::put('/peminjaman/add-detail-kegiatan/{surat}', 'addDetailKegiatan')->name('peminjaman.store.kegiatan');
+        Route::delete('/user/peminjaman/detail/{detail}', 'destroyDetailPeminjaman')->name('peminjaman.detail.destroy');
 
         Route::put('/peminjaman/verifikasi/{surat}', 'verifikasiSurat')->name('peminjaman.verifikasi');
     });

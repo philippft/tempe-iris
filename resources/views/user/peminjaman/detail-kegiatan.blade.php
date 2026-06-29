@@ -27,7 +27,16 @@
                 {{-- Static Inputs menggunakan komponen x-input --}}
                 <x-input id="nomor" name="nomor" label="Nomor Surat" placeholder="Nomor Surat" required />
                 <x-input id="penyelenggara" name="penyelenggara" label="Penyelenggara" placeholder="Nama Penyelenggara" required />
-                <x-input id="prodi" name="prodi" label="Prodi Penyelenggara" placeholder="Prodi Penyelenggara" required />
+                <select id="prodi" name="prodi" required
+                    class="w-full bg-white border border-border-custom rounded-lg px-4 py-3 text-sm text-judul focus:outline-none focus:border-[#0A5C66]">
+                    <option value="">-- Pilih Prodi --</option>
+
+                    @foreach($prodis as $prodi)
+                        <option value="{{ $prodi }}" {{ old('prodi') == $prodi ? 'selected' : '' }}>
+                            {{ $prodi }}
+                        </option>
+                    @endforeach
+                </select>
                 <x-input id="nama_peminjam" name="nama_peminjam" label="Nama Ketua LM" placeholder="Nama Lengkap Ketua LM" required />
                 <x-input id="nim" name="nim" label="NIM Ketua LM" placeholder="NIM Ketua LM" required />
 
@@ -67,13 +76,23 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="flex flex-col gap-2">
                                     <label class="block text-xs font-bold text-judul uppercase tracking-wider">Waktu Mulai</label>
-                                    <input type="text" x-bind:name="'kegiatan['+index+'][waktu_mulai]'" placeholder="Waktu Mulai (ex: 10.00)" required
-                                        class="w-full bg-white border border-border-custom rounded-lg px-4 py-3 text-sm text-judul focus:outline-none focus:border-[#0A5C66]">
+                                    <input
+                                        type="time"
+                                        step="60"
+                                        x-bind:name="'kegiatan['+index+'][waktu_mulai]'"
+                                        required
+                                        class="w-full bg-white border border-border-custom rounded-lg px-4 py-3 text-sm text-judul focus:outline-none focus:border-[#0A5C66]"
+                                    >
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <label class="block text-xs font-bold text-judul uppercase tracking-wider">Waktu Selesai</label>
-                                    <input type="text" x-bind:name="'kegiatan['+index+'][waktu_selesai]'" placeholder="Waktu Selesai (ex: 19.00)" required
-                                        class="w-full bg-white border border-border-custom rounded-lg px-4 py-3 text-sm text-judul focus:outline-none focus:border-[#0A5C66]">
+                                    <input
+                                        type="time"
+                                        step="60"
+                                        x-bind:name="'kegiatan['+index+'][waktu_selesai]'"
+                                        required
+                                        class="w-full bg-white border border-border-custom rounded-lg px-4 py-3 text-sm text-judul focus:outline-none focus:border-[#0A5C66]"
+                                    >
                                 </div>
                             </div>
                         </div>

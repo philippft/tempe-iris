@@ -111,10 +111,13 @@
                         </div>
                         
                         {{-- Aksi --}}
-                        <x-action-button
-                            type="delete"
-                            onclick="openDeleteModal('{{ route('admin.peminjaman.detail.destroy', $item->detail_id) }}')"
-                        />
+                        <div class="justify-center items-center px-4 py-3">
+                            <x-action-button
+                                type="delete"
+                                onclick="openDeleteModal('{{ route('admin.peminjaman.detail.destroy', $item->detail_id) }}')"
+                            />
+                        </div>
+
                     </x-table-row>
                 @empty
                     <div class="p-6 text-center text-xs text-subtext font-medium">
