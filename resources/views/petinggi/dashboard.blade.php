@@ -52,13 +52,6 @@
             <h1 class="text-2xl font-bold m-5 mb-1 pt-5">Surat Masuk</h1>
             <p class="ml-5 mt-0 text-gray-600">Daftar Surat Peminjaman Inventaris</p>
         </div>
-        <div class="flex justify-end items-center pr-4 pt-5">
-            <button class="flex items-center gap-2 px-3 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" />
-                </svg>
-            </button>
-        </div>
     </div>
 
     {{-- ===== FILTER ===== --}}
