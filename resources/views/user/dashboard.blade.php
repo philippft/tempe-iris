@@ -4,9 +4,9 @@
 
 @section('content')
 
-    <x-header-dashboard/>
 
-    <div class="space-y-8 p-8">
+<div class="space-y-8 p-8">
+        <x-header-dashboard/>
         <h1 class="text-xl font-bold text-dark-grey tracking-[1.5px]">STATISTIK PEMINJAMAN</h1>
         <div class="flex w-full justify-start gap-6">
             <x-statecard
@@ -53,7 +53,7 @@
                     headerClass="text-primary font-bold text-base uppercase"
                     bg="bg-white"
                 >
-                    @foreach($surats as $surat)
+                    @forelse($surats as $surat)
                         <x-table-row>
                             <div class="justify-center text-dark-grey">{{ $loop->iteration }}</div>
                             <div class="font-bold justify-start break-all">
@@ -92,7 +92,9 @@
                                 </div>
                             </div>
                         </x-table-row>
-                    @endforeach
+                    @empty
+                    <x-table-empty message="Saat ini tidak ada peminjaman yang sedang diproses."/>
+                    @endforelse
                 </x-table>
             </div>
         </x-container>
@@ -125,7 +127,7 @@
                 headerBg="bg-primary-hover/10"
                 headerClass="text-primary font-bold text-base uppercase"
             >
-                @foreach($peminjamanAktif as $surat)
+                @forelse($peminjamanAktif as $surat)
                     <x-table-row>
                         <div class="justify-center text-dark-grey">
                             {{ $loop->iteration }}
@@ -157,7 +159,9 @@
                             </div>
                         </div>
                     </x-table-row>
-                @endforeach
+                @empty
+                 <x-table-empty title="Tidak Ada Data" message="Saat ini tidak ada peminjaman aktif atau tidak ada data yang cocok dengan pencarian Anda."/>
+                @endforelse
             </x-table>
         </x-container>
     </div>
