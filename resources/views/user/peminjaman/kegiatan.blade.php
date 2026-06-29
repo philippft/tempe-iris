@@ -26,9 +26,10 @@
             {{-- Tujuan (Readonly) --}}
             <div>
                 <label class="block text-[11px] font-bold text-judul uppercase tracking-wider mb-1.5">Tujuan Peminjaman</label>
-                <input type="text" readonly value="{{ $nama_tujuan ?? 'Organisasi Tujuan' }}" 
-                    class="w-full px-3 py-2.5 bg-bg-dark/30 border border-border-custom rounded-lg text-sm text-judul cursor-not-allowed">
+                <input type="text" value="{{ $tujuan ?? 'BEM FMIPA' }}" readonly
+                    class="w-full px-3 py-2.5 bg-[#E8F0FE] border border-border-custom rounded-lg text-sm text-judul cursor-not-allowed">
             </div>
+
 
             {{-- Tanggal Peminjaman & Kembali (Name disamakan dengan request) --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
