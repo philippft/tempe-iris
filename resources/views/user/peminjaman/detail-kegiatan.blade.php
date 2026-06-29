@@ -18,7 +18,7 @@
             {{-- Header --}}
             <div class="bg-[#F8FAFC] px-8 py-6 border-b border-slate-100">
                 <h2 class="text-xl font-bold text-[#0A5C66]">Form Surat Peminjaman</h2>
-                <p class="text-xs font-medium text-slate-500 mt-1">Lengkapi formulir di bawah ini untuk mengenerate surat peminjaman inventaris.</p>
+                <p class="text-xs font-medium text-slate-500 mt-1">Lengkapi formulir di bawah ini untuk melakukan generate surat peminjaman inventaris.</p>
             </div>
 
             {{-- Body --}}
