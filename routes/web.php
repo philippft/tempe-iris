@@ -8,10 +8,7 @@ use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PetinggiDashboardController;
 use App\Http\Controllers\UserDashboardController;
-use App\Mail\NotificationMail;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,7 +20,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/register', [AuthController::class, 'registerView'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
-
 
 Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('user.')->group(function () {
     Route::controller(UserDashboardController::class)->group(function () {
@@ -43,6 +39,7 @@ Route::middleware(['auth', 'isUser'])->prefix('mahasiswa')->name('user.')->group
         Route::get('/peminjaman/create/detail-kegiatan/{surat}', 'detailKegiatan')->name('peminjaman.detail.kegiatan');
         Route::put('/peminjaman/add-detail-kegiatan/{surat}', 'addDetailKegiatan')->name('peminjaman.store.kegiatan');
     });
+
     Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 });
 
@@ -52,7 +49,7 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     // Inventaris
     Route::resource('inventaris', InventarisController::class)->parameters([
         'inventaris' => 'inventaris'
-    ]);;
+    ]);
 
     // Peminjaman
     Route::controller(PeminjamanController::class)->group(function () {
@@ -71,45 +68,36 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     Route::get('/management-user', [AdminDashboardController::class, 'managementUser'])->name('management.user');
     Route::get('/management-user/detail/{user}', [AdminDashboardController::class, 'userDetail'])->name('user.detail');
 
-    Route::put('/user/approve/{user}', [AdminDashboardController::class, 'approveUser'])->name('user.approve')->middleware('throttle:2,1');;
-    
-    Route::get('/surat/{surat}/preview',[PdfController::class,'previewSurat'])->name('preview.surat');
-    Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
+    Route::put('/user/approve/{user}', [AdminDashboardController::class, 'approveUser'])->name('user.approve')->middleware('throttle:2,1');
 
+    Route::get('/surat/{surat}/preview', [PdfController::class, 'previewSurat'])->name('preview.surat');
+    Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 });
-    
+
 Route::middleware(['auth', 'isDekanat'])->prefix('dekanat')->name('dekanat.')->group(function () {
     Route::get('/dashboard', [DekanatDashboardController::class, 'dekanatDashboard'])->name('dashboard');
 
-    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
-
+    Route::controller(PeminjamanController::class)->group(function () {
         Route::get('/peminjaman', 'index')->name('peminjaman.index');
         Route::get('/peminjaman/detail/{surat}', 'detailPeminjaman')->name('peminjaman.detail-surat');
-
         Route::put('/peminjaman/verifikasi/{surat}', 'verifikasiSurat')->name('peminjaman.verifikasi');
         Route::delete('/peminjaman/delete/{surat}', 'destroy')->name('peminjaman.destroy');
     });
-    Route::get('/surat/{surat}/preview', [PdfController::class, 'previewSurat'])->name('preview.surat');
-    // Download Surat
-    Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 
-    // Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
+    Route::get('/surat/{surat}/preview', [PdfController::class, 'previewSurat'])->name('preview.surat');
+    Route::get('/download-surat/{surat}', [PdfController::class, 'downloadSurat'])->name('download.surat');
 
     Route::resource('inventaris', InventarisController::class)->parameters([
         'inventaris' => 'inventaris'
     ]);
+});
 
 Route::middleware(['auth', 'isPetinggi'])->prefix('petinggi')->name('petinggi.')->group(function () {
     Route::get('/dashboard', [PetinggiDashboardController::class, 'petinggiDashboard'])->name('dashboard');
     Route::get('/surat', [PetinggiDashboardController::class, 'suratDashboard'])->name('surat.index');
     Route::get('/peminjaman/{surat}', [PetinggiDashboardController::class, 'show'])->name('peminjaman.detail-surat');
-    // Route::get('/peminjaman/{surat}', [PetinggiDashboardController::class, 'detailPeminjaman'])->name('surat.show');
     Route::put('/surat/{surat}/verifikasi', [PetinggiDashboardController::class, 'verifikasiSurat'])->name('surat.verifikasi');
-    Route::get('/surat/{surat}/download',  [PdfController::class, 'downloadSurat'])->name('surat.download'); 
+    Route::get('/surat/{surat}/download', [PdfController::class, 'downloadSurat'])->name('surat.download');
     Route::get('/surat/{surat}/preview', [PdfController::class, 'previewSurat'])->name('preview.surat');
     Route::delete('/surat/{surat}', [PeminjamanController::class, 'destroy'])->name('surat.destroy');
 });
-
-
-// Route::get('/register', [AuthController::class, 'registerView'])->name('register');
-// Route::post('/register', [AuthController::class, 'register'])->name('register.post');
