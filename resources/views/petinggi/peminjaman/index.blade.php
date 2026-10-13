@@ -120,15 +120,20 @@
                 @php
                     $ttdLabel = match ($surat->tandatangan_pimpinan) {
                         null => 'Menunggu TTD',
-                        0 => 'Ditolak',
-                        1 => 'Disetujui',
-                        default => 'Menunggu TTD',
+                        false => 'Ditolak',
+                        true => 'Disetujui',
+                    };
+
+                    $ttdColor = match ($surat->tandatangan_pimpinan) {
+                        null => 'bg-status-yellow',
+                        false => 'bg-status-red',
+                        true => 'bg-status-green',
                     };
                 @endphp
 
-                <x-status-card :ttd="$surat->tandatangan_pimpinan">
+                <span class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white uppercase rounded-full tracking-wider {{ $ttdColor }}">
                     {{ $ttdLabel }}
-                </x-status-card>
+                </span>
             </div>
             <div class="flex justify-center items-center gap-3">
                 <x-action-button

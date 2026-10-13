@@ -22,13 +22,6 @@
             <h1 class="text-2xl font-bold m-5 mb-1 pt-5">Surat Masuk</h1>
             <p class="ml-5 mt-0 text-gray-600">Daftar Surat Peminjaman Inventaris</p>
         </div>
-        <div class="flex justify-end items-center pr-4 pt-5">
-            <button class="flex items-center gap-2 px-3 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14" />
-                </svg>
-            </button>
-        </div>
     </div>
 
     {{-- ===== FILTER ===== --}}
@@ -108,11 +101,41 @@
             <div class="justify-center">
                 {{ $surat->tanggal_peminjaman->format('d M Y') }}
             </div>
-            <div class="justify-center">
-                <x-status-card :status="$surat->getRawOriginal('status_peminjaman')" />
+           <div class="justify-center">
+                 @php
+                    $label = match (true) {
+                        is_null($surat->status_peminjaman) => 'Pending',
+                        $surat->status_peminjaman == 0 => 'Ditolak',
+                        $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan != 1 => 'Pending',
+                        $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && now()->lt($surat->tanggal_peminjaman) => 'Diterima',
+                        $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && now()->between($surat->tanggal_peminjaman, $surat->tanggal_kembali) => 'Aktif',
+                        $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && now()->gt($surat->tanggal_kembali) => 'Selesai',
+                        default => 'Pending',
+                    };
+                @endphp
+
+                <x-status-card :status="$surat->status_peminjaman" :ttd="$surat->tandatangan_pimpinan">
+                    {{ $label }}
+                </x-status-card>
             </div>
             <div class="justify-center">
-                <x-status-card :status="$surat->tandatangan_pimpinan" />
+                @php
+                    $ttdLabel = match ($surat->tandatangan_pimpinan) {
+                        null => 'Menunggu TTD',
+                        false => 'Ditolak',
+                        true => 'Disetujui',
+                    };
+
+                    $ttdColor = match ($surat->tandatangan_pimpinan) {
+                        null => 'bg-status-yellow',
+                        false => 'bg-status-red',
+                        true => 'bg-status-green',
+                    };
+                @endphp
+
+                <span class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white uppercase rounded-full tracking-wider {{ $ttdColor }}">
+                    {{ $ttdLabel }}
+                </span>
             </div>
             <div class="flex justify-center items-center gap-3">
                 <x-action-button

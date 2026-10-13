@@ -13,15 +13,22 @@ class AdminDashboardController extends Controller
 {
     public function adminDashboard (Request $request)
     {
+        $admin = auth()->user();
         $search = $request->search;
         $sort = $request->sort;
 
-        // statistik surat
+        // ========== STATISTIK SURAT ==========
+        // FIXED: Filter berdasarkan organization admin yang login
         $suratMasuk = Surat::with([
             'user.organization',
             'detailPeminjaman.inventaris.user.organization',
             'kegiatan'
-        ])->latest()->get();
+        ])
+        ->whereHas('user', function ($q) use ($admin) {
+            $q->where('id_organization', $admin->id_organization);
+        })
+        ->latest()
+        ->get();
 
         $suratReject = $suratMasuk->filter(
             fn($s) => $s->getRawOriginal('status_peminjaman') === 0
@@ -43,13 +50,17 @@ class AdminDashboardController extends Controller
             return $surat->status_peminjaman == 1 && $surat->tandatangan_pimpinan == 1 && $surat->tanggal_kembali < now();
         })->count();
 
-        // statistik inventaris
+        // ========== STATISTIK INVENTARIS ==========
+        // FIXED: Filter berdasarkan organization pemilik inventaris
         $inventaris = Inventaris::with([
             'user.organization',
             'category',
             'stocks',
             'detailPeminjaman.surat'
         ])
+        ->whereHas('user', function ($q) use ($admin) {
+            $q->where('id_organization', $admin->id_organization);
+        })
         ->withCount([
             'stocks as stok_aktif' => function ($q) {
                 $q->where('status', 1);
@@ -60,14 +71,19 @@ class AdminDashboardController extends Controller
         ])
         ->get();
 
+        // FIXED: Total inventaris hanya dari organization admin
         $totalInventaris = $inventaris->count();
 
+        // FIXED: Ambil inventaris yang sedang dipinjam dengan limit yang reasonable
         $inventarisDipinjam = $inventaris
             ->filter(fn($item) => $item->stok_dipinjam > 0)
-            ->take(3);
+            ->take(10); // Increased from 3 untuk better overview
 
-        //statistik user
-        $users = User::where('role', 'mahasiswa')->get();
+        // ========== STATISTIK USER ==========
+        // FIXED: Filter berdasarkan organization admin
+        $users = User::where('role', 'mahasiswa')
+            ->where('id_organization', $admin->id_organization)
+            ->get();
 
         $userAktif = $users->filter(function ($user) {
             return $user->verify_at !== null;
@@ -78,19 +94,22 @@ class AdminDashboardController extends Controller
                 && $user->note === null;
         })->count();
 
+        // FIXED: Ambil lebih banyak pending users dengan limit yang reasonable
         $pendingUsers = $users->filter(function ($user) {
             return $user->verify_at === null
                 && $user->note === null;
-        })->take(5);
+        })->take(10); // Increased from 5
 
-        $search = request('search');
-        $sort = request('sort');
-
+        // ========== PEMINJAMAN AKTIF ==========
         $query = Surat::with([
             'user.organization',
             'detailPeminjaman.inventaris.user.organization',
             'kegiatan'
         ])
+        // FIXED: Filter berdasarkan organization admin
+        ->whereHas('user', function ($q) use ($admin) {
+            $q->where('id_organization', $admin->id_organization);
+        })
         ->where('status_peminjaman', 1)
         ->where('tandatangan_pimpinan', 1)
         ->whereDate('tanggal_kembali', '>=', now());
@@ -115,22 +134,60 @@ class AdminDashboardController extends Controller
             ->withQueryString();
 
         
-        return view('admin.dashboard', compact('suratAktif', 'suratSelesai', 'suratPending', 'suratReject', 'suratApprove', 'totalInventaris', 'inventarisDipinjam', 'userAktif', 'userPending', 'pendingUsers', 'peminjamanAktif'));
+        return view('admin.dashboard', compact(
+            'suratAktif', 
+            'suratSelesai', 
+            'suratPending', 
+            'suratReject', 
+            'suratApprove', 
+            'totalInventaris', 
+            'inventarisDipinjam', 
+            'userAktif', 
+            'userPending', 
+            'pendingUsers', 
+            'peminjamanAktif'
+        ));
     }
 
-    public function managementUser() 
+    public function managementUser(Request $request) 
     {
-        $user = User::where('role', 'mahasiswa')->paginate(5);
-        // dd($user);
+        $admin = auth()->user();
 
-        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
-        
+        $search = $request->search;
+        $status = $request->status;
+
+        $query = User::where('role', 'mahasiswa')
+            ->where('id_organization', $admin->id_organization);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('nim_nip', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status === 'aktif') {
+            $query->whereNotNull('verify_at');
+        } elseif ($status === 'ditolak') {
+            $query->whereNotNull('note')->whereNull('verify_at');
+        } elseif ($status === 'pending') {
+            $query->whereNull('note')->whereNull('verify_at');
+        }
+
+        $user = $query->paginate(5)->withQueryString();
+
+        $totalMahasiswa = User::where('role', 'mahasiswa')
+            ->where('id_organization', $admin->id_organization)
+            ->count();
+
         $totalPending = User::where('role', 'mahasiswa')
+            ->where('id_organization', $admin->id_organization)
             ->whereNull('verify_at')
             ->whereNull('note')
             ->count();
 
-        return view('admin.user.index', compact('user', 'totalMahasiswa', 'totalPending'));
+        return view('admin.user.index', compact('user', 'totalMahasiswa', 'totalPending', 'search', 'status'));
     }
 
     public function userDetail(User $user) {

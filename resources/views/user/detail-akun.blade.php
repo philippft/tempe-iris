@@ -3,7 +3,7 @@
 @section('title', 'Profile Mahasiswa')
 
 @section('content')
-    <div class="w-full mx-auto">
+    <div class="w-full mx-auto p-8">
 
         <div class="flex justify-between items-start mb-6">
             <div>
