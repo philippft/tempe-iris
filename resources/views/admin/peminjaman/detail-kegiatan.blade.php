@@ -44,7 +44,6 @@
                                 </svg>
                             </button>
 
-                            {{-- Form HTML Murni (Disamakan dengan style x-input agar binding dynamic name Alpine berjalan sempurna) --}}
                             <div class="flex flex-col gap-2">
                                 <label class="block text-xs font-bold text-judul uppercase tracking-wider">Nama Kegiatan</label>
                                 <input type="text" x-bind:name="'kegiatan['+index+'][nama_kegiatan]'" placeholder="Nama Kegiatan (ex: Gladi Day-1)" required

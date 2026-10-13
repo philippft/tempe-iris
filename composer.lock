@@ -1,3 +1,4 @@
+
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
@@ -9763,5 +9764,5 @@
         "php": "^8.3"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

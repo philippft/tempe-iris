@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'SIMPRAK')</title>
+    <title>@yield('title', 'TEMPE IRIS')</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -13,7 +13,7 @@
         {{-- Sidebar --}}
         <x-sidebar class="flex-shrink-0" />
         {{-- Content --}}
-        <main class="flex-1 min-h-0 overflow-y-auto m-5">
+        <main class="flex-1 min-h-0 overflow-y-auto">
             @yield('content')
         </main>
     </div>

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Inventaris;
+use App\Models\Surat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Inventaris;
 
 class DekanatDashboardController extends Controller
 {

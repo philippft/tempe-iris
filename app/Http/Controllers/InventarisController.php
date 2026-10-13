@@ -16,7 +16,7 @@ class InventarisController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() 
+    public function index()
     {
         $user = Auth::user();
 
@@ -51,12 +51,12 @@ class InventarisController extends Controller
             ->paginate(10);
         // dd($inventaris);
 
-        $categories = Category::all();
+        $categories  = Category::all();
         $totalBarang = $inventaris->count();
 
-        $stokAktif = $inventaris->sum('stok_aktif');
+        $stokAktif      = $inventaris->sum('stok_aktif');
         $stokTidakAktif = $inventaris->sum('stok_tidak_aktif');
-        $totalStok = $stokAktif + $stokTidakAktif;
+        $totalStok      = $stokAktif + $stokTidakAktif;
 
         $viewPath = 'inventaris.index';
 
@@ -86,6 +86,7 @@ class InventarisController extends Controller
     public function create()
     {
         $categories = Category::all();
+
         return view('admin.inventaris.create', compact('categories'));
     }
 
@@ -95,12 +96,12 @@ class InventarisController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'id_category' => 'required|exists:categories,id',
-            'stok_awal' => 'required|integer|min:1',
-            'status_stok' => 'required|in:0,1',
-            'deskripsi' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:5120',
+            'nama'         => 'required|string|max:255',
+            'id_category'  => 'required|exists:categories,id',
+            'stok_awal'    => 'required|integer|min:1',
+            'status_stok'  => 'required|in:0,1',
+            'deskripsi'    => 'nullable|string',
+            'image'        => 'required|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         $newRequest = $request->except(['_token', 'image', 'stok_awal', 'status_stok']);
@@ -122,7 +123,7 @@ class InventarisController extends Controller
         for ($i = 1; $i <= $jumlahStok; $i++) {
             Stock::create([
                 'id_inventaris' => $inventaris->id,
-                'status' => $request->status_stok,
+                'status'        => $request->status_stok,
             ]);
         }
 
@@ -136,13 +137,14 @@ class InventarisController extends Controller
      */
     public function show(Request $request, Inventaris $inventaris)
     {
-        $user = Auth::user();
+        $user     = Auth::user();
         $viewPath = 'inventaris.show';
 
         $statusTampilan = $request->query('status');
         // dd($statusTampilan);
 
         $jumlahStok = 0;
+        $statusStok = null;
         if ($statusTampilan === '1') {
             $jumlahStok = $inventaris->stocks()->where('status', 1)->count();
             $statusStok = 'aktif';
@@ -151,13 +153,16 @@ class InventarisController extends Controller
             $statusStok = 'tidak aktif';
         }
         // dd($inventaris->stocks);
-        $inventaris->load(['detailPeminjaman.surat']);
+
+        $inventaris->load([
+            'detailPeminjaman.surat.user',
+            'detailPeminjaman.surat.kegiatan',
+        ]);
 
         $listPeminjam = $inventaris->detailPeminjaman
-            ->map(fn($detail) => $detail->surat?->user)
+            ->map(fn ($detail) => $detail->surat?->user)
             ->filter()
             ->unique('id');
-
         // dd($listPeminjam);
 
         if ($user) {
@@ -168,7 +173,7 @@ class InventarisController extends Controller
             }
         }
 
-        return view($viewPath, compact('inventaris', 'jumlahStok', 'listPeminjam'));
+        return view($viewPath, compact('inventaris', 'jumlahStok', 'statusStok', 'listPeminjam'));
     }
 
     /**
@@ -177,6 +182,7 @@ class InventarisController extends Controller
     public function edit(Inventaris $inventaris)
     {
         $categories = Category::all();
+
         return view('admin.inventaris.edit', compact('inventaris', 'categories'));
     }
 
@@ -188,10 +194,9 @@ class InventarisController extends Controller
         $request->validate([
             'nama'        => 'required|string|max:255',
             'id_category' => 'required|exists:categories,id',
-            // 'stok_awal' => 'required|integer|min:1',
-            // 'status_stok' => 'required|in:0,1',
             'deskripsi'   => 'nullable|string',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'stok_awal'   => 'nullable|integer|min:0',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ]);
 
         $updateData = $request->except([
@@ -233,7 +238,7 @@ class InventarisController extends Controller
             }
         }
 
-        return redirect()->route('admin.inventaris.index')
+        return redirect()->route('admin.inventaris.show', $inventaris)
             ->with('success', "Data inventaris {$inventaris->nama} berhasil diperbarui!");
     }
 
@@ -262,9 +267,7 @@ class InventarisController extends Controller
             }
 
             DB::table('detail_peminjaman')->where('id_inventaris', $inventaris->id)->delete();
-
             DB::table('stocks')->where('id_inventaris', $inventaris->id)->delete();
-
 
             $inventaris->delete();
 
@@ -276,6 +279,7 @@ class InventarisController extends Controller
                 ->with('success', "Inventaris {$inventaris->nama} beserta seluruh kepingan unit dan riwayatnya berhasil dihapus permanen.");
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()->back()->with('error', 'Gagal menghapus inventaris: ' . $e->getMessage());
         }
     }

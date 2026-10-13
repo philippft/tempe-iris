@@ -14,7 +14,7 @@
         : implode(' ', $cols);
 @endphp
 
-<div {{ $attributes->merge(['class' => $bg]) }}>
+<div {{ $attributes->merge(['class' => $bg ]) }}>
     {{-- Header --}}
     <div class="grid {{ $headerBg }}" style="grid-template-columns: {{ $gridTemplate }}">
         @foreach($headers as $header)
