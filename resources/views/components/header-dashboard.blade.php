@@ -1,10 +1,10 @@
 @props([
     'title' => 'Dashboard',
     'subtitle' => 'Selamat Datang,',
-    'name' => auth()->user()->name,
+    'name' => str_replace('Ketua', '', auth()->user()->name),
 ])
 
-<div class="w-full flex justify-between items-start p-8">
+<div class="w-full flex justify-between items-start pb-8">
     <div>
         <h1 class="text-judul font-extrabold text-4xl pb-2">
             {{ $title }}
@@ -22,10 +22,10 @@
     <div class="bg-white rounded-2xl px-4 py-2 flex items-center gap-2 shadow-md max-w-fit">
         <div class="text-left">
             <h3 class="text-judul text-lg font-bold leading-tight">
-                {{ auth()->user()->name }}
+                {{ str_replace('Ketua', '', auth()->user()->name) }}
             </h3>
             <p class="text-dark-grey text-base uppercase tracking-wide">
-                {{ auth()->user()->prodi }}
+                {{ auth()->user()->prodi ?? '' }}
             </p>
         </div>
     </div>
