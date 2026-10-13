@@ -13,4 +13,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build & Nyalakan Aplikasi di Docker
+        env:
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: docker compose up -d --build
