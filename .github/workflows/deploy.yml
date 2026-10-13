@@ -1,0 +1,16 @@
+name: Deploy ke CasaOS
+
+on:
+  push:
+    branches: 
+      - main
+      - "dev/**" 
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Ambil Kodingan Terbaru
+        uses: actions/checkout@v4
+
+      - name: Build & Nyalakan Aplikasi di Docker
+        run: docker compose up -d --build
