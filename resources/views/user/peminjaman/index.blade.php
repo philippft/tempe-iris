@@ -146,6 +146,7 @@
                     <div class="justify-center">
                         <x-take-action 
                             :viewUrl="route('user.peminjaman.detail-surat', $surat)"
+                            :showDelete="false"
                         />
                     </div>
                 </x-table-row>

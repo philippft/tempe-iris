@@ -3,7 +3,7 @@
 @section('title', 'Detail Inventaris') 
 
 @section('content')
-<x-header-page title="Detail Inventaris"></x-header-page>
+<x-header-page title="Detail Inventaris" :href="route('dekanat.inventaris.index')"/>
 
 <div class="p-8 sm:px-6 space-y-9">
     <div class="flex gap-4 flex-row items-center justify-between">
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <a href="{{ route('admin.inventaris.edit', $inventaris->id) }}" class="block w-full text-center rounded-xl bg-status-yellow py-4 text-2xl font-bold text-white shadow-lg hover:bg-[#EAAA08] transition">Perbarui Data</a>
+    <a href="{{ route('dekanat.inventaris.edit', $inventaris->id) }}" class="block w-full text-center rounded-xl bg-status-yellow py-4 text-2xl font-bold text-white shadow-lg hover:bg-[#EAAA08] transition">Perbarui Data</a>
     
     <div>
         <h2 class="text-3xl font-bold text-primary-hover">Riwayat Peminjaman</h2>
@@ -92,123 +92,93 @@
             headerClass="text-white font-bold text-sm uppercase"
             bg="bg-white overflow-hidden"
         >
-        
+            @forelse($inventaris->detailPeminjaman as $index => $detail)
+                @php
+                    $surat = $detail->surat;
+                @endphp
 
+                @if($surat)
                 <x-table-row>
-                    <div class="justify-center font-medium text-base text-dark-grey">
-                        01
+
+                    <div class="justify-center font-medium text-dark-grey">
+                        {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
                     </div>
-                    <div class="justify-center font-bold text-base text-judul capitalize">
-                          Anak Agung mas mayuri  
+
+                    <div class="justify-start font-semibold text-judul">
+                        {{ $surat->user->name ?? '-' }}
                     </div>
-                    <div class="justify-center font-medium text-dark-grey text-base">
-                        12 Jun 2026    
-                    </div>
-                    <div class="justify-center font-medium text-dark-grey text-base">
-                        12 Jun 2026    
-                    </div>
+
+                    @php
+                        $kegiatan = $surat->kegiatan->first();
+                    @endphp
                     <div class="justify-center">
-                        <div class="bg-status-green inline-flex items-center justify-center px-4 py-2 text-xs font-bold text-white uppercase rounded-full tracking-wider">
-                            Selesai
-                        </div>
+                        @if($kegiatan)
+                            {{ \Carbon\Carbon::parse($kegiatan->tanggal_mulai)->format('d M Y') }}
+                        @else
+                            -
+                        @endif
                     </div>
-                    
+
+                    <div class="justify-center">
+                        @if($surat->tanggal_pengembalian)
+                            {{ \Carbon\Carbon::parse($surat->tanggal_pengembalian)->format('d M Y') }}
+                        @else
+                            -
+                        @endif
+                    </div>
+
+                    <div class="justify-center">
+                        @php
+                            $status = '';
+
+                            if (is_null($surat->status_peminjaman)) {
+                                $status = 'pending';
+                            } elseif ($surat->status_peminjaman == 0) {
+                                $status = 'ditolak';
+                            } elseif ($surat->tanggal_kembali && \Carbon\Carbon::parse($surat->tanggal_kembali)->isPast()) {
+                                $status = 'selesai';
+                            } else {
+                                $status = 'dipinjam';
+                            }
+                        @endphp
+
+                        @switch($status)
+                            @case('pending')
+                                <span class="bg-primary-hover px-4 py-2 rounded-full text-white text-xs font-bold uppercase">
+                                    Pending
+                                </span>
+                                @break
+
+                            @case('ditolak')
+                                <span class="bg-status-red px-4 py-2 rounded-full text-white text-xs font-bold uppercase">
+                                    Ditolak
+                                </span>
+                                @break
+
+                            @case('selesai')
+                                <span class="bg-status-green px-4 py-2 rounded-full text-white text-xs font-bold uppercase">
+                                    Selesai
+                                </span>
+                                @break
+
+                            @default
+                                <span class="bg-status-yellow px-4 py-2 rounded-full text-white text-xs font-bold uppercase">
+                                    Dipinjam
+                                </span>
+                        @endswitch
+                    </div>
+
                 </x-table-row>
-            
-            <x-table-empty title="Tidak ada Riwayat" message="Saat ini tidak ada riwayat inventaris yang sedang dipinjam atau telah dipinjam ."/>
-        
+                @endif
+
+            @empty
+                <x-table-empty
+                    title="Tidak ada Riwayat"
+                    message="Saat ini belum ada riwayat peminjaman inventaris."
+                />
+            @endforelse
         </x-table>
     </x-container>
-
-
-
-<!-- philip -->
-    <!-- ========================================== -->
-    <!-- 4. TABEL RIWAYAT PEMINJAMAN -->
-    <!-- ========================================== -->
-    <div class="max-w-4xl">
-        <div class="mb-4">
-            <h2 class="text-xl font-bold text-[#0B5C66]">Riwayat Peminjaman</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Lihat riwayat peminjaman dari inventaris ini</p>
-        </div>
-
-        <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-100 text-left text-sm">
-                    <thead class="bg-[#0B5C66] text-xs font-bold uppercase tracking-wider text-white">
-                        <tr>
-                            <th scope="col" class="px-6 py-4 text-center">No</th>
-                            <th scope="col" class="px-6 py-4">Nama Peminjam</th>
-                            <th scope="col" class="px-6 py-4">Tanggal Pinjam</th>
-                            <th scope="col" class="px-6 py-4">Tanggal Kembali</th>
-                            <th scope="col" class="px-6 py-4 text-center">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 bg-white">
-                        {{-- Ganti dengan @forelse($inventaris  ->loans as $index => $loan) jika relasi sudah ada --}}
-                        @forelse([] as $index => $loan)
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="whitespace-nowrap px-6 py-4 text-center font-medium text-slate-500">
-                                {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
-                            </td>
-                            <td class="px-6 py-4 font-bold text-slate-900">Nama Peminjam</td>
-                            <td class="px-6 py-4 text-slate-600">12 Mei 2026</td>
-                            <td class="px-6 py-4 text-slate-600">13 Mei 2026</td>
-                            <td class="whitespace-nowrap px-6 py-4 text-center">
-                                <span
-                                    class="inline-flex items-center rounded-full bg-[#22C55E] px-3 py-0.5 text-[10px] font-bold text-white uppercase tracking-wide">
-                                    SELESAI
-                                </span>
-                            </td>
-                        </tr>
-                        @empty
-                        {{-- Dummy row agar tampilannya persis seperti screenshot saat data asli kosong --}}
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="whitespace-nowrap px-6 py-4 text-center font-medium text-slate-500">01</td>
-                            <td class="px-6 py-4 font-bold text-slate-700">Anak Agung Mas Mayuri</td>
-                            <td class="px-6 py-4 text-slate-500">12 Mei 2026</td>
-                            <td class="px-6 py-4 text-slate-500">13 Mei 2026</td>
-                            <td class="whitespace-nowrap px-6 py-4 text-center">
-                                <span
-                                    class="inline-flex items-center rounded-full bg-[#00C853] px-3 py-0.5 text-[10px] font-bold text-white uppercase tracking-wide">SELESAI</span>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="whitespace-nowrap px-6 py-4 text-center font-medium text-slate-500">02</td>
-                            <td class="px-6 py-4 font-bold text-slate-700">Anak Agung Mas Mayuri</td>
-                            <td class="px-6 py-4 text-slate-500">23 Mei 2026</td>
-                            <td class="px-6 py-4 text-slate-500">-</td>
-                            <td class="whitespace-nowrap px-6 py-4 text-center">
-                                <span
-                                    class="inline-flex items-center rounded-full bg-[#FFB300] px-3 py-0.5 text-[10px] font-bold text-white uppercase tracking-wide">DIPINJAM</span>
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- TABEL PAGINATION FOOTER -->
-            <div class="bg-white px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                <div class="text-xs text-slate-400">
-                    Menampilkan <span class="font-medium text-slate-700">2</span> dari <span
-                        class="font-medium text-slate-700">21</span> data
-                </div>
-                <div class="flex items-center gap-1">
-                    <button class="px-2 py-1 border border-gray-200 rounded-lg text-slate-300 text-xs"
-                        disabled>&lt;</button>
-                    <button class="px-3 py-1 bg-[#0B5C66] text-white rounded-lg text-xs font-semibold">1</button>
-                    <button
-                        class="px-3 py-1 border border-gray-200 rounded-lg text-slate-600 text-xs hover:bg-slate-50">2</button>
-                    <button
-                        class="px-3 py-1 border border-gray-200 rounded-lg text-slate-600 text-xs hover:bg-slate-50">3</button>
-                    <button
-                        class="px-2 py-1 border border-gray-200 rounded-lg text-slate-600 text-xs hover:bg-slate-50">&gt;</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 @endsection

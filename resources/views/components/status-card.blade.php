@@ -8,7 +8,7 @@
         is_null($status) => 'Pending',
         $status == 0 => 'Ditolak',
         $status == 1 && $ttd == 1 => 'Diterima',
-        $status == 1 && $ttd == null => 'Menunggu TTD',
+        $status == 1 && $ttd != 1 => 'Menunggu TTD',
         default => 'Diproses',
     };
 
@@ -16,7 +16,7 @@
         is_null($status) => 'bg-status-yellow',
         $status == 0 => 'bg-status-red',
         $status == 1 && $ttd == 1 => 'bg-status-green',
-        $status == 1 && $ttd == null => 'bg-status-yellow',
+        $status == 1 && $ttd != 1 => 'bg-status-yellow',
         default => 'bg-gray-400',
     };
 @endphp

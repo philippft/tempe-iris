@@ -56,6 +56,7 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
         Route::get('/peminjaman', 'index')->name('peminjaman.index');
         Route::get('/peminjaman/create', 'create')->name('peminjaman.create');
         Route::get('/peminjaman/detail/{surat}', 'detailPeminjaman')->name('peminjaman.detail-surat');
+        Route::delete('/peminjaman/detail/{detail}', 'destroyDetailPeminjaman')->name('peminjaman.detail.destroy');
         Route::post('/peminjaman/add-detail', 'addDetailPeminjaman')->name('peminjaman.detail');
 
         Route::get('/peminjaman/create/kegiatan/{surat}', 'kegiatan')->name('peminjaman.kegiatan');
