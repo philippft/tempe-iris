@@ -1,0 +1,7 @@
+services:
+  tempe-iris-app:
+    build: .
+    container_name: tempe-iris-web
+    restart: unless-stopped
+    ports:
+      - "8090:80"
