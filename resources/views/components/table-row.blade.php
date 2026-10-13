@@ -7,6 +7,6 @@
 @endphp
 
 <div
-    class="grid *:px-6 *:py-8 *:text-left *:flex *:items-center" style="grid-template-columns: {{ $gridTemplate }}">
+    class="grid *:min-w-0  *:px-4 *:py-6 *:text-left *:flex *:items-center *:text-base" style="grid-template-columns: {{ $gridTemplate }}">
     {{ $slot }}
 </div>

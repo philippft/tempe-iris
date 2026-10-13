@@ -5,7 +5,7 @@
 
     'bg' => 'bg-white',
     'headerBg' => 'bg-primary',
-    'headerClass' => 'text-white font-bold text-2xl',
+    'headerClass' => 'text-white font-bold text-xl',
 ])
 
 @php
@@ -18,7 +18,7 @@
     {{-- Header --}}
     <div class="grid {{ $headerBg }}" style="grid-template-columns: {{ $gridTemplate }}">
         @foreach($headers as $header)
-            <div class="py-7 text-center {{ $headerClass }}">
+            <div class="px-4 py-6 text-center {{ $headerClass }}">
                 {{ strtoupper($header) }}
             </div>
         @endforeach

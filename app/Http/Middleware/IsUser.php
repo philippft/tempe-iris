@@ -17,6 +17,16 @@ class IsUser
     public function handle(Request $request, Closure $next): Response
     {
         if(Auth::check() && Auth::user()->role == 'mahasiswa') {
+
+            if (is_null(Auth::user()->verify_at)) {
+                
+                if ($request->routeIs('user.detail-akun') || $request->routeIs('logout')) {
+                    return $next($request);
+                }
+
+                return redirect()->route('user.detail-akun', Auth::user()->id);
+            }
+
             return $next($request); 
         }
         abort(404);

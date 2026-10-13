@@ -10,16 +10,70 @@ use Illuminate\Support\Facades\DB;
 
 class PeminjamanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $totalSurat = Surat::with('detailPeminjaman.inventaris')->get();
+        $searchMasuk = $request->search_masuk;
+        $statusMasuk = $request->status_masuk;
 
-        $suratMasuk = Surat::whereHas('detailPeminjaman.inventaris', function ($q) {
+        $searchKeluar = $request->search_keluar;
+        $statusKeluar = $request->status_keluar;
+
+        $queryMasuk = Surat::whereHas('detailPeminjaman.inventaris', function ($q) {
             $q->where('id_user', auth()->id());
-        })->get();
+        });
+
+        if ($searchMasuk) {
+            $queryMasuk->where(function ($q) use ($searchMasuk) {
+                $q->where('acara', 'like', "%{$searchMasuk}%")
+                    ->orWhere('nomor', 'like', "%{$searchMasuk}%");
+            });
+        }
+
+        if ($statusMasuk === 'pending') {
+            $queryMasuk->whereNull('status_peminjaman');
+        } elseif ($statusMasuk === 'ditolak') {
+            $queryMasuk->where('status_peminjaman', false);
+        } elseif ($statusMasuk === 'diterima') {
+            $queryMasuk->where('status_peminjaman', true)
+                ->whereDate('tanggal_peminjaman', '>', now());
+        } elseif ($statusMasuk === 'aktif') {
+            $queryMasuk->where('status_peminjaman', true)
+                ->whereDate('tanggal_peminjaman', '<=', now())
+                ->whereDate('tanggal_kembali', '>=', now());
+        } elseif ($statusMasuk === 'selesai') {
+            $queryMasuk->where('status_peminjaman', true)
+                ->whereDate('tanggal_kembali', '<', now());
+        }
+
+        $suratMasuk = $queryMasuk->paginate(5)->withQueryString();
         // dd($suratMasuk->first()->detailPeminjaman->first()->inventaris->user);
 
-        $suratKeluar = $totalSurat->where('id_user', auth()->id());
+        $queryKeluar = Surat::where('id_user', auth()->id());
+
+        if ($searchKeluar) {
+            $queryKeluar->where(function ($q) use ($searchKeluar) {
+                $q->where('acara', 'like', "%{$searchKeluar}%")
+                    ->orWhere('nomor', 'like', "%{$searchKeluar}%");
+            });
+        }
+
+        if ($statusKeluar === 'pending') {
+            $queryKeluar->whereNull('status_peminjaman');
+        } elseif ($statusKeluar === 'ditolak') {
+            $queryKeluar->where('status_peminjaman', false);
+        } elseif ($statusKeluar === 'diterima') {
+            $queryKeluar->where('status_peminjaman', true)
+                ->whereDate('tanggal_peminjaman', '>', now());
+        } elseif ($statusKeluar === 'aktif') {
+            $queryKeluar->where('status_peminjaman', true)
+                ->whereDate('tanggal_peminjaman', '<=', now())
+                ->whereDate('tanggal_kembali', '>=', now());
+        } elseif ($statusKeluar === 'selesai') {
+            $queryKeluar->where('status_peminjaman', true)
+                ->whereDate('tanggal_kembali', '<', now());
+        }
+
+        $suratKeluar = $queryKeluar->paginate(5, ['*'], 'surat_keluar_page')->withQueryString();
         // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
         
         $suratReject = $totalSurat->filter(
@@ -36,7 +90,14 @@ class PeminjamanController extends Controller
         });
         // dd($totalSurat);
 
-        return view('admin.peminjaman.index', compact('totalSurat', 'suratMasuk', 'suratKeluar', 'suratReject', 'suratAprove', 'suratPending'));
+        $suratReject  = $suratMasukReject->merge($suratKeluarReject);
+        $suratApprove = $suratMasukApprove->merge($suratKeluarApprove);
+        $suratPending = $suratMasukPending->merge($suratKeluarPending);
+
+        // dd($suratApprove, $suratPending, $suratReject);
+        // dd($suratMasuk->first()->detailPeminjaman->first()->inventaris->user->organization->name);
+
+        return view('admin.peminjaman.index', compact('suratMasuk', 'suratKeluar', 'suratReject', 'suratApprove', 'suratPending'));
     }
 
     public function create(Request $request)
@@ -78,9 +139,60 @@ class PeminjamanController extends Controller
         return view('admin.peminjaman.create', compact('tujuan', 'categories', 'inventaris'));
     }
 
-    public function detailPeminjaman(Surat $surat)
+    public function destroy (Surat $surat)
     {
-        return view('admin.peminjaman.detail-surat', compact('surat'));
+        DB::beginTransaction();
+
+        try {
+            if ($surat->getRawOriginal('status_peminjaman') !== 0) {
+                $itemsDiSurat = DB::table('detail_peminjaman')
+                    ->where('id_surat', $surat->id)
+                    ->select('id_inventaris', 'qty_inventaris')
+                    ->get();
+
+                foreach ($itemsDiSurat as $item) {
+
+                    DB::table('stocks')
+                        ->where('id_inventaris', $item->id_inventaris)
+                        ->where('status', 0)
+                        ->limit($item->qty_inventaris)
+                        ->update([
+                            'status'     => 1,
+                            'updated_at' => now(),
+                        ]);
+                }
+            }
+
+            DB::table('kegiatans')->where('id_surat', $surat->id)->delete();
+
+            DB::table('detail_peminjaman')->where('id_surat', $surat->id)->delete();
+
+            DB::table('surat')->where('id', $surat->id)->delete();
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Permohonan peminjaman berhasil dihapus total dari sistem.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            dd([
+                'Pesan Error' => $e->getMessage(),
+                'File' => $e->getFile(),
+                'Baris' => $e->getLine()
+            ]);
+
+            // return redirect()->back()->with('error', 'Gagal menghapus surat: ' . $e->getMessage());
+        }
+    }
+
+    public function detailPeminjaman(Request $request, Surat $surat)
+    {
+        $peminjam = $surat->user;
+        $listBarang = $surat->detailPeminjaman;
+
+        $type = $request->query('type');
+
+        return view('admin.peminjaman.detail-surat', compact('surat', 'peminjam', 'listBarang', 'type'));
     }
 
     public function addDetailPeminjaman(Request $request) 

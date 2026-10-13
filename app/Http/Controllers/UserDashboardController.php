@@ -7,18 +7,119 @@ use App\Models\Surat;
 use App\Models\Category;
 use App\Models\Inventaris;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Organization;
+use Carbon\Carbon;
 
 class UserDashboardController extends Controller
 {
     public function userDashboard()
     {
-        $surats = Surat::paginate(1);
+        $surats = Surat::where('id_user', auth()->id())
+        ->latest()
+        ->paginate(5);
 
-        return view('user.dashboard', compact('surats'));
+        $suratKeluar = Surat::where('id_user', auth()->id())
+        ->get();
+        // dd($suratKeluar->first()->detailPeminjaman->first()->inventaris->first()->user->organization_name);
+        
+        $suratReject = $suratKeluar->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 0
+        )->count();
+
+        $suratAprove = $suratKeluar->filter(
+            fn($s) => $s->getRawOriginal('status_peminjaman') === 1 && $s->tandatangan_pimpinan == 1
+        )->count();
+
+        $suratPending = $suratKeluar->filter(function ($surat) {
+            return $surat->id_user === auth()->id()
+                && $surat->status_peminjaman === null;
+        })->count();
+        // dd($totalSurat);
+
+        $search = request('search');
+        $sort = request('sort');
+
+        $peminjamanAktif = Surat::with([
+            'detailPeminjaman.inventaris.user.organization'
+        ])
+        ->where('id_user', auth()->id())
+        ->where('status_peminjaman', 1)
+        ->where('tandatangan_pimpinan', 1)
+
+        ->when($search, function ($query) use ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('nomor', 'like', "%{$search}%")
+                    ->orWhere('acara', 'like', "%{$search}%");
+            });
+        })
+        ->when($sort === 'terbaru', function ($query) {
+            $query->orderByDesc('tanggal_peminjaman');
+        })
+        ->when($sort === 'terlama', function ($query) {
+            $query->orderBy('tanggal_peminjaman');
+        })
+        ->when(!$sort, function ($query) {
+            $query->latest('tanggal_peminjaman');
+        })
+
+        ->paginate(5, ['*'], 'aktif_page')
+        ->withQueryString();
+        return view('user.dashboard', compact('surats', 'suratKeluar', 'suratReject', 'suratAprove', 'suratPending', 'peminjamanAktif'));
     }
+
+    public function detail(User $user)
+    {
+        if (auth()->user()->id !== $user->id) {
+            abort(403, 'Anda tidak memiliki akses ke halaman profil ini.');
+        }
+        return view('user.detail-akun', compact('user'));
+    } 
 
     public function index()
     {
+        $search = request('search');
+        $status = request('status');
+
+        $query = Surat::with([
+            'detailPeminjaman.inventaris.user.organization'
+        ])
+        ->where('id_user', auth()->id());
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('acara', 'like', "%{$search}%")
+                ->orWhere('nomor', 'like', "%{$search}%");
+            });
+        }
+
+        $query->when($status, function ($q) use ($status) {
+            if ($status === 'aktif') {
+                $q->where('status_peminjaman', 1)
+                ->whereDate('tanggal_kembali', '>=', now());
+            }
+            elseif ($status === 'selesai') {
+                $q->where('status_peminjaman', 1)
+                ->whereDate('tanggal_kembali', '<', now());
+            }
+            elseif ($status === 'diterima') {
+                $q->where('status_peminjaman', 1);
+            }
+            elseif ($status === 'pending') {
+                $q->whereNull('status_peminjaman');
+            }
+            elseif ($status === 'ditolak') {
+                $q->where('status_peminjaman', 0);
+            }
+        });
+
+        $query->latest('tanggal_peminjaman');
+        
+        $peminjaman = $query
+            ->paginate(5)
+            ->withQueryString();
+
         // dd($suratMasuk->first()->detailPeminjaman->first()->inventaris->user);
 
         $suratKeluar = Surat::where('id_user', auth()->id())
@@ -27,39 +128,67 @@ class UserDashboardController extends Controller
         
         $suratReject = $suratKeluar->filter(
             fn($s) => $s->getRawOriginal('status_peminjaman') === 0
-        );
+        )->count();
 
         $suratAprove = $suratKeluar->filter(
             fn($s) => $s->getRawOriginal('status_peminjaman') === 1
-        );
+        )->count();
 
         $suratPending = $suratKeluar->filter(function ($surat) {
-            return $surat->id_user === auth()->id()
+            return $surat->id_user === auth()->id() 
                 && $surat->status_peminjaman === null;
-        });
+        })->count();
+
+        // $suratReject = $suratKeluar->whereStrict('status_peminjaman', 0);
+
+        // $suratAprove = $suratKeluar->where('status_peminjaman', 1);
+
+        // $suratPending = $suratKeluar->where('status_peminjaman', null);
         // dd($totalSurat);
 
-        return view('user.peminjaman.index', compact('suratKeluar', 'suratReject', 'suratAprove', 'suratPending'));
+        $suratAktif = $suratKeluar->filter(
+            fn($s) => $s->status_peminjaman == 1 && $s->tanggal_kembali >= now()
+        )->count(); 
+
+        $suratSelesai = $suratKeluar->filter(
+            fn($s) => $s->status_peminjaman == 1 && $s->tanggal_kembali < now()
+        )->count();
+
+        return view('user.peminjaman.index', compact('peminjaman', 'suratKeluar', 'suratAktif', 'suratReject', 'suratAprove', 'suratPending', 'suratSelesai'));
     }
 
     public function create(Request $request)
     {
-        $tujuan = DB::table('users')
+        $tujuan = User::with('organization')
             ->where('id', '!=', auth()->id())
-            ->whereNotNull('organization_name')
-            ->where('organization_name', '!=', '')
+            ->whereNotNull('id_organization')
             ->whereNotIn('role', ['mahasiswa'])
-            ->whereNotIn('organization_name', ['Non-Organisasi'])
-            ->select('id', 'organization_name')
             ->get()
-            ->unique('organization_name');
+            ->unique('id_organization')
+            ->filter(function ($user) {
+                $name = $user->organization?->name;
+                return $name !== 'Non-Organisasi' && !empty($name);
+            })
+            ->map(function ($user) {
+                return (object) [
+                    'id' => $user->id,
+                    'organization_name' => $user->organization->name
+                ];
+            })
+            ->values();
 
         $categories = Category::all();
 
-        $selectedTujuan = $request->query('id_tujuan');
-        $search = $request->query('search');
-        $categoryId = $request->query('category_id');
+        // Catch data dari query string URL
+    $selectedTujuan = $request->query('id_tujuan');
+    $search = $request->query('search');
+    $categoryId = $request->query('category_id');
 
+    // 1. Secara default, inventaris kosong jika tujuan belum dipilih
+    $inventaris = collect(); 
+
+    // 2. Jika tujuan sudah dipilih, baru tarik data dari database
+    if ($selectedTujuan) {
         $inventaris = Inventaris::where('id_user', '!=', auth()->id())
             ->with(['category'])
             ->withCount([
@@ -67,9 +196,8 @@ class UserDashboardController extends Controller
                     $query->where('status', 1);
                 }
             ])
-            ->when($selectedTujuan, function ($query, $selectedTujuan) {
-                return $query->where('id_user', $selectedTujuan);
-            })
+            // Langsung gunakan where karena $selectedTujuan pasti ada nilainya
+            ->where('id_user', $selectedTujuan) 
             ->when($search, function ($query, $search) {
                 return $query->where('nama', 'like', '%' . $search . '%');
             })
@@ -77,12 +205,68 @@ class UserDashboardController extends Controller
                 return $query->where('id_category', $categoryId);
             })
             ->get();
+    }
+
+    return view('user.peminjaman.create', compact('tujuan', 'categories', 'inventaris'));
+
+        // dd($tujuan);
 
         return view('user.peminjaman.create', compact('tujuan', 'categories', 'inventaris'));
     }
 
+    public function destroy(Surat $surat)
+    {
+        DB::beginTransaction();
+
+        try {
+            if ($surat->getRawOriginal('status_peminjaman') !== 0) {
+                $itemsDiSurat = DB::table('detail_peminjaman')
+                    ->where('id_surat', $surat->id)
+                    ->select('id_inventaris', 'qty_inventaris')
+                    ->get();
+
+                foreach ($itemsDiSurat as $item) {
+
+                    DB::table('stocks')
+                        ->where('id_inventaris', $item->id_inventaris)
+                        ->where('status', 0)
+                        ->limit($item->qty_inventaris)
+                        ->update([
+                            'status'     => 1,
+                            'updated_at' => now(),
+                        ]);
+                }
+            }
+
+            DB::table('kegiatans')->where('id_surat', $surat->id)->delete();
+
+            DB::table('detail_peminjaman')->where('id_surat', $surat->id)->delete();
+
+            DB::table('surat')->where('id', $surat->id)->delete();
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Permohonan peminjaman berhasil dihapus total dari sistem.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // dd([
+            //     'Pesan Error' => $e->getMessage(),
+            //     'File' => $e->getFile(),
+            //     'Baris' => $e->getLine()
+            // ]);
+
+            // return redirect()->back()->with('error', 'Gagal menghapus surat: ' . $e->getMessage());
+        }
+    }
+
     public function detailPeminjaman(Surat $surat)
     {
+         $surat->load([
+            'user.organization',
+            'detailPeminjaman.inventaris.category'
+        ]);
+        
         return view('user.peminjaman.detail-surat', compact('surat'));
     }
 
@@ -174,6 +358,55 @@ class UserDashboardController extends Controller
         }
     }
 
+    public function detailAkun(User $user)
+    {
+        if (auth()->user()->id !== $user->id) {
+            abort(403, 'Anda tidak memiliki akses ke halaman profil ini.');
+        }
+
+        $organizations = Organization::where('name', 'like', 'Himpunan Mahasiswa%')
+        ->orderBy('id')
+        ->get();
+
+        return view('user.detail-akun', compact('user', 'organizations'));
+    }
+
+    public function detailAkunEdit(User $user, Request $request)
+    {
+        if (auth()->id() !== $user->id) {
+            abort(403, 'Anda tidak memiliki akses untuk mengedit profil ini.');
+        }
+
+        // 2. Validasi Data
+        $validatedData = $request->validate([
+            'name'            => 'required|string|max:255',
+            'nim_nip'         => 'required|string|max:20|unique:users,nim_nip,' . $user->id,
+            'id_organization' => 'required|exists:organizations,id',
+            'email'           => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'ktm'             => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Wajib file gambar
+        ]);
+
+        // 3. Logika Upload Menggunakan Storage::
+        if ($request->hasFile('ktm')) {
+            if ($user->ktm && Storage::disk('public')->exists($user->ktm)) {
+                Storage::disk('public')->delete($user->ktm);
+            }
+
+            $file = $request->file('ktm');
+            $fileName = 'ktm_' . $user->nim_nip . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = Storage::disk('public')->putFileAs('ktm', $file, $fileName);
+
+            $validatedData['ktm'] = $path;
+        }
+
+        // 4. Update Database
+        $user->update($validatedData);
+
+        // 5. Kembali dengan pesan sukses
+        return redirect()->route('user.detail-akun', $user->id)
+            ->with('success', 'Profil dan Foto KTM berhasil diperbarui.');
+    }
+
     public function kegiatan (Surat $surat) 
     {
         $detailBarang = DB::table('detail_peminjaman')
@@ -188,7 +421,11 @@ class UserDashboardController extends Controller
             )
             ->get();
 
-        return view('user.peminjaman.kegiatan', compact('surat', 'detailBarang'));
+        $tujuan = $surat->detailPeminjaman->map(function ($detail) {
+            return $detail->inventaris?->user?->organization?->name;
+        })->unique()->filter()->first();
+
+        return view('user.peminjaman.kegiatan', compact('surat', 'detailBarang', 'tujuan'));
     }
 
     public function addKegiatan (Surat $surat, Request $request) 
@@ -253,13 +490,22 @@ class UserDashboardController extends Controller
             ]);
 
             foreach ($request->kegiatan as $item) {
+                $waktuMulaiRaw = str_replace('.', ':', $item['waktu_mulai']);
+                $waktuSelesaiRaw = str_replace('.', ':', $item['waktu_selesai']);
+                
+                $waktuMulaiFormatted = Carbon::parse($waktuMulaiRaw)->format('H:i');
+                $waktuSelesaiFormatted = Carbon::parse($waktuSelesaiRaw)->format('H:i');
+                
+
                 $surat->kegiatan()->create([
                     'nama'          => $item['nama_kegiatan'],
                     'hari_mulai'    => $item['hari'],
                     'tanggal_mulai' => $item['tanggal'],
-                    'waktu_mulai'   => $item['waktu_mulai'],
-                    'waktu_selesai' => $item['waktu_selesai'],
+                    'waktu_mulai'   => $item['waktu_mulai'], // waktu mulai perlu di benarkan 
+                    'waktu_selesai' => $item['waktu_selesai'], //waktu selesai perlu di benarkan 
                 ]);
+
+                
             }
 
             return redirect()->route('user.peminjaman.index')

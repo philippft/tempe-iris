@@ -7,8 +7,8 @@
     'iconBg' => 'bg-gray-100',
 ])
 
-<div class="w-fit h-fit {{ $bg }} {{ $border }} border-l-8 rounded-4xl p-7 font-sans">
-    <div class="flex justify-between items-center mb-4.5">
+<div class="w-fit h-fit {{ $bg }} {{ $border }} border-l-8 rounded-4xl p-7 font-sans shadow-xl">
+    <div class="flex justify-between gap-20 items-center mb-4.5">
         <h2 class="text-base font-bold text-subtext">
             {{ $title }}
         </h2>
@@ -23,7 +23,7 @@
         </span>
 
         @if($label)
-            <span class="text-base font-semibold text-[#70787C] flex items-end">
+            <span class="text-base font-semibold text-dark-grey flex items-end">
                 {{ $label }}
             </span>
         @endif

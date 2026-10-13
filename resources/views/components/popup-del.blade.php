@@ -1,11 +1,10 @@
 @props([
-    'id' => 'deleteModal', // ID unik untuk trigger modal
-    'action' => '#',       // URL route untuk menghapus data
+    'id' => 'deleteModal',
     'title' => 'Konfirmasi Hapus Data',
     'message' => 'Apakah Anda yakin ingin menghapus data ini?<br>Tindakan ini tidak dapat dibatalkan.',
 ])
 
-<div id="{{ $id }}" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 px-4 transition-opacity">
+<div id="{{ $id }}" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 px-4">
     <div class="w-full max-w-xl rounded-3xl bg-white p-10 shadow-xl">
         
         <div class="mb-4 flex justify-center">
@@ -28,19 +27,18 @@
         </p>
 
         <div class="grid grid-cols-2 gap-4">
-            {{-- Tombol Batal --}}
-            <button type="button" onclick="closeModal('{{ $id }}')"
-                    class="rounded-xl border border-slate-400 py-3 text-lg font-semibold text-slate-700 transition hover:bg-slate-100">
+            <button type="button"
+                onclick="closeDeleteModal()"
+                class="rounded-xl border py-3">
                 Batal
             </button>
 
-            {{-- Form Hapus --}}
-            <form method="POST" action="{{ $action }}">
+            <form id="deleteForm" method="POST">
                 @csrf
                 @method('DELETE')
 
                 <button type="submit"
-                    class="w-full rounded-xl bg-red-700 py-3 text-lg font-semibold text-white transition hover:bg-red-800">
+                    class="w-full rounded-xl bg-red-700 py-3 text-white">
                     Hapus
                 </button>
             </form>
